@@ -4,6 +4,8 @@
 #ifndef _MBSSERVER_H_
 #define _MBSSERVER_H_
 
+#include "server/mbsbase.h"
+
 
 
 typedef struct _MbsServer MbsServer;

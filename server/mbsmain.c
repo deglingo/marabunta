@@ -1,9 +1,6 @@
 /* mbsmain.c -
  */
 
-#include <glib.h>
-#include <stdio.h>
-
 #include "server/mbsserver.h"
 #include "server/mbsgame.h"
 
