@@ -9,7 +9,9 @@
  */
 MbsServer *mbs_server_new ( void )
 {
-  return 0;
+  MbsServer *s;
+  s = g_new0(MbsServer, 1);
+  return s;
 }
 
 
