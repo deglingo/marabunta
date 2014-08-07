@@ -2,7 +2,7 @@
 
 bin_PROGRAMS = marabunta-server
 
-marabunta_server_CPPFLAGS = -I$(top_srcdir)
+marabunta_server_CPPFLAGS = -I$(top_srcdir) -DG_LOG_DOMAIN=\"mbserver\"
 
 marabunta_server_CFLAGS = @GLIB_CFLAGS@
 
