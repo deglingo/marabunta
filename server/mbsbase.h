@@ -8,10 +8,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 
 
 /* [FIXME] these shuld be in common/mbbase.h */
+#define STRERROR strerror(errno)
+
 #define DIE(msg...) do {						\
 	fprintf(stderr, "%s:%s:%d:ERROR: ",			\
 			G_LOG_DOMAIN, __FILE__, __LINE__);	\
