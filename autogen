@@ -46,6 +46,7 @@ define(AC_INIT,
 [@@PACKAGE='\$1'@@]
 [@@VERSION='\$2'@@]
 )
+define(LT_INIT, [@@USE_LIBTOOL=1@@])
 EOF
 	local line
 	while read line; do
@@ -67,6 +68,10 @@ proc_boot()
 	echo '[TODO]' >ChangeLog
 	trace "aclocal..."
 	aclocal || die "aclocal failed"
+	if [ ${USE_LIBTOOL:-0} -ne 0 ]; then
+		trace "libtoolize..."
+		libtoolize || die "libtoolize failed"
+	fi
 	trace "automake..."
 	automake --gnu --add-missing || die "automake failed"
 	trace "autoconf..."

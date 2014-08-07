@@ -1,3 +1,3 @@
 #
 
-SUBDIRS = server
+SUBDIRS = server client
