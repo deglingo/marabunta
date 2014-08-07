@@ -2,5 +2,9 @@
 
 bin_PROGRAMS = marabunta-al
 
+marabunta_al_CPPFLAGS = -I$(top_srcdir)
+
+marabunta_al_LDFLAGS = $(top_builddir)/client/libmarabunta-client.la
+
 marabunta_al_SOURCES = \
 	mbalmain.c
