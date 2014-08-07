@@ -5,6 +5,8 @@ AM_INIT_AUTOMAKE
 
 AC_PROG_CC
 
+PKG_CHECK_MODULES([GLIB], [glib-2.0])
+
 AC_CONFIG_FILES([ \
   Makefile \
   server/Makefile \
