@@ -40,6 +40,19 @@ static gint make_socket ( guint16 port )
 
 
 
+/* _on_accept:
+ */
+static gboolean _on_accept ( GIOChannel *chan,
+							 GIOCondition cond,
+							 gpointer data )
+{
+  MbsServer *server = data;
+  DIE("[TODO] accept");
+  return TRUE;
+}
+
+
+
 /* mbs_server_start:
  */
 void mbs_server_start ( MbsServer *server )
@@ -47,4 +60,6 @@ void mbs_server_start ( MbsServer *server )
   server->listen_sock = make_socket(server->port);
   if (listen(server->listen_sock, 1) < 0)
 	DIE("listen failed: %s", STRERROR);
+  server->listen_chan = g_io_channel_unix_new(server->listen_sock);
+  g_io_add_watch(server->listen_chan, G_IO_IN, _on_accept, server);
 }

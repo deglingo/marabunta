@@ -18,6 +18,7 @@ struct _MbsServer
 {
   guint16 port;
   gint listen_sock;
+  GIOChannel *listen_chan;
 };
 
 
