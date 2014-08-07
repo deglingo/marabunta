@@ -16,7 +16,8 @@ typedef struct _MbsServer MbsServer;
  */
 struct _MbsServer
 {
-  int _dummy;
+  guint16 port;
+  gint listen_sock;
 };
 
 
