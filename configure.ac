@@ -12,5 +12,6 @@ AC_CONFIG_FILES([ \
   Makefile \
   server/Makefile \
   client/Makefile \
+  client-al/Makefile \
 ])
 AC_OUTPUT
