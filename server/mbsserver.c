@@ -11,11 +11,14 @@
 
 /* mbs_server_new:
  */
-MbsServer *mbs_server_new ( void )
+MbsServer *mbs_server_new ( MbsServerHandler handler,
+							gpointer handler_data )
 {
   MbsServer *s;
   s = g_new0(MbsServer, 1);
   s->port = 6666;
+  s->handler = handler;
+  s->handler_data = handler_data;
   return s;
 }
 

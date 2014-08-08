@@ -6,6 +6,14 @@
 
 
 
+static void _on_server_event ( MbsServerEvent *event,
+							   gpointer data )
+{
+  DIE("[TODO] server event");
+}
+
+
+
 /* main:
  */
 int main ()
@@ -15,7 +23,7 @@ int main ()
   GMainLoop *loop;
   printf("marabunta-server: hello!\n");
   game = mbs_game_new();
-  server = mbs_server_new();
+  server = mbs_server_new(_on_server_event, game);
   mbs_server_start(server);
   printf("marabunta-server: start...\n");
   loop = g_main_loop_new(NULL, FALSE);
