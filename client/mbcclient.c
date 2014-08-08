@@ -9,7 +9,9 @@
  */
 MbcClient *mbc_client_new ( void )
 {
-  return 0;
+  MbcClient *cli;
+  cli = g_new0(MbcClient, 1);
+  return cli;
 }
 
 

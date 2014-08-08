@@ -12,6 +12,15 @@ typedef struct _MbcClient MbcClient;
 
 
 
+/* MbcClient:
+ */
+struct _MbcClient
+{
+  int _dummy;
+};
+
+
+
 MbcClient *mbc_client_new ( void );
 gint mbc_client_connect ( MbcClient *cli,
 						  const gchar *host,
