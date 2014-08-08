@@ -54,11 +54,15 @@ static gboolean _on_accept ( GIOChannel *chan,
   struct sockaddr_in client_name;
   size_t size = sizeof(client_name);
   gint sock;
+  MbsServerEvent event;
   if ((sock = accept(server->listen_sock, (struct sockaddr *) &
 client_name, &size)) < 0)
 	DIE("accept failed: %s", STRERROR);
   fprintf(stderr, "client connected: %s:%hd\n",
 		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
+  event.type = MBS_SERVER_EVENT_ACCEPT;
+  event.accept.clid = 1;
+  server->handler(&event, server->handler_data);
   return TRUE;
 }
 

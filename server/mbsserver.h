@@ -10,7 +10,10 @@
 
 typedef struct _MbsServer MbsServer;
 
+typedef enum _MbsServerEventType MbsServerEventType;
+typedef struct _MbsServerEventAccept MbsServerEventAccept;
 typedef union _MbsServerEvent MbsServerEvent;
+
 typedef void (* MbsServerHandler) ( MbsServerEvent *event,
 									gpointer data );
 
@@ -25,6 +28,39 @@ struct _MbsServer
   guint16 port;
   gint listen_sock;
   GIOChannel *listen_chan;
+};
+
+
+
+#define _MBS_SERVER_EVENT_HEADER \
+  MbsServerEventType type
+
+
+
+/* MbsServerEventType:
+ */
+enum _MbsServerEventType
+  {
+	MBS_SERVER_EVENT_ACCEPT,
+  };
+
+
+
+/* MbsServerEventAccept:
+ */
+struct _MbsServerEventAccept {
+  _MBS_SERVER_EVENT_HEADER;
+  guint clid;
+};
+
+
+
+/* MbsServerEvent:
+ */
+union _MbsServerEvent
+{
+  MbsServerEventType type;
+  MbsServerEventAccept accept;
 };
 
 

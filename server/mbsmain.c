@@ -9,7 +9,14 @@
 static void _on_server_event ( MbsServerEvent *event,
 							   gpointer data )
 {
-  DIE("[TODO] server event");
+  switch (event->type)
+	{
+	case MBS_SERVER_EVENT_ACCEPT:
+	  printf("client accepted: %d\n", event->accept.clid);
+	  break;
+	default:
+	  fprintf(stderr, "[TODO] server event %d\n", event->type);
+	}
 }
 
 
