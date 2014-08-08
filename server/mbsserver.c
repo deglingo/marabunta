@@ -112,6 +112,8 @@ client_name, &size)) < 0)
   client = g_new0(Client, 1);
   client->clid = ++(server->client_counter);
   client->chan = g_io_channel_unix_new(sock);
+  if (g_io_channel_set_flags(client->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
+	DIE("set flags failed");
   g_io_channel_set_encoding(client->chan, NULL, NULL);
   client->watchid = g_io_add_watch(client->chan, G_IO_IN, _on_client_ready, client);
   event.type = MBS_SERVER_EVENT_ACCEPT;
