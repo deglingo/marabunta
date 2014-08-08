@@ -13,6 +13,9 @@ typedef struct _MbcClient MbcClient;
 
 
 MbcClient *mbc_client_new ( void );
+gint mbc_client_connect ( MbcClient *cli,
+						  const gchar *host,
+						  guint16 port );
 
 
 
