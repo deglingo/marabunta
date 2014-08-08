@@ -16,7 +16,7 @@ typedef struct _MbcClient MbcClient;
  */
 struct _MbcClient
 {
-  int _dummy;
+  gint sock;
 };
 
 

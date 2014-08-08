@@ -2,7 +2,7 @@
 
 bin_PROGRAMS = marabunta-al
 
-marabunta_al_CPPFLAGS = -I$(top_srcdir)
+marabunta_al_CPPFLAGS = -I$(top_srcdir) -DG_LOG_DOMAIN=\"mbclient-al\"
 
 marabunta_al_CFLAGS = @GLIB_CFLAGS@
 
