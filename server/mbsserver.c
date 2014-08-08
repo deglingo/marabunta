@@ -9,6 +9,17 @@
 
 
 
+/* Client:
+ */
+typedef struct _Client Client;
+
+struct _Client
+{
+  guint clid;
+};
+
+
+
 /* mbs_server_new:
  */
 MbsServer *mbs_server_new ( MbsServerHandler handler,
@@ -19,6 +30,7 @@ MbsServer *mbs_server_new ( MbsServerHandler handler,
   s->port = 6666;
   s->handler = handler;
   s->handler_data = handler_data;
+  s->client_counter = 0;
   return s;
 }
 
@@ -54,14 +66,17 @@ static gboolean _on_accept ( GIOChannel *chan,
   struct sockaddr_in client_name;
   size_t size = sizeof(client_name);
   gint sock;
+  Client *client;
   MbsServerEvent event;
   if ((sock = accept(server->listen_sock, (struct sockaddr *) &
 client_name, &size)) < 0)
 	DIE("accept failed: %s", STRERROR);
   fprintf(stderr, "client connected: %s:%hd\n",
 		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
+  client = g_new0(Client, 1);
+  client->clid = ++(server->client_counter);
   event.type = MBS_SERVER_EVENT_ACCEPT;
-  event.accept.clid = 1;
+  event.accept.clid = client->clid;
   server->handler(&event, server->handler_data);
   return TRUE;
 }
