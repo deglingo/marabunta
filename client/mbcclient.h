@@ -17,6 +17,7 @@ typedef struct _MbcClient MbcClient;
 struct _MbcClient
 {
   gint sock;
+  GIOChannel *chan;
 };
 
 
@@ -25,6 +26,8 @@ MbcClient *mbc_client_new ( void );
 gint mbc_client_connect ( MbcClient *cli,
 						  const gchar *host,
 						  guint16 port );
+void mbc_client_send ( MbcClient *cli,
+					   const gchar *text );
 
 
 

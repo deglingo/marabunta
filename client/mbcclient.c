@@ -50,5 +50,24 @@ gint mbc_client_connect ( MbcClient *cli,
   /* connect */
   if (connect(cli->sock, (struct sockaddr *) &server_name, sizeof(server_name)) < 0)
 	DIE("connect failed: %s", STRERROR);
+  /* create the IO channel */
+  cli->chan = g_io_channel_unix_new(cli->sock);
+  g_io_channel_set_encoding(cli->chan, NULL, NULL);
   return 0;
+}
+
+
+
+/* mbc_client_send:
+ */
+void mbc_client_send ( MbcClient *cli,
+					   const gchar *text )
+{
+  gsize w;
+  GIOStatus r;
+  GError *err = NULL;
+  r = g_io_channel_write_chars(cli->chan, text, -1, &w, &err);
+  if (r != G_IO_STATUS_NORMAL)
+	DIE("[TODO] write failed");
+  g_io_channel_flush(cli->chan, NULL);
 }
