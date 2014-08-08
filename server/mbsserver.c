@@ -5,6 +5,7 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 
 
@@ -47,7 +48,14 @@ static gboolean _on_accept ( GIOChannel *chan,
 							 gpointer data )
 {
   MbsServer *server = data;
-  DIE("[TODO] accept");
+  struct sockaddr_in client_name;
+  size_t size = sizeof(client_name);
+  gint sock;
+  if ((sock = accept(server->listen_sock, (struct sockaddr *) &
+client_name, &size)) < 0)
+	DIE("accept failed: %s", STRERROR);
+  fprintf(stderr, "client connected: %s:%hd\n",
+		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
   return TRUE;
 }
 
