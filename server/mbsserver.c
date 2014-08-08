@@ -16,6 +16,8 @@ typedef struct _Client Client;
 struct _Client
 {
   guint clid;
+  GIOChannel *chan;
+  guint watchid;
 };
 
 
@@ -56,6 +58,39 @@ static gint make_socket ( guint16 port )
 
 
 
+static gboolean _on_client_ready ( GIOChannel *chan,
+								   GIOCondition cond,
+								   gpointer data )
+{
+  Client *cli = data;
+  gchar buf[65536];
+  gsize bytes_read;
+  GError *err = NULL;
+  GIOStatus r;
+  r = g_io_channel_read_chars(chan, buf, 65536, &bytes_read, &err);
+  switch (r) {
+  case G_IO_STATUS_NORMAL:
+	printf("got %d bytes from client %d\n", bytes_read, cli->clid);
+	break;
+  case G_IO_STATUS_EOF:
+	printf("got EOF from client %d\n", cli->clid);
+	/* [FIXME] shutdown, cleanup... */
+	return FALSE;
+	break;
+  case G_IO_STATUS_ERROR:
+	DIE("io read failed");
+	break;
+  case G_IO_STATUS_AGAIN:
+	DIE("[TODO] EAGAIN");
+	break;
+  default:
+	DIE("??");
+  }
+  return TRUE;
+}
+
+
+
 /* _on_accept:
  */
 static gboolean _on_accept ( GIOChannel *chan,
@@ -75,6 +110,9 @@ client_name, &size)) < 0)
 		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
   client = g_new0(Client, 1);
   client->clid = ++(server->client_counter);
+  client->chan = g_io_channel_unix_new(sock);
+  g_io_channel_set_encoding(client->chan, NULL, NULL);
+  client->watchid = g_io_add_watch(client->chan, G_IO_IN, _on_client_ready, client);
   event.type = MBS_SERVER_EVENT_ACCEPT;
   event.accept.clid = client->clid;
   server->handler(&event, server->handler_data);
