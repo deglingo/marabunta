@@ -19,6 +19,7 @@ struct _MbcClient
   gint sock;
   GIOChannel *chan;
   guint watchid;
+  GIOCondition watchout;
   GQueue *msg_queue;
 };
 

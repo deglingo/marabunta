@@ -67,6 +67,7 @@ static gboolean _on_client_ready ( GIOChannel *chan,
   gsize bytes_read;
   GError *err = NULL;
   GIOStatus r;
+  printf("reading from client %d\n", cli->clid);
   r = g_io_channel_read_chars(chan, buf, 65536, &bytes_read, &err);
   switch (r) {
   case G_IO_STATUS_NORMAL:

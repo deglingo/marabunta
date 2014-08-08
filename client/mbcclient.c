@@ -10,8 +10,9 @@
 
 struct message
 {
-  gchar *text;
+  gchar *buf;
   gsize len;
+  gsize ofs;
 };
 
 
@@ -43,11 +44,55 @@ static void init_sockaddr ( struct sockaddr_in *name,
 
 
 
+static gboolean _client_send ( MbcClient *cli )
+{
+  struct message *msg;
+  GIOStatus s;
+  gsize w;
+  GError *err = NULL;
+  if (!(msg = g_queue_peek_head(cli->msg_queue))) DIE("??");
+  s = g_io_channel_write_chars(cli->chan, msg->buf + msg->ofs, msg->len - msg->ofs, &w, &err);
+  switch (s) {
+  case G_IO_STATUS_NORMAL:
+	printf("sent %d bytes\n", w);
+	msg->ofs += w;
+	if (msg->ofs == msg->len) {
+	  printf("msg complete\n");
+	  if (g_io_channel_flush(cli->chan, NULL) != G_IO_STATUS_NORMAL)
+		DIE("flush failed");
+	  g_queue_pop_head(cli->msg_queue);
+	  /* [FIXME] free msg */
+	}
+	break;
+  default:
+	DIE("[TODO] s=%d", s);
+  }
+  if (g_queue_is_empty(cli->msg_queue))
+	return FALSE;
+  else
+	return TRUE;
+}
+
+
 static gboolean _on_client_ready ( GIOChannel *chan,
 								   GIOCondition cond,
 								   gpointer data )
 {
-  DIE("[TODO] client ready");
+  MbcClient *cli = data;
+  if (cond & G_IO_IN)
+	{
+	  DIE("[TODO] client ready (in)");
+	}
+  if (cond & G_IO_OUT)
+	{
+	  if (_client_send(cli)) {
+		return TRUE;
+	  } else {
+		printf("removing watchout\n");
+		cli->watchout = 0;
+		return FALSE;
+	  }
+	}
   return TRUE;
 }
 
@@ -71,6 +116,7 @@ gint mbc_client_connect ( MbcClient *cli,
   cli->chan = g_io_channel_unix_new(cli->sock);
   g_io_channel_set_encoding(cli->chan, NULL, NULL);
   cli->watchid = g_io_add_watch(cli->chan, G_IO_IN, _on_client_ready, cli);
+  cli->watchout = 0;
   return 0;
 }
 
@@ -82,7 +128,12 @@ void mbc_client_send ( MbcClient *cli,
 					   const gchar *text )
 {
   struct message *msg = g_new0(struct message, 1);
-  msg->text = g_strdup(text);
-  msg->len = strlen(msg->text);
+  msg->buf = g_strdup(text);
+  msg->len = strlen(msg->buf);
+  msg->ofs = 0;
   g_queue_push_head(cli->msg_queue, msg);
+  if (cli->watchout == 0)
+	{
+	  cli->watchout = g_io_add_watch(cli->chan, G_IO_OUT, _on_client_ready, cli);
+	}
 }
