@@ -9,5 +9,7 @@
  */
 MbsGame *mbs_game_new ( void )
 {
-  return 0;
+  MbsGame *game;
+  game = g_new0(MbsGame, 1);
+  return game;
 }
