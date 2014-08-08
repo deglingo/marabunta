@@ -114,6 +114,8 @@ gint mbc_client_connect ( MbcClient *cli,
 	DIE("connect failed: %s", STRERROR);
   /* create the IO channel */
   cli->chan = g_io_channel_unix_new(cli->sock);
+  if (g_io_channel_set_flags(cli->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
+	DIE("set flags failed");
   g_io_channel_set_encoding(cli->chan, NULL, NULL);
   cli->watchid = g_io_add_watch(cli->chan, G_IO_IN, _on_client_ready, cli);
   cli->watchout = 0;
