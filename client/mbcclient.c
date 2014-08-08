@@ -8,6 +8,12 @@
 #include <netdb.h>
 
 
+struct message
+{
+  gchar *text;
+  gsize len;
+};
+
 
 /* mbc_client_new:
  */
@@ -15,6 +21,7 @@ MbcClient *mbc_client_new ( void )
 {
   MbcClient *cli;
   cli = g_new0(MbcClient, 1);
+  cli->msg_queue = g_queue_new();
   return cli;
 }
 
@@ -74,11 +81,8 @@ gint mbc_client_connect ( MbcClient *cli,
 void mbc_client_send ( MbcClient *cli,
 					   const gchar *text )
 {
-  gsize w;
-  GIOStatus r;
-  GError *err = NULL;
-  r = g_io_channel_write_chars(cli->chan, text, -1, &w, &err);
-  if (r != G_IO_STATUS_NORMAL)
-	DIE("[TODO] write failed");
-  g_io_channel_flush(cli->chan, NULL);
+  struct message *msg = g_new0(struct message, 1);
+  msg->text = g_strdup(text);
+  msg->len = strlen(msg->text);
+  g_queue_push_head(cli->msg_queue, msg);
 }
