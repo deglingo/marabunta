@@ -1,6 +1,7 @@
 /* mbsmain.c -
  */
 
+#include "common/marabunta-common.h"
 #include "server/mbsserver.h"
 #include "server/mbsgame.h"
 
@@ -28,7 +29,7 @@ int main ()
   MbsGame *game;
   MbsServer *server;
   GMainLoop *loop;
-  printf("marabunta-server: hello!\n");
+  TRACE("hello!");
   game = mbs_game_new();
   server = mbs_server_new(_on_server_event, game);
   mbs_server_start(server);
