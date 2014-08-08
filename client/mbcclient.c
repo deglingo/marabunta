@@ -36,6 +36,16 @@ static void init_sockaddr ( struct sockaddr_in *name,
 
 
 
+static gboolean _on_client_ready ( GIOChannel *chan,
+								   GIOCondition cond,
+								   gpointer data )
+{
+  DIE("[TODO] client ready");
+  return TRUE;
+}
+
+
+
 /* mbc_client_connect:
  */
 gint mbc_client_connect ( MbcClient *cli,
@@ -53,6 +63,7 @@ gint mbc_client_connect ( MbcClient *cli,
   /* create the IO channel */
   cli->chan = g_io_channel_unix_new(cli->sock);
   g_io_channel_set_encoding(cli->chan, NULL, NULL);
+  cli->watchid = g_io_add_watch(cli->chan, G_IO_IN, _on_client_ready, cli);
   return 0;
 }
 
