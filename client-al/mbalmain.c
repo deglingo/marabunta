@@ -2,6 +2,7 @@
  */
 
 #include <stdio.h>
+#include <allegro5/allegro.h>
 
 #include "client/mbcclient.h"
 
@@ -14,6 +15,7 @@ int main ( int argc,
 {
   GMainLoop *loop;
   MbcClient *cli;
+  al_init();
   cli = mbc_client_new();
   printf("marabunta-al: hello!\n");
   mbc_client_connect(cli, "localhost", 6666);
