@@ -16,7 +16,7 @@ typedef struct _MbsGame MbsGame;
  */
 struct _MbsGame
 {
-  int _dummy;
+  LptTree *tree;
 };
 
 
