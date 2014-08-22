@@ -106,7 +106,7 @@ AltkWidget *_create_dialog ( void )
 int main ( int argc,
            char **argv )
 {
-  ALLEGRO_DISPLAY *display;
+  AltkDisplay *display;
   GSource *al_source;
   MbcClient *cli;
   AltkWidget *dlg;
@@ -115,12 +115,9 @@ int main ( int argc,
   dlg = _create_dialog();
   al_source = al_source_new();
   g_source_attach(al_source, NULL);
-  if (!(display = al_create_display(640, 480))) {
-    fprintf(stderr, "al_create_display() failed\n");
-    exit(1);
-  }
-  al_register_event_source(((AlSource *) al_source)->queue,
-                           al_get_display_event_source(display));
+  display = altk_display_new();
+  /* al_register_event_source(((AlSource *) al_source)->queue, */
+  /*                          al_get_display_event_source(display)); */
   cli = mbc_client_new();
   printf("marabunta-al: hello!\n");
   mbc_client_connect(cli, "localhost", 6666);
