@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <allegro5/allegro.h>
+#include <altk.h>
 
 #include "client/mbcclient.h"
 
@@ -89,6 +90,17 @@ static GSource *al_source_new ( void )
 
 
 
+/* _create_dialog:
+ */
+AltkWidget *_create_dialog ( void )
+{
+  AltkWidget *dlg;
+  dlg = altk_dialog_new();
+  return dlg;
+}
+
+
+
 /* main:
  */
 int main ( int argc,
@@ -98,7 +110,10 @@ int main ( int argc,
   GSource *al_source;
   GMainLoop *loop;
   MbcClient *cli;
+  AltkWidget *dlg;
   al_init();
+  altk_init();
+  dlg = _create_dialog();
   al_source = al_source_new();
   g_source_attach(al_source, NULL);
   if (!(display = al_create_display(640, 480))) {
