@@ -108,7 +108,6 @@ int main ( int argc,
 {
   ALLEGRO_DISPLAY *display;
   GSource *al_source;
-  GMainLoop *loop;
   MbcClient *cli;
   AltkWidget *dlg;
   al_init();
@@ -126,7 +125,6 @@ int main ( int argc,
   printf("marabunta-al: hello!\n");
   mbc_client_connect(cli, "localhost", 6666);
   mbc_client_send(cli, "hola!");
-  loop = g_main_loop_new(NULL, FALSE);
-  g_main_loop_run(loop);
+  altk_main();
   return 0;
 }
