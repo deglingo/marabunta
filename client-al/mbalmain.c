@@ -57,6 +57,9 @@ static gboolean _al_source_dispatch ( GSource *src,
     return TRUE;
   }
   fprintf(stderr, "[todo] dispatch event: %d\n", al->event.type);
+  /* [FIXME] */
+  if (al->event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+    exit(0);
   al->pending = 0;
   /* return FALSE if the source should be removed */ 
   return TRUE;
