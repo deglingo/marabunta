@@ -1,6 +1,7 @@
 /* mbcclient.c -
  */
 
+#include "client/cliprivate.h"
 #include "client/mbcclient.h"
 
 #include <sys/socket.h>
@@ -38,7 +39,7 @@ static void init_sockaddr ( struct sockaddr_in *name,
   name->sin_family = AF_INET;
   name->sin_port = htons(port);
   if (!(hostinfo = gethostbyname(host)))
-	DIE("unknown host: '%s'", host);
+	CL_ERROR("unknown host: '%s'", host);
   name->sin_addr = *(struct in_addr *) hostinfo->h_addr;
 }
 
@@ -50,22 +51,22 @@ static gboolean _client_send ( MbcClient *cli )
   GIOStatus s;
   gsize w;
   GError *err = NULL;
-  if (!(msg = g_queue_peek_head(cli->msg_queue))) DIE("??");
+  if (!(msg = g_queue_peek_head(cli->msg_queue))) CL_ERROR("??");
   s = g_io_channel_write_chars(cli->chan, msg->buf + msg->ofs, msg->len - msg->ofs, &w, &err);
   switch (s) {
   case G_IO_STATUS_NORMAL:
-	printf("sent %d bytes\n", w);
+	CL_DEBUG("sent %d bytes", w);
 	msg->ofs += w;
 	if (msg->ofs == msg->len) {
-	  printf("msg complete\n");
+	  CL_DEBUG("msg complete");
 	  if (g_io_channel_flush(cli->chan, NULL) != G_IO_STATUS_NORMAL)
-		DIE("flush failed");
+		CL_ERROR("flush failed");
 	  g_queue_pop_head(cli->msg_queue);
 	  /* [FIXME] free msg */
 	}
 	break;
   default:
-	DIE("[TODO] s=%d", s);
+	CL_ERROR("[TODO] s=%d", s);
   }
   if (g_queue_is_empty(cli->msg_queue))
 	return FALSE;
@@ -81,14 +82,14 @@ static gboolean _on_client_ready ( GIOChannel *chan,
   MbcClient *cli = data;
   if (cond & G_IO_IN)
 	{
-	  DIE("[TODO] client ready (in)");
+	  CL_ERROR("[TODO] client ready (in)");
 	}
   if (cond & G_IO_OUT)
 	{
 	  if (_client_send(cli)) {
 		return TRUE;
 	  } else {
-		printf("removing watchout\n");
+		CL_DEBUG("removing watchout");
 		cli->watchout = 0;
 		return FALSE;
 	  }
@@ -107,15 +108,15 @@ gint mbc_client_connect ( MbcClient *cli,
   struct sockaddr_in server_name;
   /* create the socket */
   if ((cli->sock = socket(PF_INET, SOCK_STREAM, 0)) < 0)
-	DIE("could not create socket: %s", STRERROR);
+	CL_ERROR("could not create socket: %s", STRERROR);
   init_sockaddr(&server_name, host, port);
   /* connect */
   if (connect(cli->sock, (struct sockaddr *) &server_name, sizeof(server_name)) < 0)
-	DIE("connect failed: %s", STRERROR);
+	CL_ERROR("connect failed: %s", STRERROR);
   /* create the IO channel */
   cli->chan = g_io_channel_unix_new(cli->sock);
   if (g_io_channel_set_flags(cli->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
-	DIE("set flags failed");
+	CL_ERROR("set flags failed");
   g_io_channel_set_encoding(cli->chan, NULL, NULL);
   cli->watchid = g_io_add_watch(cli->chan, G_IO_IN, _on_client_ready, cli);
   cli->watchout = 0;

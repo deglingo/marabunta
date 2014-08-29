@@ -47,13 +47,13 @@ static gint make_socket ( guint16 port )
   struct sockaddr_in name;
   /* create the socket */
   if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0)
-	DIE("socket failed: %s", STRERROR);
+	CL_ERROR("socket failed: %s", STRERROR);
   /* name the socket */
   name.sin_family = AF_INET;
   name.sin_port = htons(port);
   name.sin_addr.s_addr = htonl(INADDR_ANY);
   if (bind(sock, (struct sockaddr *) &name, sizeof(name)) < 0)
-	DIE("bind failed: %s", STRERROR);
+	CL_ERROR("bind failed: %s", STRERROR);
   return sock;
 }
 
@@ -75,18 +75,18 @@ static gboolean _on_client_ready ( GIOChannel *chan,
 	CL_DEBUG("got %d bytes from client %d", bytes_read, cli->clid);
 	break;
   case G_IO_STATUS_EOF:
-	printf("got EOF from client %d\n", cli->clid);
+	CL_DEBUG("got EOF from client %d", cli->clid);
 	/* [FIXME] shutdown, cleanup... */
 	return FALSE;
 	break;
   case G_IO_STATUS_ERROR:
-	DIE("io read failed");
+	CL_ERROR("io read failed");
 	break;
   case G_IO_STATUS_AGAIN:
-	DIE("[TODO] EAGAIN");
+	CL_ERROR("[TODO] EAGAIN");
 	break;
   default:
-	DIE("??");
+	CL_ERROR("??");
   }
   return TRUE;
 }
@@ -107,14 +107,14 @@ static gboolean _on_accept ( GIOChannel *chan,
   MbsServerEvent event;
   if ((sock = accept(server->listen_sock, (struct sockaddr *) &
 client_name, &size)) < 0)
-	DIE("accept failed: %s", STRERROR);
+	CL_ERROR("accept failed: %s", STRERROR);
   CL_DEBUG("client connected: %s:%hd",
 		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
   client = g_new0(Client, 1);
   client->clid = ++(server->client_counter);
   client->chan = g_io_channel_unix_new(sock);
   if (g_io_channel_set_flags(client->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
-	DIE("set flags failed");
+	CL_ERROR("set flags failed");
   g_io_channel_set_encoding(client->chan, NULL, NULL);
   client->watchid = g_io_add_watch(client->chan, G_IO_IN, _on_client_ready, client);
   event.type = MBS_SERVER_EVENT_ACCEPT;
@@ -132,7 +132,7 @@ void mbs_server_start ( MbsServer *server )
   CL_DEBUG("starting server on port %d", server->port);
   server->listen_sock = make_socket(server->port);
   if (listen(server->listen_sock, 1) < 0)
-	DIE("listen failed: %s", STRERROR);
+	CL_ERROR("listen failed: %s", STRERROR);
   server->listen_chan = g_io_channel_unix_new(server->listen_sock);
   g_io_add_watch(server->listen_chan, G_IO_IN, _on_accept, server);
 }

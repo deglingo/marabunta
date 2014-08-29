@@ -2,9 +2,9 @@
 
 lib_LTLIBRARIES = libmarabunta-client.la
 
-libmarabunta_client_la_CPPFLAGS = -I$(top_srcdir) -DG_LOG_DOMAIN=\"mbclient\"
+libmarabunta_client_la_CPPFLAGS = -I$(top_srcdir) -DCL_LOG_DOMAIN=\"mbclient\"
 
-libmarabunta_client_la_CFLAGS = @GLIB_CFLAGS@
+libmarabunta_client_la_CFLAGS = @GLIB_CFLAGS@ @CLOG_CFLAGS@
 
 libmarabunta_client_la_SOURCES = \
 	mbcbase.c \

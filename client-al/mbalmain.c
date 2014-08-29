@@ -1,7 +1,7 @@
 /* mbalmain.c -
  */
 
-#include <stdio.h>
+#include <clog.h>
 #include <allegro5/allegro.h>
 #include <altk.h>
 
@@ -119,7 +119,7 @@ int main ( int argc,
   /* al_register_event_source(((AlSource *) al_source)->queue, */
   /*                          al_get_display_event_source(display)); */
   cli = mbc_client_new();
-  printf("marabunta-al: hello!\n");
+  CL_DEBUG("hello!");
   mbc_client_connect(cli, "localhost", 6666);
   mbc_client_send(cli, "hola!");
   altk_display_open(display);
