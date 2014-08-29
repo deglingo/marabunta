@@ -92,10 +92,10 @@ static GSource *al_source_new ( void )
 
 /* _create_dialog:
  */
-AltkWidget *_create_dialog ( void )
+AltkWidget *_create_dialog ( AltkDisplay *display )
 {
   AltkWidget *dlg;
-  dlg = altk_dialog_new();
+  dlg = altk_dialog_new(display);
   return dlg;
 }
 
@@ -112,16 +112,17 @@ int main ( int argc,
   AltkWidget *dlg;
   al_init();
   altk_init();
-  dlg = _create_dialog();
+  display = altk_display_new();
+  dlg = _create_dialog(display);
   al_source = al_source_new();
   g_source_attach(al_source, NULL);
-  display = altk_display_new();
   /* al_register_event_source(((AlSource *) al_source)->queue, */
   /*                          al_get_display_event_source(display)); */
   cli = mbc_client_new();
   printf("marabunta-al: hello!\n");
   mbc_client_connect(cli, "localhost", 6666);
   mbc_client_send(cli, "hola!");
+  altk_display_open(display);
   altk_main();
   return 0;
 }
