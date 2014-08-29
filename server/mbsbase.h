@@ -20,7 +20,7 @@
 
 #define DIE(msg...) do {						\
 	fprintf(stderr, "%s:%s:%d:ERROR: ",			\
-			G_LOG_DOMAIN, __FILE__, __LINE__);	\
+			CL_LOG_DOMAIN, __FILE__, __LINE__);	\
 	fprintf(stderr, msg);						\
 	fprintf(stderr, "\n");						\
 	exit(1);									\

@@ -7,6 +7,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 LT_INIT
 
+PKG_CHECK_MODULES([CLOG], [clog])
 PKG_CHECK_MODULES([GLIB], [glib-2.0])
 PKG_CHECK_MODULES([LPTREE], [lptree])
 dnl PKG_CHECK_MODULES([AL5], [allegro-debug-5 allegro_main-debug-5])

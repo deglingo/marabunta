@@ -1,6 +1,7 @@
 /* mbsserver.c -
  */
 
+#include "server/srvprivate.h"
 #include "server/mbsserver.h"
 
 #include <sys/socket.h>
@@ -67,11 +68,11 @@ static gboolean _on_client_ready ( GIOChannel *chan,
   gsize bytes_read;
   GError *err = NULL;
   GIOStatus r;
-  printf("reading from client %d\n", cli->clid);
+  /* printf("reading from client %d\n", cli->clid); */
   r = g_io_channel_read_chars(chan, buf, 65536, &bytes_read, &err);
   switch (r) {
   case G_IO_STATUS_NORMAL:
-	printf("got %d bytes from client %d\n", bytes_read, cli->clid);
+	CL_DEBUG("got %d bytes from client %d", bytes_read, cli->clid);
 	break;
   case G_IO_STATUS_EOF:
 	printf("got EOF from client %d\n", cli->clid);
@@ -107,7 +108,7 @@ static gboolean _on_accept ( GIOChannel *chan,
   if ((sock = accept(server->listen_sock, (struct sockaddr *) &
 client_name, &size)) < 0)
 	DIE("accept failed: %s", STRERROR);
-  fprintf(stderr, "client connected: %s:%hd\n",
+  CL_DEBUG("client connected: %s:%hd",
 		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
   client = g_new0(Client, 1);
   client->clid = ++(server->client_counter);
@@ -128,6 +129,7 @@ client_name, &size)) < 0)
  */
 void mbs_server_start ( MbsServer *server )
 {
+  CL_DEBUG("starting server on port %d", server->port);
   server->listen_sock = make_socket(server->port);
   if (listen(server->listen_sock, 1) < 0)
 	DIE("listen failed: %s", STRERROR);
