@@ -108,8 +108,6 @@ static gboolean _on_accept ( GIOChannel *chan,
   if ((sock = accept(server->listen_sock, (struct sockaddr *) &
 client_name, &size)) < 0)
 	CL_ERROR("accept failed: %s", STRERROR);
-  CL_DEBUG("client connected: %s:%hd",
-		  inet_ntoa(client_name.sin_addr), ntohs(client_name.sin_port));
   client = g_new0(Client, 1);
   client->clid = ++(server->client_counter);
   client->chan = g_io_channel_unix_new(sock);
@@ -119,6 +117,10 @@ client_name, &size)) < 0)
   client->watchid = g_io_add_watch(client->chan, G_IO_IN, _on_client_ready, client);
   event.type = MBS_SERVER_EVENT_ACCEPT;
   event.accept.clid = client->clid;
+  CL_DEBUG("client %d connected: %s:%hd",
+           client->clid,
+           inet_ntoa(client_name.sin_addr),
+           ntohs(client_name.sin_port));
   server->handler(&event, server->handler_data);
   return TRUE;
 }

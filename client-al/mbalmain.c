@@ -119,7 +119,7 @@ int main ( int argc,
   /* al_register_event_source(((AlSource *) al_source)->queue, */
   /*                          al_get_display_event_source(display)); */
   cli = mbc_client_new();
-  CL_DEBUG("hello!");
+  CL_DEBUG("connecting localhost:6666");
   mbc_client_connect(cli, "localhost", 6666);
   mbc_client_send(cli, "hola!");
   altk_display_open(display);

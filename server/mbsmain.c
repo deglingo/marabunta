@@ -14,7 +14,7 @@ static void _on_server_event ( MbsServerEvent *event,
   switch (event->type)
 	{
 	case MBS_SERVER_EVENT_ACCEPT:
-	  CL_DEBUG("client accepted: %d", event->accept.clid);
+	  /* CL_DEBUG("client accepted: %d", event->accept.clid); */
 	  break;
 	default:
 	  CL_DEBUG("[TODO] server event %d", event->type);
@@ -30,7 +30,7 @@ int main ()
   MbsGame *game;
   MbsServer *server;
   GMainLoop *loop;
-  CL_DEBUG("hello!");
+  /* CL_DEBUG("hello!"); */
   game = mbs_game_new();
   server = mbs_server_new(_on_server_event, game);
   mbs_server_start(server);

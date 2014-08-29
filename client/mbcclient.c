@@ -55,10 +55,10 @@ static gboolean _client_send ( MbcClient *cli )
   s = g_io_channel_write_chars(cli->chan, msg->buf + msg->ofs, msg->len - msg->ofs, &w, &err);
   switch (s) {
   case G_IO_STATUS_NORMAL:
-	CL_DEBUG("sent %d bytes", w);
+	/* CL_DEBUG("sent %d bytes", w); */
 	msg->ofs += w;
 	if (msg->ofs == msg->len) {
-	  CL_DEBUG("msg complete");
+	  /* CL_DEBUG("msg complete"); */
 	  if (g_io_channel_flush(cli->chan, NULL) != G_IO_STATUS_NORMAL)
 		CL_ERROR("flush failed");
 	  g_queue_pop_head(cli->msg_queue);
@@ -89,7 +89,7 @@ static gboolean _on_client_ready ( GIOChannel *chan,
 	  if (_client_send(cli)) {
 		return TRUE;
 	  } else {
-		CL_DEBUG("removing watchout");
+		/* CL_DEBUG("removing watchout"); */
 		cli->watchout = 0;
 		return FALSE;
 	  }
