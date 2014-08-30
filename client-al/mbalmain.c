@@ -94,8 +94,10 @@ static GSource *al_source_new ( void )
  */
 AltkWidget *_create_dialog ( AltkDisplay *display )
 {
-  AltkWidget *dlg;
+  AltkWidget *dlg, *lbl;
   dlg = altk_dialog_new(display);
+  lbl = altk_label_new("Hello!");
+  altk_container_add(ALTK_CONTAINER(dlg), lbl);
   return dlg;
 }
 
