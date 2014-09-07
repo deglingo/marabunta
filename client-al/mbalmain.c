@@ -124,6 +124,7 @@ int main ( int argc,
   CL_DEBUG("connecting localhost:6666");
   mbc_client_connect(cli, "localhost", 6666);
   mbc_client_send(cli, "hola!");
+  altk_widget_show_all(dlg);
   altk_display_open(display);
   altk_main();
   return 0;
