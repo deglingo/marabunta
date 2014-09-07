@@ -16,6 +16,7 @@ typedef struct _Client Client;
 
 struct _Client
 {
+  MbsServer *server;
   guint clid;
   GIOChannel *chan;
   guint watchid;
@@ -109,6 +110,7 @@ static gboolean _on_accept ( GIOChannel *chan,
 client_name, &size)) < 0)
 	CL_ERROR("accept failed: %s", STRERROR);
   client = g_new0(Client, 1);
+  client->server = server;
   client->clid = ++(server->client_counter);
   client->chan = g_io_channel_unix_new(sock);
   if (g_io_channel_set_flags(client->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
