@@ -20,6 +20,9 @@ struct _Client
   guint clid;
   GIOChannel *chan;
   guint watchid;
+  gchar *buffer;
+  gsize buffer_size; /* total size of the buffer */
+  gsize msg_size;    /* size used in the buffer */
 };
 
 
@@ -60,6 +63,26 @@ static gint make_socket ( guint16 port )
 
 
 
+static void _client_process_read ( Client *client,
+                                   gchar *buffer,
+                                   gsize size )
+{
+  /* grow the client buffer if needed */
+  gsize new_size = client->msg_size + size;
+  if (new_size > client->buffer_size) {
+    while (new_size > client->buffer_size)
+      client->buffer_size = (client->buffer_size ? (client->buffer_size * 2) : 1024);
+    client->buffer = g_realloc(client->buffer, client->buffer_size);
+  }
+  /* copy the data */
+  memcpy(client->buffer + client->msg_size, buffer, size);
+  client->msg_size = new_size;
+  /* [TODO] process... */
+  CL_DEBUG("processing %d bytes message...", client->msg_size);
+}
+
+
+
 static gboolean _on_client_ready ( GIOChannel *chan,
 								   GIOCondition cond,
 								   gpointer data )
@@ -74,6 +97,7 @@ static gboolean _on_client_ready ( GIOChannel *chan,
   switch (r) {
   case G_IO_STATUS_NORMAL:
 	CL_DEBUG("got %d bytes from client %d", bytes_read, cli->clid);
+    _client_process_read(cli, buf, bytes_read);
 	break;
   case G_IO_STATUS_EOF:
 	CL_DEBUG("got EOF from client %d", cli->clid);
