@@ -22,6 +22,15 @@ enum _MbMessageKey
 
 
 
+/* MbMessage:
+ */
+struct _MbMessage
+{
+  MbMessageKey key;
+};
+
+
+
 MbMessage *mb_message_new ( MbMessageKey key,
                             const gchar *format,
                             ... )

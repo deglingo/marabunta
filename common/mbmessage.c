@@ -11,7 +11,12 @@ MbMessage *mb_message_new ( MbMessageKey key,
                             const gchar *format,
                             ... )
 {
-  return NULL;
+  gsize size;
+  gpointer block;
+  size = sizeof(MbMessage);
+  block = g_malloc0(size);
+  ((MbMessage *) block)->key = key;
+  return (MbMessage *) block;
 }
 
 
@@ -20,6 +25,7 @@ MbMessage *mb_message_new ( MbMessageKey key,
  */
 void mb_message_free ( MbMessage *msg )
 {
+  g_free(msg);
 }
 
 
