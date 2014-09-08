@@ -5,7 +5,7 @@
 #include <allegro5/allegro.h>
 #include <altk.h>
 
-#include "client/mbcclient.h"
+#include "client/marabunta-client.h"
 
 
 
@@ -112,6 +112,7 @@ int main ( int argc,
   GSource *al_source;
   MbcClient *cli;
   AltkWidget *dlg;
+  MbMessage *msg;
   al_init();
   altk_init();
   display = altk_display_new();
@@ -123,7 +124,9 @@ int main ( int argc,
   cli = mbc_client_new();
   CL_DEBUG("connecting localhost:6666");
   mbc_client_connect(cli, "localhost", 6666);
-  mbc_client_send(cli, "hola!");
+  msg = mb_message_new(MB_MESSAGE_KEY_JOIN, "", NULL);
+  mbc_client_send(cli, "hello!\n" /* msg */);
+  mb_message_free(msg);
   altk_widget_show_all(dlg);
   altk_display_open(display);
   altk_main();

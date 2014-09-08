@@ -7,5 +7,7 @@
 
 #include "common/mbbase.h"
 
+#include "common/mbmessage.h"
+
 
 #endif

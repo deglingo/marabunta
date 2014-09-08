@@ -6,6 +6,8 @@
 
 #include <glib.h>
 
+#include "common/marabunta-common.h"
+
 
 
 #endif
