@@ -30,7 +30,7 @@ gint mbc_client_connect ( MbcClient *cli,
 						  const gchar *host,
 						  guint16 port );
 void mbc_client_send ( MbcClient *cli,
-					   const gchar *text );
+                       MbMessage *msg );
 
 
 

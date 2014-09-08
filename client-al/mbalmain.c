@@ -125,7 +125,7 @@ int main ( int argc,
   CL_DEBUG("connecting localhost:6666");
   mbc_client_connect(cli, "localhost", 6666);
   msg = mb_message_new(MB_MESSAGE_KEY_JOIN, "", NULL);
-  mbc_client_send(cli, "hello!\n" /* msg */);
+  mbc_client_send(cli, msg);
   mb_message_free(msg);
   altk_widget_show_all(dlg);
   altk_display_open(display);

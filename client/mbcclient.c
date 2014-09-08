@@ -128,13 +128,12 @@ gint mbc_client_connect ( MbcClient *cli,
 /* mbc_client_send:
  */
 void mbc_client_send ( MbcClient *cli,
-					   const gchar *text )
+                       MbMessage *msg )
 {
-  struct message *msg = g_new0(struct message, 1);
-  msg->buf = g_strdup(text);
-  msg->len = strlen(msg->buf);
-  msg->ofs = 0;
-  g_queue_push_head(cli->msg_queue, msg);
+  struct message *msgbuf = g_new0(struct message, 1);
+  msgbuf->buf = mb_message_pack(msg, &msgbuf->len);
+  msgbuf->ofs = 0;
+  g_queue_push_head(cli->msg_queue, msgbuf);
   if (cli->watchout == 0)
 	{
 	  cli->watchout = g_io_add_watch(cli->chan, G_IO_OUT, _on_client_ready, cli);

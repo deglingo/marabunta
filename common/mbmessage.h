@@ -27,6 +27,8 @@ MbMessage *mb_message_new ( MbMessageKey key,
                             ... )
 G_GNUC_NULL_TERMINATED;
 void mb_message_free ( MbMessage *msg );
+gpointer mb_message_pack ( MbMessage *msg,
+                           gsize *size );
 
 
 
