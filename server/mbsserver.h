@@ -12,6 +12,7 @@ typedef struct _MbsServer MbsServer;
 
 typedef enum _MbsServerEventType MbsServerEventType;
 typedef struct _MbsServerEventAccept MbsServerEventAccept;
+typedef struct _MbsServerEventMessage MbsServerEventMessage;
 typedef union _MbsServerEvent MbsServerEvent;
 
 typedef void (* MbsServerHandler) ( MbsServerEvent *event,
@@ -43,6 +44,7 @@ struct _MbsServer
 enum _MbsServerEventType
   {
 	MBS_SERVER_EVENT_ACCEPT,
+    MBS_SERVER_EVENT_MESSAGE,
   };
 
 
@@ -56,12 +58,24 @@ struct _MbsServerEventAccept {
 
 
 
+/* MbsServerEventMessage:
+ */
+struct _MbsServerEventMessage
+{
+  _MBS_SERVER_EVENT_HEADER;
+  guint clid;
+  MbMessage *message;
+};
+
+
+
 /* MbsServerEvent:
  */
 union _MbsServerEvent
 {
   MbsServerEventType type;
   MbsServerEventAccept accept;
+  MbsServerEventMessage message;
 };
 
 

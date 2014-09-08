@@ -68,6 +68,7 @@ static gboolean _client_process_message ( Client *client )
   guint32 nsize;
   guint32 size;
   MbMessage *msg;
+  MbsServerEvent event;
   /* check wether we have the message size */
   if (client->msg_size < sizeof(guint32))
     return FALSE;
@@ -85,7 +86,11 @@ static gboolean _client_process_message ( Client *client )
           client->msg_size - (sizeof(guint32) + size));
   client->msg_size -= sizeof(guint32) + size;
   /* process... */
-  CL_DEBUG("process_message: %d", msg->key);
+  event.type = MBS_SERVER_EVENT_MESSAGE;
+  event.message.clid = client->clid;
+  event.message.message = msg;
+  client->server->handler(&event, client->server->handler_data);
+  mb_message_free(msg);
   return TRUE;
 }
 

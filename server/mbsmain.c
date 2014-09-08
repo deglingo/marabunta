@@ -16,6 +16,9 @@ static void _on_server_event ( MbsServerEvent *event,
 	case MBS_SERVER_EVENT_ACCEPT:
 	  /* CL_DEBUG("client accepted: %d", event->accept.clid); */
 	  break;
+    case MBS_SERVER_EVENT_MESSAGE:
+      CL_DEBUG("[TODO] messsage: %d", event->message.message->key);
+      break;
 	default:
 	  CL_DEBUG("[TODO] server event %d", event->type);
 	}
