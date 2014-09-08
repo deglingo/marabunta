@@ -9,7 +9,7 @@
 #include <netdb.h>
 
 
-struct message
+struct msgpack
 {
   gchar *buf;
   gsize len;
@@ -47,7 +47,7 @@ static void init_sockaddr ( struct sockaddr_in *name,
 
 static gboolean _client_send ( MbcClient *cli )
 {
-  struct message *msg;
+  struct msgpack *msg;
   GIOStatus s;
   gsize w;
   GError *err = NULL;
@@ -130,10 +130,26 @@ gint mbc_client_connect ( MbcClient *cli,
 void mbc_client_send ( MbcClient *cli,
                        MbMessage *msg )
 {
-  struct message *msgbuf = g_new0(struct message, 1);
-  msgbuf->buf = mb_message_pack(msg, &msgbuf->len);
-  msgbuf->ofs = 0;
-  g_queue_push_head(cli->msg_queue, msgbuf);
+  guint32 msg_size, msg_nsize, buf_size, pack_size;
+  struct msgpack *pack;
+  /* message size */
+  msg_size = mb_message_pack_size(msg);
+  msg_nsize = g_htonl(msg_size);
+  /* buf_size: header + msg_size */
+  buf_size = sizeof(guint32) + msg_size;
+  /* pack_size: struct msgpack + buffer */
+  pack_size = sizeof(struct msgpack) + buf_size;
+  /* alloc the whole pack [fixme] could use g_slice_new here */
+  pack = (struct msgpack *) g_malloc(pack_size);
+  pack->buf = ((gpointer) pack) + sizeof(struct msgpack);
+  pack->len = buf_size;
+  pack->ofs = 0;
+  /* set size */
+  memcpy(pack->buf, &msg_nsize, sizeof(guint32));
+  /* pack message */
+  mb_message_pack(msg, pack->buf + sizeof(guint32));
+  /* add the packet in the queue */
+  g_queue_push_head(cli->msg_queue, pack);
   if (cli->watchout == 0)
 	{
 	  cli->watchout = g_io_add_watch(cli->chan, G_IO_OUT, _on_client_ready, cli);

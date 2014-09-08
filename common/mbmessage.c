@@ -3,6 +3,8 @@
 
 #include "common/mbmessage.h"
 
+#include <string.h>
+
 
 
 /* mb_message_new:
@@ -30,11 +32,21 @@ void mb_message_free ( MbMessage *msg )
 
 
 
+/* mb_message_pack_size:
+ */
+gsize mb_message_pack_size ( MbMessage *msg )
+{
+  return sizeof(gint);
+}
+
+
+
 /* mb_message_pack:
  */
-gpointer mb_message_pack ( MbMessage *msg,
-                           gsize *size )
+void mb_message_pack ( MbMessage *msg,
+                       gpointer dest )
 {
-  *size = 0;
-  return NULL;
+  gint nkey;
+  nkey = g_htonl(msg->key);
+  memcpy(dest, &nkey, sizeof(gint));
 }
