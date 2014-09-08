@@ -39,6 +39,8 @@ void mb_message_free ( MbMessage *msg );
 gsize mb_message_pack_size ( MbMessage *msg );
 void mb_message_pack ( MbMessage *msg,
                        gpointer dest );
+MbMessage *mb_message_unpack ( gpointer pack,
+                               gsize size );
 
 
 

@@ -63,6 +63,34 @@ static gint make_socket ( guint16 port )
 
 
 
+static gboolean _client_process_message ( Client *client )
+{
+  guint32 nsize;
+  guint32 size;
+  MbMessage *msg;
+  /* check wether we have the message size */
+  if (client->msg_size < sizeof(guint32))
+    return FALSE;
+  /* get message size */
+  memcpy(&nsize, client->buffer, sizeof(guint32));
+  size = g_ntohl(nsize);
+  /* check wether we have a full message */
+  if (client->msg_size < (size + sizeof(guint32)))
+    return FALSE;
+  /* unpack message */
+  msg = mb_message_unpack(client->buffer + sizeof(guint32), size);
+  CL_DEBUG("[TODO] process_message(%d) ...", msg->key);
+  memmove(client->buffer,
+          client->buffer + sizeof(guint32) + size,
+          client->msg_size - (sizeof(guint32) + size));
+  client->msg_size -= sizeof(guint32) + size;
+  /* process... */
+  CL_DEBUG("process_message: %d", msg->key);
+  return TRUE;
+}
+
+
+
 static void _client_process_read ( Client *client,
                                    gchar *buffer,
                                    gsize size )
@@ -77,8 +105,8 @@ static void _client_process_read ( Client *client,
   /* copy the data */
   memcpy(client->buffer + client->msg_size, buffer, size);
   client->msg_size = new_size;
-  /* [TODO] process... */
-  CL_DEBUG("processing %d bytes message...", client->msg_size);
+  /* process... */
+  while (_client_process_message(client));
 }
 
 

@@ -50,3 +50,19 @@ void mb_message_pack ( MbMessage *msg,
   nkey = g_htonl(msg->key);
   memcpy(dest, &nkey, sizeof(gint));
 }
+
+
+
+/* mb_message_unpack:
+ */
+MbMessage *mb_message_unpack ( gpointer pack,
+                               gsize size )
+{
+  MbMessage *msg;
+  gint nkey;
+  /* ASSERT(size == sizeof(gint)); */
+  msg = g_new0(MbMessage, 1);
+  memcpy(&nkey, pack, sizeof(gint));
+  msg->key = g_ntohl(nkey);
+  return msg;
+}
