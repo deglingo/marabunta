@@ -15,6 +15,7 @@ PKG_CHECK_MODULES([ALTK], [altk])
 
 AC_CONFIG_FILES([ \
   Makefile \
+  common/Makefile \
   server/Makefile \
   client/Makefile \
   client-al/Makefile \

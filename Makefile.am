@@ -1,3 +1,3 @@
 #
 
-SUBDIRS = server client client-al
+SUBDIRS = common server client client-al
