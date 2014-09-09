@@ -25,6 +25,7 @@ MbsGame *mbs_game_new ( void );
 void mbs_game_add_player ( MbsGame *game,
                            guint id,
                            const gchar *name );
+void mbs_game_start ( MbsGame *game );
 
 
 

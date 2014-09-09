@@ -34,6 +34,8 @@ static void _on_server_event ( MbsServerEvent *event,
         case MB_MESSAGE_KEY_JOIN:
           mbs_game_add_player(data->game, event->message.clid, "player1");
           CL_DEBUG("client %d joined the game", event->message.clid);
+          /* [FIXME] */
+          mbs_game_start(data->game);
           break;
         default:
           CL_DEBUG("[TODO] messsage: %d", event->message.message->key);

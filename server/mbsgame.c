@@ -1,6 +1,7 @@
 /* mbsgame.c -
  */
 
+#include "server/srvprivate.h"
 #include "server/mbsgame.h"
 
 
@@ -23,4 +24,13 @@ void mbs_game_add_player ( MbsGame *game,
                            guint id,
                            const gchar *name )
 {
+}
+
+
+
+/* mbs_game_start:
+ */
+void mbs_game_start ( MbsGame *game )
+{
+  CL_DEBUG("starting game...");
 }
