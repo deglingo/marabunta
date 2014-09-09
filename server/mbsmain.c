@@ -8,8 +8,20 @@
 
 
 
+/* MainData:
+ */
+typedef struct _MainData
+{
+  MbsServer *server;
+  MbsGame *game;
+  GMainLoop *loop;
+}
+  MainData;
+
+
+
 static void _on_server_event ( MbsServerEvent *event,
-							   gpointer data )
+							   MainData *data )
 {
   switch (event->type)
 	{
@@ -30,14 +42,13 @@ static void _on_server_event ( MbsServerEvent *event,
  */
 int main ()
 {
-  MbsGame *game;
-  MbsServer *server;
-  GMainLoop *loop;
+  MainData *data;
   /* CL_DEBUG("hello!"); */
-  game = mbs_game_new();
-  server = mbs_server_new(_on_server_event, game);
-  mbs_server_start(server);
-  loop = g_main_loop_new(NULL, FALSE);
-  g_main_loop_run(loop);
+  data = g_new0(MainData, 1);
+  data->game = mbs_game_new();
+  data->server = mbs_server_new((MbsServerHandler) _on_server_event, data);
+  mbs_server_start(data->server);
+  data->loop = g_main_loop_new(NULL, FALSE);
+  g_main_loop_run(data->loop);
   return 0;
 }
