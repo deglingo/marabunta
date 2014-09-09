@@ -14,3 +14,13 @@ MbsGame *mbs_game_new ( void )
   game->tree = lpt_tree_new();
   return game;
 }
+
+
+
+/* mbs_game_add_player:
+ */
+void mbs_game_add_player ( MbsGame *game,
+                           guint id,
+                           const gchar *name )
+{
+}

@@ -22,6 +22,9 @@ struct _MbsGame
 
 
 MbsGame *mbs_game_new ( void );
+void mbs_game_add_player ( MbsGame *game,
+                           guint id,
+                           const gchar *name );
 
 
 

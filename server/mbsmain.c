@@ -29,7 +29,15 @@ static void _on_server_event ( MbsServerEvent *event,
 	  /* CL_DEBUG("client accepted: %d", event->accept.clid); */
 	  break;
     case MBS_SERVER_EVENT_MESSAGE:
-      CL_DEBUG("[TODO] messsage: %d", event->message.message->key);
+      switch (event->message.message->key)
+        {
+        case MB_MESSAGE_KEY_JOIN:
+          mbs_game_add_player(data->game, event->message.clid, "player1");
+          CL_DEBUG("client %d joined the game", event->message.clid);
+          break;
+        default:
+          CL_DEBUG("[TODO] messsage: %d", event->message.message->key);
+        }
       break;
 	default:
 	  CL_DEBUG("[TODO] server event %d", event->type);
