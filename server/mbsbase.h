@@ -12,4 +12,8 @@
 
 
 
+#define MBS_PRIORITY_GAME_TIMER (-100)
+
+
+
 #endif
