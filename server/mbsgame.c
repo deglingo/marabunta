@@ -13,6 +13,7 @@ MbsGame *mbs_game_new ( void )
   MbsGame *game;
   LptNSpec *nspec_uint;
   LString *key;
+  LInt *value;
   game = g_new0(MbsGame, 1);
   game->tree = lpt_tree_new();
   nspec_uint = lpt_nspec_int_new("UINT",
@@ -20,7 +21,10 @@ MbsGame *mbs_game_new ( void )
                                  G_MAXINT,
                                  0);
   key = l_string_new("sim-time");
-  lpt_node_new(nspec_uint, game->tree->root, L_OBJECT(key));
+  game->n_frame = lpt_node_new(nspec_uint, game->tree->root, L_OBJECT(key));
+  value = l_int_new(0);
+  lpt_node_set_value(game->n_frame, L_OBJECT(value));
+  l_object_unref(value);
   l_object_unref(key);
   return game;
 }
@@ -41,8 +45,13 @@ void mbs_game_add_player ( MbsGame *game,
  */
 static void _game_update ( MbsGame *game )
 {
+  LInt *frame, *frame2;
   game->frame++;
-  CL_DEBUG("game frame %d", game->frame);
+  frame = L_INT(lpt_node_get_value(game->n_frame));
+  frame2 = l_int_new(L_INT_VALUE(frame) + 1);
+  CL_DEBUG("frame %d", L_INT_VALUE(frame2));
+  lpt_node_set_value(game->n_frame, L_OBJECT(frame2));
+  l_object_unref(frame2);
 }
 
 

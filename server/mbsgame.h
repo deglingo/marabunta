@@ -17,6 +17,7 @@ typedef struct _MbsGame MbsGame;
 struct _MbsGame
 {
   LptTree *tree;
+  LptNode *n_frame;
   GTimer *timer;
   gdouble fps;
   guint frame;
