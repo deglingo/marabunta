@@ -16,10 +16,9 @@ struct _MbsGame
   MBS_GAME_INSTANCE_HEADER;
 
   LptTree *tree;
-  LptNode *n_frame;
+  LptNode *n_sim_time;
   GTimer *timer;
   gdouble fps;
-  guint frame;
 };
 
 
@@ -29,6 +28,9 @@ struct _MbsGame
 struct _MbsGameClass
 {
   MBS_GAME_CLASS_HEADER;
+
+  LptNSpec *nspec_dir;
+  LptNSpec *nspec_uint;
 };
 
 
