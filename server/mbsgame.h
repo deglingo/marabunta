@@ -16,6 +16,7 @@ struct _MbsGame
   MBS_GAME_INSTANCE_HEADER;
 
   LptTree *tree;
+  LptProxy *proxy;
   LptNode *n_sim_time;
   GTimer *timer;
   gdouble fps;

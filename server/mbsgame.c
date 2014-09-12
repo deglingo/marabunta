@@ -45,6 +45,14 @@ static void _create_tree ( MbsGame *game )
     lpt_node_set_value(game->n_sim_time, L_OBJECT(v));
     l_object_unref(v);
   }
+
+  /* create the proxy server */
+  game->proxy = lpt_proxy_new(game->tree);
+
+  lpt_proxy_create_share(game->proxy,
+                         "GAME",
+                         "/game",
+                         0 /* [flags] */);
 }
 
 
