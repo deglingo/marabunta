@@ -3,6 +3,7 @@
 
 #include "server/srvprivate.h"
 #include "server/mbsgame.h"
+#include "server/mbsgame.inl"
 
 
 
@@ -14,7 +15,7 @@ MbsGame *mbs_game_new ( void )
   LptNSpec *nspec_uint;
   LString *key;
   LInt *value;
-  game = g_new0(MbsGame, 1);
+  game = MBS_GAME(l_object_new(MBS_CLASS_GAME, NULL));
   game->tree = lpt_tree_new();
   nspec_uint = lpt_nspec_int_new("UINT",
                                  0,

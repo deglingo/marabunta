@@ -5,10 +5,7 @@
 #define _MBSGAME_H_
 
 #include "server/mbsbase.h"
-
-
-
-typedef struct _MbsGame MbsGame;
+#include "server/mbsgame-def.h"
 
 
 
@@ -16,11 +13,22 @@ typedef struct _MbsGame MbsGame;
  */
 struct _MbsGame
 {
+  MBS_GAME_INSTANCE_HEADER;
+
   LptTree *tree;
   LptNode *n_frame;
   GTimer *timer;
   gdouble fps;
   guint frame;
+};
+
+
+
+/* MbsGameClass:
+ */
+struct _MbsGameClass
+{
+  MBS_GAME_CLASS_HEADER;
 };
 
 
