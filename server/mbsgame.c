@@ -75,6 +75,7 @@ void mbs_game_add_player ( MbsGame *game,
                            guint id,
                            const gchar *name )
 {
+  lpt_proxy_connect_client(game->proxy, id);
 }
 
 
