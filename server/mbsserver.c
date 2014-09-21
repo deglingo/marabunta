@@ -18,11 +18,8 @@ struct _Client
 {
   MbsServer *server;
   guint clid;
-  GIOChannel *chan;
-  guint watchid;
-  gchar *buffer;
-  gsize buffer_size; /* total size of the buffer */
-  gsize msg_size;    /* size used in the buffer */
+  gint sock;
+  LStream *sock_stream;
 };
 
 
@@ -63,94 +60,6 @@ static gint make_socket ( guint16 port )
 
 
 
-static gboolean _client_process_message ( Client *client )
-{
-  guint32 nsize;
-  guint32 size;
-  MbMessage *msg;
-  MbsServerEvent event;
-  /* check wether we have the message size */
-  if (client->msg_size < sizeof(guint32))
-    return FALSE;
-  /* get message size */
-  memcpy(&nsize, client->buffer, sizeof(guint32));
-  size = g_ntohl(nsize);
-  /* check wether we have a full message */
-  if (client->msg_size < (size + sizeof(guint32)))
-    return FALSE;
-  /* unpack message */
-  msg = mb_message_unpack(client->buffer + sizeof(guint32), size);
-  CL_DEBUG("[TODO] process_message(%d) ...", msg->key);
-  memmove(client->buffer,
-          client->buffer + sizeof(guint32) + size,
-          client->msg_size - (sizeof(guint32) + size));
-  client->msg_size -= sizeof(guint32) + size;
-  /* process... */
-  event.type = MBS_SERVER_EVENT_MESSAGE;
-  event.message.clid = client->clid;
-  event.message.message = msg;
-  client->server->handler(&event, client->server->handler_data);
-  mb_message_free(msg);
-  return TRUE;
-}
-
-
-
-static void _client_process_read ( Client *client,
-                                   gchar *buffer,
-                                   gsize size )
-{
-  /* grow the client buffer if needed */
-  gsize new_size = client->msg_size + size;
-  if (new_size > client->buffer_size) {
-    while (new_size > client->buffer_size)
-      client->buffer_size = (client->buffer_size ? (client->buffer_size * 2) : 1024);
-    client->buffer = g_realloc(client->buffer, client->buffer_size);
-  }
-  /* copy the data */
-  memcpy(client->buffer + client->msg_size, buffer, size);
-  client->msg_size = new_size;
-  /* process... */
-  while (_client_process_message(client));
-}
-
-
-
-static gboolean _on_client_ready ( GIOChannel *chan,
-								   GIOCondition cond,
-								   gpointer data )
-{
-  Client *cli = data;
-  gchar buf[65536];
-  gsize bytes_read;
-  GError *err = NULL;
-  GIOStatus r;
-  /* printf("reading from client %d\n", cli->clid); */
-  r = g_io_channel_read_chars(chan, buf, 65536, &bytes_read, &err);
-  switch (r) {
-  case G_IO_STATUS_NORMAL:
-	CL_DEBUG("got %d bytes from client %d", bytes_read, cli->clid);
-    _client_process_read(cli, buf, bytes_read);
-	break;
-  case G_IO_STATUS_EOF:
-	CL_DEBUG("got EOF from client %d", cli->clid);
-	/* [FIXME] shutdown, cleanup... */
-	return FALSE;
-	break;
-  case G_IO_STATUS_ERROR:
-	CL_ERROR("io read failed");
-	break;
-  case G_IO_STATUS_AGAIN:
-	CL_ERROR("[TODO] EAGAIN");
-	break;
-  default:
-	CL_ERROR("??");
-  }
-  return TRUE;
-}
-
-
-
 /* _on_accept:
  */
 static gboolean _on_accept ( GIOChannel *chan,
@@ -169,11 +78,7 @@ client_name, &size)) < 0)
   client = g_new0(Client, 1);
   client->server = server;
   client->clid = ++(server->client_counter);
-  client->chan = g_io_channel_unix_new(sock);
-  if (g_io_channel_set_flags(client->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
-	CL_ERROR("set flags failed");
-  g_io_channel_set_encoding(client->chan, NULL, NULL);
-  client->watchid = g_io_add_watch(client->chan, G_IO_IN, _on_client_ready, client);
+  /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
   event.accept.clid = client->clid;
   CL_DEBUG("client %d connected: %s:%hd",
