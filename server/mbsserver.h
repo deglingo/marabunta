@@ -30,6 +30,7 @@ struct _MbsServer
   gint listen_sock;
   GIOChannel *listen_chan;
   guint client_counter;
+  GHashTable *client_map;
 };
 
 

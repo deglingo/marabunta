@@ -35,6 +35,7 @@ MbsServer *mbs_server_new ( MbsServerHandler handler,
   s->handler = handler;
   s->handler_data = handler_data;
   s->client_counter = 0;
+  s->client_map = g_hash_table_new(NULL, NULL);
   return s;
 }
 
@@ -78,6 +79,7 @@ client_name, &size)) < 0)
   client = g_new0(Client, 1);
   client->server = server;
   client->clid = ++(server->client_counter);
+  g_hash_table_insert(server->client_map, GUINT_TO_POINTER(client->clid), client);
   /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
   event.accept.clid = client->clid;
