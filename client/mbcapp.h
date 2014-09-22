@@ -17,8 +17,7 @@ struct _MbcApp
   MBC_APP_INSTANCE_HEADER;
 
   MbcClient *client;
-  GQueue *msg_queue;
-  guint msg_offset;
+  MbMessageWriter *writer;
 };
 
 

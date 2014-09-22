@@ -9,6 +9,8 @@
 
 #include "common/mbmessage.h"
 
+#include "common/mbmessagewriter.h"
+
 #include "common/mbwatch.h"
 
 

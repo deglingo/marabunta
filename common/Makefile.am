@@ -7,4 +7,5 @@ libmarabunta_common_la_CFLAGS = -I$(top_srcdir) @LOS_CFLAGS@
 libmarabunta_common_la_SOURCES = \
 	mbbase.c \
 	mbmessage.c \
+	mbmessagewriter.c \
 	mbwatch.c
