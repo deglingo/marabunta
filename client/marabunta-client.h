@@ -8,6 +8,8 @@
 
 #include "client/mbcbase.h"
 
+#include "client/mbcapp.h"
+
 #include "client/mbcclient.h"
 
 

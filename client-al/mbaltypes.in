@@ -1,6 +1,11 @@
 /* -*- c++ -*- */
 
+namespace Mbc
+{
+  extern class App;
+}
+
 namespace Mbal
 {
-  class App;
+  class App : Mbc::App;
 }
