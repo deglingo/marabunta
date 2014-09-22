@@ -5,6 +5,7 @@
 #define _MBCAPP_H_
 
 #include "client/mbcbase.h"
+#include "client/mbcclient.h"
 #include "client/mbcapp-def.h"
 
 
@@ -14,6 +15,10 @@
 struct _MbcApp
 {
   MBC_APP_INSTANCE_HEADER;
+
+  MbcClient *client;
+  GQueue *msg_queue;
+  guint msg_offset;
 };
 
 
@@ -24,6 +29,11 @@ struct _MbcAppClass
 {
   MBC_APP_CLASS_HEADER;
 };
+
+
+
+void mbc_app_connect ( MbcApp *app );
+void mbc_app_join_game ( MbcApp *app );
 
 
 

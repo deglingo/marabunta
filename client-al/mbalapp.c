@@ -10,5 +10,6 @@
  */
 MbalApp *mbal_app_new ( void )
 {
-  return MBAL_APP(l_object_new(MBAL_CLASS_APP, NULL));
+  MbalApp *app = MBAL_APP(l_object_new(MBAL_CLASS_APP, NULL));
+  return app;
 }

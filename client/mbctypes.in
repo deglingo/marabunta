@@ -2,5 +2,7 @@
 
 namespace Mbc
 {
-  class App;
+  class App {
+    void init ();
+  };
 }
