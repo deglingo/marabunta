@@ -9,6 +9,12 @@
 
 
 
+/* [FIXME] globals */
+static GQueue *msg_queue = NULL;
+static guint msg_offset = 0;
+
+
+
 /* AlSource:
  */
 typedef struct _AlSource AlSource;
@@ -103,6 +109,56 @@ AltkWidget *_create_dialog ( AltkDisplay *display )
 
 
 
+/* _send:
+ */
+static void _send ( MbcClient *client,
+                    LString *msg )
+{
+  g_queue_push_head(msg_queue, l_object_ref(msg));
+  mbc_client_add_watch(client, G_IO_OUT);
+}
+
+
+
+static void _on_client_ready ( MbcClient *client,
+                               GIOCondition condition,
+                               LStream *stream,
+                               gpointer data )
+{
+  if (condition & G_IO_IN)
+    CL_DEBUG("[TODO] client input...");
+  if (condition & G_IO_OUT)
+    {
+      LString *msg;
+      CL_DEBUG("process write...");
+      if ((msg = g_queue_peek_head(msg_queue)))
+        {
+          /* [FIXME] send everything in loop until EAGAIN ? */
+          guint size = msg->len - msg_offset;
+          gint64 w;
+          GError *err = NULL;
+          LStreamStatus s;
+          s = l_stream_write(stream, msg->str + msg_offset, size, &w, &err);
+          switch (s) {
+          case L_STREAM_STATUS_OK:
+            CL_DEBUG("sent %d bytes...", (gint) w);
+            msg_offset += w;
+            if (msg_offset >= msg->len) {
+              l_object_unref(g_queue_pop_head(msg_queue));
+              msg_offset = 0;
+            }
+            break;
+          default:
+            CL_DEBUG("[TODO] write status = %d", s);
+          }
+        }
+      if (g_queue_is_empty(msg_queue))
+        mbc_client_remove_watch(client, G_IO_OUT);
+    }
+}
+
+
+
 /* main:
  */
 int main ( int argc,
@@ -112,21 +168,22 @@ int main ( int argc,
   GSource *al_source;
   MbcClient *cli;
   AltkWidget *dlg;
-  MbMessage *msg;
+  LString *msg;
   al_init();
   altk_init();
+  msg_queue = g_queue_new();
   display = altk_display_new();
   dlg = _create_dialog(display);
   al_source = al_source_new();
   g_source_attach(al_source, NULL);
   /* al_register_event_source(((AlSource *) al_source)->queue, */
   /*                          al_get_display_event_source(display)); */
-  cli = mbc_client_new();
+  cli = mbc_client_new(_on_client_ready, NULL);
   CL_DEBUG("connecting localhost:6666");
   mbc_client_connect(cli, "localhost", 6666);
-  msg = mb_message_new(MB_MESSAGE_KEY_JOIN, "", NULL);
-  mbc_client_send(cli, msg);
-  mb_message_free(msg);
+  msg = l_string_new("DATA");
+  _send(cli, msg);
+  l_object_unref(msg);
   altk_widget_show_all(dlg);
   altk_display_open(display);
   altk_main();

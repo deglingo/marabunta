@@ -13,10 +13,13 @@
 
 /* mbc_client_new:
  */
-MbcClient *mbc_client_new ( void )
+MbcClient *mbc_client_new ( MbcClientHandler handler,
+                            gpointer data )
 {
   MbcClient *cli;
   cli = g_new0(MbcClient, 1);
+  cli->handler = handler;
+  cli->handler_data = data;
   return cli;
 }
 
@@ -42,7 +45,7 @@ static void _on_client_watch ( GIOCondition condition,
                                gpointer data )
 {
   MbcClient *cli = (MbcClient *) data;
-  CL_DEBUG("[TODO] on_client_watch...");
+  cli->handler(cli, condition, cli->stream, cli->handler_data);
 }
 
 
@@ -64,6 +67,9 @@ gint mbc_client_connect ( MbcClient *cli,
   /* set the non-blocking flag */
   if (fcntl(cli->sock, F_SETFL, O_NONBLOCK) < 0)
     CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR);
+  /* create the stream */
+  cli->stream = l_file_fdopen(cli->sock, "rw", NULL);
+  ASSERT(cli->stream);
   /* create the watch */
   cli->watch = mb_watch_new(cli->sock, _on_client_watch, cli, NULL);
   return 0;
@@ -77,4 +83,24 @@ void mbc_client_send ( MbcClient *cli,
                        MbMessage *msg )
 {
   CL_DEBUG("[TODO] client_send...");
+}
+
+
+
+/* mbc_client_add_watch:
+ */
+void mbc_client_add_watch ( MbcClient *client,
+                            GIOCondition condition )
+{
+  mb_watch_add_condition(client->watch, condition);
+}
+
+
+
+/* mbc_client_remove_watch:
+ */
+void mbc_client_remove_watch ( MbcClient *client,
+                               GIOCondition condition )
+{
+  mb_watch_remove_condition(client->watch, condition);
 }
