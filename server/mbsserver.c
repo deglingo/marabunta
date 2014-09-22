@@ -176,7 +176,14 @@ static gboolean _on_client_watch ( Client *client )
   event.ready.stream = client->stream;
   event.ready.condition = client->pollfd.revents;
   client->server->handler(&event, client->server->handler_data);
-  return G_SOURCE_CONTINUE;
+  /* [FIXME] handle EOF */
+  if ((client->pollfd.revents & G_IO_IN) && l_stream_eof(client->stream)) {
+    CL_DEBUG("[TODO] got EOF from client %d", client->clid);
+    client->source = NULL;
+    return G_SOURCE_REMOVE;
+  } else {
+    return G_SOURCE_CONTINUE;
+  }
 }
 
 
