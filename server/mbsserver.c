@@ -20,63 +20,9 @@ struct _Client
   MbsServer *server;
   guint clid;
   gint sock;
-  GPollFD pollfd;
+  MBWatch *watch;
   LStream *stream;
-  GSource *source;
 };
-
-
-
-typedef struct _RWSource
-{
-  GSource g_source;
-}
-  RWSource;
-
-
-
-static gboolean rw_source_prepare ( GSource *source,
-                                    gint *timeout );
-static gboolean rw_source_dispatch ( GSource *source,
-                                     GSourceFunc callback,
-                                     gpointer data );
-
-
-
-static GSourceFuncs RW_SOURCE_FUNCS =
-  {
-    rw_source_prepare,
-    NULL,
-    rw_source_dispatch,
-    NULL,
-  };
-
-
-
-GSource *rw_source_new ( void )
-{
-  RWSource *source = (RWSource *) g_source_new(&RW_SOURCE_FUNCS, sizeof(RWSource));
-  return (GSource *) source;
-}
-
-
-
-static gboolean rw_source_prepare ( GSource *source,
-                                    gint *timeout )
-{
-  *timeout = -1;
-  return TRUE;
-}
-
-
-
-static gboolean rw_source_dispatch ( GSource *source,
-                                     GSourceFunc callback,
-                                     gpointer data )
-{
-  ASSERT(callback);
-  return callback(data);
-}
 
 
 
@@ -117,6 +63,25 @@ static gint make_socket ( guint16 port )
 
 
 
+static void _on_client_watch ( GIOCondition cond,
+                               gpointer data )
+{
+  Client *client = (Client *) data;
+  MbsServerEvent event;
+  event.type = MBS_SERVER_EVENT_READY;
+  event.ready.clid = client->clid;
+  event.ready.stream = client->stream;
+  event.ready.condition = cond;
+  client->server->handler(&event, client->server->handler_data);
+  /* [FIXME] handle EOF */
+  if ((cond & G_IO_IN) && l_stream_eof(client->stream)) {
+    CL_DEBUG("[TODO] got EOF from client %d", client->clid);
+    mb_watch_remove_condition(client->watch, G_IO_IN | G_IO_OUT);
+  }
+}
+
+
+
 /* _on_accept:
  */
 static gboolean _on_accept ( GIOChannel *chan,
@@ -140,6 +105,7 @@ client_name, &size)) < 0)
   client->clid = ++(server->client_counter);
   if (!(client->stream = l_file_fdopen(client->sock, "rw", NULL)))
     CL_ERROR("[TODO] could not create client stream");
+  client->watch = mb_watch_new(client->sock, _on_client_watch, client, NULL);
   g_hash_table_insert(server->client_map, GUINT_TO_POINTER(client->clid), client);
   /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
@@ -168,26 +134,6 @@ void mbs_server_start ( MbsServer *server )
 
 
 
-static gboolean _on_client_watch ( Client *client )
-{
-  MbsServerEvent event;
-  event.type = MBS_SERVER_EVENT_READY;
-  event.ready.clid = client->clid;
-  event.ready.stream = client->stream;
-  event.ready.condition = client->pollfd.revents;
-  client->server->handler(&event, client->server->handler_data);
-  /* [FIXME] handle EOF */
-  if ((client->pollfd.revents & G_IO_IN) && l_stream_eof(client->stream)) {
-    CL_DEBUG("[TODO] got EOF from client %d", client->clid);
-    client->source = NULL;
-    return G_SOURCE_REMOVE;
-  } else {
-    return G_SOURCE_CONTINUE;
-  }
-}
-
-
-
 /* mbs_server_add_watch:
  */
 void mbs_server_add_watch ( MbsServer *server,
@@ -197,22 +143,5 @@ void mbs_server_add_watch ( MbsServer *server,
   Client *client;
   if (!(client = g_hash_table_lookup(server->client_map, GUINT_TO_POINTER(clid))))
     CL_ERROR("unknown client: %d", clid);
-  if (client->source)
-    {
-      /* [FIXME] glib sources seems to say that it is not necessary to
-         remove a pollfd before modifying it */
-      g_source_remove_poll(client->source, &client->pollfd);
-      client->pollfd.events |= condition;
-    }
-  else
-    {
-      client->source = rw_source_new();
-      g_source_set_callback(client->source,
-                            (GSourceFunc) _on_client_watch,
-                            client, NULL);
-      client->pollfd.fd = client->sock;
-      client->pollfd.events = condition;
-      g_source_attach(client->source, NULL);
-    }
-  g_source_add_poll(client->source, &client->pollfd);
+  mb_watch_add_condition(client->watch, condition);
 }
