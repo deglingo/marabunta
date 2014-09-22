@@ -7,14 +7,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <fcntl.h>
 
-
-struct msgpack
-{
-  gchar *buf;
-  gsize len;
-  gsize ofs;
-};
 
 
 /* mbc_client_new:
@@ -23,7 +17,6 @@ MbcClient *mbc_client_new ( void )
 {
   MbcClient *cli;
   cli = g_new0(MbcClient, 1);
-  cli->msg_queue = g_queue_new();
   return cli;
 }
 
@@ -45,56 +38,11 @@ static void init_sockaddr ( struct sockaddr_in *name,
 
 
 
-static gboolean _client_send ( MbcClient *cli )
+static void _on_client_watch ( GIOCondition condition,
+                               gpointer data )
 {
-  struct msgpack *msg;
-  GIOStatus s;
-  gsize w;
-  GError *err = NULL;
-  if (!(msg = g_queue_peek_head(cli->msg_queue))) CL_ERROR("??");
-  s = g_io_channel_write_chars(cli->chan, msg->buf + msg->ofs, msg->len - msg->ofs, &w, &err);
-  switch (s) {
-  case G_IO_STATUS_NORMAL:
-	/* CL_DEBUG("sent %d bytes", w); */
-	msg->ofs += w;
-	if (msg->ofs == msg->len) {
-	  /* CL_DEBUG("msg complete"); */
-	  if (g_io_channel_flush(cli->chan, NULL) != G_IO_STATUS_NORMAL)
-		CL_ERROR("flush failed");
-	  g_queue_pop_head(cli->msg_queue);
-	  /* [FIXME] free msg */
-	}
-	break;
-  default:
-	CL_ERROR("[TODO] s=%d", s);
-  }
-  if (g_queue_is_empty(cli->msg_queue))
-	return FALSE;
-  else
-	return TRUE;
-}
-
-
-static gboolean _on_client_ready ( GIOChannel *chan,
-								   GIOCondition cond,
-								   gpointer data )
-{
-  MbcClient *cli = data;
-  if (cond & G_IO_IN)
-	{
-	  CL_ERROR("[TODO] client ready (in)");
-	}
-  if (cond & G_IO_OUT)
-	{
-	  if (_client_send(cli)) {
-		return TRUE;
-	  } else {
-		/* CL_DEBUG("removing watchout"); */
-		cli->watchout = 0;
-		return FALSE;
-	  }
-	}
-  return TRUE;
+  MbcClient *cli = (MbcClient *) data;
+  CL_DEBUG("[TODO] on_client_watch...");
 }
 
 
@@ -113,13 +61,11 @@ gint mbc_client_connect ( MbcClient *cli,
   /* connect */
   if (connect(cli->sock, (struct sockaddr *) &server_name, sizeof(server_name)) < 0)
 	CL_ERROR("connect failed: %s", STRERROR);
-  /* create the IO channel */
-  cli->chan = g_io_channel_unix_new(cli->sock);
-  if (g_io_channel_set_flags(cli->chan, G_IO_FLAG_NONBLOCK, NULL) != G_IO_STATUS_NORMAL)
-	CL_ERROR("set flags failed");
-  g_io_channel_set_encoding(cli->chan, NULL, NULL);
-  cli->watchid = g_io_add_watch(cli->chan, G_IO_IN, _on_client_ready, cli);
-  cli->watchout = 0;
+  /* set the non-blocking flag */
+  if (fcntl(cli->sock, F_SETFL, O_NONBLOCK) < 0)
+    CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR);
+  /* create the watch */
+  cli->watch = mb_watch_new(cli->sock, _on_client_watch, cli, NULL);
   return 0;
 }
 
@@ -130,28 +76,5 @@ gint mbc_client_connect ( MbcClient *cli,
 void mbc_client_send ( MbcClient *cli,
                        MbMessage *msg )
 {
-  guint32 msg_size, msg_nsize, buf_size, pack_size;
-  struct msgpack *pack;
-  /* message size */
-  msg_size = mb_message_pack_size(msg);
-  msg_nsize = g_htonl(msg_size);
-  /* buf_size: header + msg_size */
-  buf_size = sizeof(guint32) + msg_size;
-  /* pack_size: struct msgpack + buffer */
-  pack_size = sizeof(struct msgpack) + buf_size;
-  /* alloc the whole pack [fixme] could use g_slice_new here */
-  pack = (struct msgpack *) g_malloc(pack_size);
-  pack->buf = ((gpointer) pack) + sizeof(struct msgpack);
-  pack->len = buf_size;
-  pack->ofs = 0;
-  /* set size */
-  memcpy(pack->buf, &msg_nsize, sizeof(guint32));
-  /* pack message */
-  mb_message_pack(msg, pack->buf + sizeof(guint32));
-  /* add the packet in the queue */
-  g_queue_push_head(cli->msg_queue, pack);
-  if (cli->watchout == 0)
-	{
-	  cli->watchout = g_io_add_watch(cli->chan, G_IO_OUT, _on_client_ready, cli);
-	}
+  CL_DEBUG("[TODO] client_send...");
 }
