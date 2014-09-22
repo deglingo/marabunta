@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 
 
 
@@ -134,6 +135,8 @@ client_name, &size)) < 0)
   client = g_new0(Client, 1);
   client->server = server;
   client->sock = sock;
+  if (fcntl(client->sock, F_SETFL, O_NONBLOCK) < 0)
+    CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR);
   client->clid = ++(server->client_counter);
   if (!(client->stream = l_file_fdopen(client->sock, "rw", NULL)))
     CL_ERROR("[TODO] could not create client stream");
