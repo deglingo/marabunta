@@ -1,11 +1,8 @@
 /* mbalmain.c -
  */
 
-#include <clog.h>
-#include <allegro5/allegro.h>
-#include <altk.h>
-
-#include "client/marabunta-client.h"
+#include "client-al/mbalbase.h"
+#include "client-al/mbalapp.h"
 
 
 
@@ -164,6 +161,7 @@ static void _on_client_ready ( MbcClient *client,
 int main ( int argc,
            char **argv )
 {
+  MbalApp *app;
   AltkDisplay *display;
   GSource *al_source;
   MbcClient *cli;
@@ -171,6 +169,7 @@ int main ( int argc,
   LString *msg;
   al_init();
   altk_init();
+  app = mbal_app_new();
   msg_queue = g_queue_new();
   display = altk_display_new();
   dlg = _create_dialog(display);

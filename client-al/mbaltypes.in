@@ -1,0 +1,6 @@
+/* -*- c++ -*- */
+
+namespace Mbal
+{
+  class App;
+}
