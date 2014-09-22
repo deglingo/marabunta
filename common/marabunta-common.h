@@ -11,6 +11,8 @@
 
 #include "common/mbmessagewriter.h"
 
+#include "common/mbmessagereader.h"
+
 #include "common/mbwatch.h"
 
 

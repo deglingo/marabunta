@@ -8,4 +8,5 @@ libmarabunta_common_la_SOURCES = \
 	mbbase.c \
 	mbmessage.c \
 	mbmessagewriter.c \
+	mbmessagereader.c \
 	mbwatch.c

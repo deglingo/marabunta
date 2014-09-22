@@ -26,9 +26,7 @@ typedef struct _MainData
 typedef struct _Client
 {
   guint clid;
-  gchar *buffer;
-  guint buffer_size;
-  guint data_size;
+  MbMessageReader *reader;
 }
   Client;
 
@@ -63,27 +61,15 @@ static void _process_read ( MainData *data,
                             Client *client,
                             LStream *stream )
 {
-  LStreamStatus s;
-  gint64 w;
-  guint buffer_size = 4096;
-  guint new_size = client->data_size + buffer_size;
+  LObject *msg;
   GError *err = NULL;
-  if (new_size > client->buffer_size) {
-    while (new_size > client->buffer_size)
-      client->buffer_size = (client->buffer_size ? (client->buffer_size * 2) : 4096);
-    client->buffer = g_realloc(client->buffer, client->buffer_size);
-  }
-  s = l_stream_read(stream, client->buffer + client->data_size, buffer_size, &w, &err);
-  switch (s) {
-  case L_STREAM_STATUS_OK:
-    CL_DEBUG("got %d bytes from client %d", (gint) w, client->clid);
-    break;
-  case L_STREAM_STATUS_EOF:
-    CL_DEBUG("[TODO] got EOF from client %d", client->clid);
-    break;
-  default:
-    CL_ERROR("[TODO] read status = %d", s);
-  }
+  while ((msg = mb_message_reader_recv(client->reader, stream, &err)))
+    {
+      CL_DEBUG("[TODO] handle message...");
+      l_object_unref(msg);
+    }
+  if (err)
+    CL_ERROR("[TODO] read error");
 }
 
 
@@ -107,6 +93,7 @@ static void _on_server_event ( MbsServerEvent *event,
         Client *client = g_new0(Client, 1);
         CL_DEBUG("client accepted: %d", event->accept.clid);
         client->clid = event->accept.clid;
+        client->reader = mb_message_reader_new();
         g_hash_table_insert(data->client_map, GUINT_TO_POINTER(client->clid), client);
         mbs_server_add_watch(data->server, event->accept.clid, G_IO_IN);
       }

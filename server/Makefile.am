@@ -6,7 +6,9 @@ marabunta_server_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) -DCL_LOG_DOMAIN=\"
 
 marabunta_server_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@ @LPTREE_CFLAGS@
 
-marabunta_server_LDFLAGS = @CLOG_LIBS@ @GLIB_LIBS@ @LPTREE_LIBS@ $(top_builddir)/common/libmarabunta-common.la
+marabunta_server_LDFLAGS = \
+	$(top_builddir)/common/libmarabunta-common.la \
+	@CLOG_LIBS@ @GLIB_LIBS@ @LPTREE_LIBS@
 
 marabunta_server_SOURCES = \
 	mbsserver.c \
