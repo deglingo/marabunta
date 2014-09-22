@@ -20,13 +20,39 @@ typedef struct _MainData
 
 
 
+static gboolean _on_client_read ( MbsServer *server,
+                                  guint clid,
+                                  LStream *stream,
+                                  gpointer data,
+                                  GError **error )
+{
+  gchar buf[65536];
+  LStreamStatus s;
+  gint64 w;
+  s = l_stream_read(stream, buf, 65536, &w, error);
+  switch (s) {
+  case L_STREAM_STATUS_OK:
+    CL_DEBUG("got %d bytes from client %d", (gint) w, clid);
+    break;
+  case L_STREAM_STATUS_EOF:
+    CL_DEBUG("[TODO] got EOF from client %d", clid);
+    return G_SOURCE_REMOVE;
+  default:
+    CL_ERROR("[TODO] s = %d", s);
+  }
+  return G_SOURCE_CONTINUE;
+}
+
+
+
 static void _on_server_event ( MbsServerEvent *event,
 							   MainData *data )
 {
   switch (event->type)
 	{
 	case MBS_SERVER_EVENT_ACCEPT:
-	  /* CL_DEBUG("client accepted: %d", event->accept.clid); */
+	  CL_DEBUG("client accepted: %d", event->accept.clid);
+      mbs_server_add_watch(data->server, event->accept.clid, G_IO_IN);
 	  break;
     case MBS_SERVER_EVENT_MESSAGE:
       switch (event->message.message->key)

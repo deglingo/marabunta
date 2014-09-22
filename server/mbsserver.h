@@ -13,6 +13,7 @@ typedef struct _MbsServer MbsServer;
 typedef enum _MbsServerEventType MbsServerEventType;
 typedef struct _MbsServerEventAccept MbsServerEventAccept;
 typedef struct _MbsServerEventMessage MbsServerEventMessage;
+typedef struct _MbsServerEventReady MbsServerEventReady;
 typedef union _MbsServerEvent MbsServerEvent;
 
 typedef void (* MbsServerHandler) ( MbsServerEvent *event,
@@ -46,6 +47,7 @@ enum _MbsServerEventType
   {
 	MBS_SERVER_EVENT_ACCEPT,
     MBS_SERVER_EVENT_MESSAGE,
+    MBS_SERVER_EVENT_READY,
   };
 
 
@@ -70,6 +72,18 @@ struct _MbsServerEventMessage
 
 
 
+/* MbsServerEventReady:
+ */
+struct _MbsServerEventReady
+{
+  _MBS_SERVER_EVENT_HEADER;
+  guint clid;
+  GIOCondition condition;
+  LStream *stream;
+};
+
+
+
 /* MbsServerEvent:
  */
 union _MbsServerEvent
@@ -77,6 +91,7 @@ union _MbsServerEvent
   MbsServerEventType type;
   MbsServerEventAccept accept;
   MbsServerEventMessage message;
+  MbsServerEventReady ready;
 };
 
 
@@ -84,6 +99,9 @@ union _MbsServerEvent
 MbsServer *mbs_server_new ( MbsServerHandler handler,
 							gpointer handler_data );
 void mbs_server_start ( MbsServer *server );
+void mbs_server_add_watch ( MbsServer *server,
+                            guint clid,
+                            GIOCondition condition );
 
 
 

@@ -19,8 +19,63 @@ struct _Client
   MbsServer *server;
   guint clid;
   gint sock;
-  LStream *sock_stream;
+  GPollFD pollfd;
+  LStream *stream;
+  GSource *source;
 };
+
+
+
+typedef struct _RWSource
+{
+  GSource g_source;
+}
+  RWSource;
+
+
+
+static gboolean rw_source_prepare ( GSource *source,
+                                    gint *timeout );
+static gboolean rw_source_dispatch ( GSource *source,
+                                     GSourceFunc callback,
+                                     gpointer data );
+
+
+
+static GSourceFuncs RW_SOURCE_FUNCS =
+  {
+    rw_source_prepare,
+    NULL,
+    rw_source_dispatch,
+    NULL,
+  };
+
+
+
+GSource *rw_source_new ( void )
+{
+  RWSource *source = (RWSource *) g_source_new(&RW_SOURCE_FUNCS, sizeof(RWSource));
+  return (GSource *) source;
+}
+
+
+
+static gboolean rw_source_prepare ( GSource *source,
+                                    gint *timeout )
+{
+  *timeout = -1;
+  return TRUE;
+}
+
+
+
+static gboolean rw_source_dispatch ( GSource *source,
+                                     GSourceFunc callback,
+                                     gpointer data )
+{
+  ASSERT(callback);
+  return callback(data);
+}
 
 
 
@@ -78,7 +133,10 @@ client_name, &size)) < 0)
 	CL_ERROR("accept failed: %s", STRERROR);
   client = g_new0(Client, 1);
   client->server = server;
+  client->sock = sock;
   client->clid = ++(server->client_counter);
+  if (!(client->stream = l_file_fdopen(client->sock, "rw", NULL)))
+    CL_ERROR("[TODO] could not create client stream");
   g_hash_table_insert(server->client_map, GUINT_TO_POINTER(client->clid), client);
   /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
@@ -103,4 +161,48 @@ void mbs_server_start ( MbsServer *server )
 	CL_ERROR("listen failed: %s", STRERROR);
   server->listen_chan = g_io_channel_unix_new(server->listen_sock);
   g_io_add_watch(server->listen_chan, G_IO_IN, _on_accept, server);
+}
+
+
+
+static gboolean _on_client_watch ( Client *client )
+{
+  MbsServerEvent event;
+  event.type = MBS_SERVER_EVENT_READY;
+  event.ready.clid = client->clid;
+  event.ready.stream = client->stream;
+  event.ready.condition = client->pollfd.revents;
+  client->server->handler(&event, client->server->handler_data);
+  return G_SOURCE_CONTINUE;
+}
+
+
+
+/* mbs_server_add_watch:
+ */
+void mbs_server_add_watch ( MbsServer *server,
+                            guint clid,
+                            GIOCondition condition )
+{
+  Client *client;
+  if (!(client = g_hash_table_lookup(server->client_map, GUINT_TO_POINTER(clid))))
+    CL_ERROR("unknown client: %d", clid);
+  if (client->source)
+    {
+      /* [FIXME] glib sources seems to say that it is not necessary to
+         remove a pollfd before modifying it */
+      g_source_remove_poll(client->source, &client->pollfd);
+      client->pollfd.events |= condition;
+    }
+  else
+    {
+      client->source = rw_source_new();
+      g_source_set_callback(client->source,
+                            (GSourceFunc) _on_client_watch,
+                            client, NULL);
+      client->pollfd.fd = client->sock;
+      client->pollfd.events = condition;
+      g_source_attach(client->source, NULL);
+    }
+  g_source_add_poll(client->source, &client->pollfd);
 }
