@@ -5,10 +5,10 @@
 #define _MBMESSAGE_H_
 
 #include "common/mbbase.h"
+#include "common/mbmessage-def.h"
 
 
 
-typedef struct _MbMessage MbMessage;
 typedef enum _MbMessageKey MbMessageKey;
 
 
@@ -26,7 +26,18 @@ enum _MbMessageKey
  */
 struct _MbMessage
 {
+  MB_MESSAGE_INSTANCE_HEADER;
+
   MbMessageKey key;
+};
+
+
+
+/* MbMessageClass:
+ */
+struct _MbMessageClass
+{
+  MB_MESSAGE_CLASS_HEADER;
 };
 
 
@@ -35,12 +46,6 @@ MbMessage *mb_message_new ( MbMessageKey key,
                             const gchar *format,
                             ... )
 G_GNUC_NULL_TERMINATED;
-void mb_message_free ( MbMessage *msg );
-gsize mb_message_pack_size ( MbMessage *msg );
-void mb_message_pack ( MbMessage *msg,
-                       gpointer dest );
-MbMessage *mb_message_unpack ( gpointer pack,
-                               gsize size );
 
 
 
