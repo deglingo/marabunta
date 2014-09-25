@@ -34,6 +34,30 @@ typedef struct _Client
 
 
 
+static void _process_message ( MainData *app,
+                               Client *cli,
+                               LObject *msg )
+{
+  gint key;
+  ASSERT(L_IS_TUPLE(msg));
+  ASSERT(L_TUPLE_SIZE(msg) >= 1);
+  ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0)));
+  key = L_INT_VALUE(L_TUPLE_ITEM(msg, 0));
+  switch (key)
+    {
+    case MB_MESSAGE_KEY_JOIN:
+      CL_DEBUG("client %d joined the game", cli->clid);
+      mbs_game_add_player(app->game, cli->clid, "player");
+      /* [FIXME] */
+      mbs_game_start(app->game);
+      break;
+    default:
+      CL_DEBUG("ERROR: unknown message key: %d", key);
+    }
+}
+
+
+
 static gboolean _on_client_read ( MbsServer *server,
                                   guint clid,
                                   LStream *stream,
@@ -66,7 +90,7 @@ static void _process_read ( MainData *data,
   GError *err = NULL;
   while ((msg = l_unpacker_recv(client->unpacker, &err)))
     {
-      CL_DEBUG("[TODO] handle message: %s", l_object_to_string(msg));
+      _process_message(data, client, msg);
       l_object_unref(msg);
     }
   if (err) {

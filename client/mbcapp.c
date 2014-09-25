@@ -75,7 +75,7 @@ void mbc_app_connect ( MbcApp *app )
  */
 void mbc_app_join_game ( MbcApp *app )
 {
-  LString *msg = l_string_new("DATA", -1);
+  LTuple *msg = l_tuple_newl_give(1, l_int_new(MB_MESSAGE_KEY_JOIN), NULL);
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
 }
