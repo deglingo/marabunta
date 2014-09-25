@@ -70,7 +70,6 @@ static void _on_client_watch ( GIOCondition cond,
   MbsServerEvent event;
   event.type = MBS_SERVER_EVENT_READY;
   event.ready.clid = client->clid;
-  event.ready.stream = client->stream;
   event.ready.condition = cond;
   client->server->handler(&event, client->server->handler_data);
   /* [FIXME] handle EOF */
@@ -110,6 +109,7 @@ client_name, &size)) < 0)
   /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
   event.accept.clid = client->clid;
+  event.accept.stream = client->stream;
   CL_DEBUG("client %d connected: %s:%hd",
            client->clid,
            inet_ntoa(client_name.sin_addr),

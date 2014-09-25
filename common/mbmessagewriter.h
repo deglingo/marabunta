@@ -12,11 +12,10 @@ typedef struct _MbMessageWriter MbMessageWriter;
 
 
 
-MbMessageWriter *mb_message_writer_new ( void );
+MbMessageWriter *mb_message_writer_new ( LStream *stream );
 void mb_message_writer_push ( MbMessageWriter *writer,
                               LObject *msg );
 gboolean mb_message_writer_send ( MbMessageWriter *writer,
-                                  LStream *stream,
                                   GError **error );
 
 

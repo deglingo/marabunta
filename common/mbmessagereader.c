@@ -16,7 +16,7 @@ struct _MbMessageReader
 
 /* mb_message_reader_new:
  */
-MbMessageReader *mb_message_reader_new ( void )
+MbMessageReader *mb_message_reader_new ( LStream *stream )
 {
   MbMessageReader *rd;
   rd = g_new0(MbMessageReader, 1);
@@ -28,7 +28,6 @@ MbMessageReader *mb_message_reader_new ( void )
 /* mb_message_reader_recv:
  */
 LObject *mb_message_reader_recv ( MbMessageReader *reader,
-                                  LStream *stream,
                                   GError **error )
 {
   return L_OBJECT(l_string_new("MSG", -1));

@@ -17,7 +17,8 @@ struct _MbcApp
   MBC_APP_INSTANCE_HEADER;
 
   MbcClient *client;
-  MbMessageWriter *writer;
+  LPacker *packer;
+  LUnpacker *unpacker;
 };
 
 

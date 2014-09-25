@@ -57,6 +57,7 @@ enum _MbsServerEventType
 struct _MbsServerEventAccept {
   _MBS_SERVER_EVENT_HEADER;
   guint clid;
+  LStream *stream;
 };
 
 
@@ -79,7 +80,6 @@ struct _MbsServerEventReady
   _MBS_SERVER_EVENT_HEADER;
   guint clid;
   GIOCondition condition;
-  LStream *stream;
 };
 
 

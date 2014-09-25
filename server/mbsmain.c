@@ -27,6 +27,8 @@ typedef struct _Client
 {
   guint clid;
   MbMessageReader *reader;
+  LPacker *packer;
+  LUnpacker *unpacker;
 }
   Client;
 
@@ -58,25 +60,24 @@ static gboolean _on_client_read ( MbsServer *server,
 
 
 static void _process_read ( MainData *data,
-                            Client *client,
-                            LStream *stream )
+                            Client *client )
 {
   LObject *msg;
   GError *err = NULL;
-  while ((msg = mb_message_reader_recv(client->reader, stream, &err)))
+  while ((msg = l_unpacker_recv(client->unpacker, &err)))
     {
-      CL_DEBUG("[TODO] handle message...");
+      CL_DEBUG("[TODO] handle message: %s", l_object_to_string(msg));
       l_object_unref(msg);
     }
-  if (err)
-    CL_ERROR("[TODO] read error");
+  if (err) {
+    CL_DEBUG("[TODO] read error");
+  }
 }
 
 
 
 static void _process_write ( MainData *data,
-                             Client *client,
-                             LStream *stream )
+                             Client *client )
 {
   CL_DEBUG("[TODO] process write...");
 }
@@ -93,7 +94,8 @@ static void _on_server_event ( MbsServerEvent *event,
         Client *client = g_new0(Client, 1);
         CL_DEBUG("client accepted: %d", event->accept.clid);
         client->clid = event->accept.clid;
-        client->reader = mb_message_reader_new();
+        client->packer = l_packer_new(event->accept.stream);
+        client->unpacker = l_unpacker_new(event->accept.stream);
         g_hash_table_insert(data->client_map, GUINT_TO_POINTER(client->clid), client);
         mbs_server_add_watch(data->server, event->accept.clid, G_IO_IN);
       }
@@ -103,9 +105,9 @@ static void _on_server_event ( MbsServerEvent *event,
         Client *client = g_hash_table_lookup(data->client_map, GUINT_TO_POINTER(event->ready.clid));
         ASSERT(client);
         if (event->ready.condition & G_IO_IN)
-          _process_read(data, client, event->ready.stream);
+          _process_read(data, client);
         if (event->ready.condition & G_IO_OUT)
-          _process_write(data, client, event->ready.stream);
+          _process_write(data, client);
       }
       break;
     /* case MBS_SERVER_EVENT_MESSAGE: */
