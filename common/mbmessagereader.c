@@ -31,5 +31,5 @@ LObject *mb_message_reader_recv ( MbMessageReader *reader,
                                   LStream *stream,
                                   GError **error )
 {
-  return L_OBJECT(l_string_new("MSG"));
+  return L_OBJECT(l_string_new("MSG", -1));
 }
