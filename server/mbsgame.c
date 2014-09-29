@@ -23,6 +23,19 @@ static void mbs_game_class_init ( LObjectClass *cls )
 
 
 
+/* _proxy_handler:
+ */
+static void _proxy_handler ( LptProxy *proxy,
+                             guint clid,
+                             LObject *msg,
+                             gpointer data )
+{
+  /* MbsGame *game = data; */
+  CL_DEBUG("[TODO] proxy_handler: %s", l_object_to_string(msg));
+}
+
+
+
 /* _create_tree:
  */
 static void _create_tree ( MbsGame *game )
@@ -47,7 +60,7 @@ static void _create_tree ( MbsGame *game )
   }
 
   /* create the proxy server */
-  game->proxy = lpt_proxy_new(game->tree);
+  game->proxy = lpt_proxy_new(game->tree, _proxy_handler, game);
 
   lpt_proxy_create_share(game->proxy,
                          "GAME",
