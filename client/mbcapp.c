@@ -7,6 +7,18 @@
 
 
 
+/* Signals:
+ */
+enum
+  {
+    SIG_GAME_STARTED,
+    SIG_COUNT,
+  };
+
+static LSignalID signals[SIG_COUNT] = { 0, };
+
+
+
 static void _on_client_ready ( MbcClient *client,
                                GIOCondition condition,
                                LStream *stream,
@@ -15,6 +27,17 @@ static void _message_handler ( LptTree *tree,
                                LptClient *client,
                                LObject *message,
                                gpointer data );
+
+
+
+/* mbc_app_class_init:
+ */
+static void mbc_app_class_init ( LObjectClass *cls )
+{
+  signals[SIG_GAME_STARTED] =
+    l_signal_new(cls,
+                 "game_started");
+}
 
 
 
@@ -124,6 +147,7 @@ static gboolean _wait_tree ( MbcApp *app )
   if (n)
     {
       CL_DEBUG("got game node!!");
+      l_signal_emit(L_OBJECT(app), signals[SIG_GAME_STARTED]);
       return G_SOURCE_REMOVE;
     }
   else

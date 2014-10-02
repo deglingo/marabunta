@@ -100,6 +100,14 @@ AltkWidget *_create_dialog ( AltkDisplay *display )
 
 
 
+static void _on_game_started ( MbalApp *app,
+                               gpointer data )
+{
+  CL_DEBUG("GAME STARTED!");
+}
+
+
+
 /* main:
  */
 int main ( int argc,
@@ -112,6 +120,7 @@ int main ( int argc,
   al_init();
   altk_init();
   app = mbal_app_new();
+  l_signal_connect(L_OBJECT(app), "game_started", (LSignalHandler) _on_game_started, NULL, NULL);
   display = altk_display_new();
   dlg = _create_dialog(display);
   al_source = al_source_new();

@@ -3,6 +3,7 @@
 namespace Mbc
 {
   class App {
+    void class_init ();
     void init ();
   };
 }
