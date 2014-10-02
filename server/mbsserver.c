@@ -145,3 +145,17 @@ void mbs_server_add_watch ( MbsServer *server,
     CL_ERROR("unknown client: %d", clid);
   mb_watch_add_condition(client->watch, condition);
 }
+
+
+
+/* mbs_server_remove_watch:
+ */
+void mbs_server_remove_watch ( MbsServer *server,
+                               guint clid,
+                               GIOCondition condition )
+{
+  Client *client;
+  if (!(client = g_hash_table_lookup(server->client_map, GUINT_TO_POINTER(clid))))
+    CL_ERROR("unknown client: %d", clid);
+  mb_watch_remove_condition(client->watch, condition);
+}

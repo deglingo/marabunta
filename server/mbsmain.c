@@ -3,6 +3,7 @@
 
 #include "server/srvprivate.h"
 #include "common/marabunta-common.h"
+#include "server/mbsapp.h"
 #include "server/mbsserver.h"
 #include "server/mbsgame.h"
 
@@ -50,6 +51,9 @@ static void _process_message ( MainData *app,
       mbs_game_add_player(app->game, cli->clid, "player");
       /* [FIXME] */
       mbs_game_start(app->game);
+      break;
+    case MB_MESSAGE_KEY_LPT_EVENT:
+      mbs_game_lpt_event(app->game, cli->clid, L_TUPLE_ITEM(msg, 1));
       break;
     default:
       CL_DEBUG("ERROR: unknown message key: %d", key);
@@ -103,7 +107,13 @@ static void _process_read ( MainData *data,
 static void _process_write ( MainData *data,
                              Client *client )
 {
-  CL_DEBUG("[TODO] process write...");
+  gboolean r;
+  GError *err = NULL;
+  r = l_packer_send(client->packer, &err);
+  ASSERT(!err);
+  if (r) {
+    mbs_server_remove_watch(data->server, client->clid, G_IO_OUT);
+  }
 }
 
 
@@ -154,6 +164,21 @@ static void _on_server_event ( MbsServerEvent *event,
 
 
 
+/* mbs_app_send:
+ */
+void mbs_app_send ( MbsApp *app,
+                    guint clid,
+                    LObject *msg )
+{
+  Client *client;
+  client = g_hash_table_lookup(app->client_map, GUINT_TO_POINTER(clid));
+  ASSERT(client);
+  l_packer_add(client->packer, msg);
+  mbs_server_add_watch(app->server, clid, G_IO_OUT);
+}
+
+
+
 /* main:
  */
 int main ()
@@ -162,7 +187,7 @@ int main ()
   /* CL_DEBUG("hello!"); */
   data = g_new0(MainData, 1);
   data->client_map = g_hash_table_new(NULL, NULL);
-  data->game = mbs_game_new();
+  data->game = mbs_game_new(data);
   data->server = mbs_server_new((MbsServerHandler) _on_server_event, data);
   mbs_server_start(data->server);
   data->loop = g_main_loop_new(NULL, FALSE);

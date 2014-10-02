@@ -102,6 +102,9 @@ void mbs_server_start ( MbsServer *server );
 void mbs_server_add_watch ( MbsServer *server,
                             guint clid,
                             GIOCondition condition );
+void mbs_server_remove_watch ( MbsServer *server,
+                               guint clid,
+                               GIOCondition condition );
 
 
 

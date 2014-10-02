@@ -19,6 +19,8 @@ struct _MbcApp
   MbcClient *client;
   LPacker *packer;
   LUnpacker *unpacker;
+  LptTree *tree;
+  LptClient *tclient_server;
 };
 
 

@@ -11,6 +11,10 @@ static void _on_client_ready ( MbcClient *client,
                                GIOCondition condition,
                                LStream *stream,
                                gpointer data );
+static void _message_handler ( LptTree *tree,
+                               LptClient *client,
+                               LObject *message,
+                               gpointer data );
 
 
 
@@ -20,6 +24,9 @@ static void mbc_app_init ( LObject *object )
 {
   MbcApp *app = MBC_APP(object);
   app->client = mbc_client_new(_on_client_ready, app);
+  app->tree = lpt_tree_new();
+  lpt_tree_set_message_handler(app->tree, _message_handler, app, NULL);
+  app->tclient_server = lpt_tree_add_client(app->tree, "server");
 }
 
 
@@ -59,6 +66,24 @@ static void _send ( MbcApp *app,
 
 
 
+/* _message_handler:
+ */
+static void _message_handler ( LptTree *tree,
+                               LptClient *client,
+                               LObject *message,
+                               gpointer data )
+{
+  MbcApp *app = data;
+  LTuple *mbmsg = l_tuple_new(2);
+  CL_DEBUG("lpt_event: %s", l_object_to_string(message));
+  l_tuple_give_item(mbmsg, 0, L_OBJECT(l_int_new(MB_MESSAGE_KEY_LPT_EVENT)));
+  l_tuple_give_item(mbmsg, 1, l_object_ref(message));
+  _send(app, L_OBJECT(mbmsg));
+  l_object_unref(mbmsg);
+}
+
+
+
 /* mbc_app_connect:
  */
 void mbc_app_connect ( MbcApp *app )
@@ -78,4 +103,5 @@ void mbc_app_join_game ( MbcApp *app )
   LTuple *msg = l_tuple_newl_give(1, l_int_new(MB_MESSAGE_KEY_JOIN), NULL);
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
+  lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
 }

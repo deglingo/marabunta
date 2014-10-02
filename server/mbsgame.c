@@ -3,6 +3,7 @@
 
 #include "server/srvprivate.h"
 #include "server/mbsgame.h"
+#include "server/mbsapp.h"
 #include "server/mbsgame.inl"
 
 
@@ -30,7 +31,18 @@ static void _message_handler ( LptTree *tree,
                                LObject *message,
                                gpointer data )
 {
-  CL_DEBUG("[TODO] andle_message: %s", l_object_to_string(message));
+  MbsGame *game = data;
+  guint clid;
+  LTuple *mbmsg;
+  /* CL_DEBUG("[TODO] handle_message: %s", l_object_to_string(message)); */
+  clid = GPOINTER_TO_UINT(g_hash_table_lookup(game->lpt_rclients, client));
+  ASSERT(clid);
+  mbmsg = l_tuple_newl_give(2,
+                            l_int_new(MB_MESSAGE_KEY_LPT_EVENT),
+                            l_object_ref(message),
+                            NULL);
+  mbs_app_send(game->app, clid, L_OBJECT(mbmsg));
+  l_object_unref(mbmsg);
 }
 
 
@@ -70,10 +82,13 @@ static void _create_tree ( MbsGame *game )
 
 /* mbs_game_new:
  */
-MbsGame *mbs_game_new ( void )
+MbsGame *mbs_game_new ( struct _MainData *app )
 {
   MbsGame *game;
   game = MBS_GAME(l_object_new(MBS_CLASS_GAME, NULL));
+  game->app = app;
+  game->lpt_clients = g_hash_table_new(NULL, NULL);
+  game->lpt_rclients = g_hash_table_new(NULL, NULL);
   _create_tree(game);
   return game;
 }
@@ -86,9 +101,10 @@ void mbs_game_add_player ( MbsGame *game,
                            guint id,
                            const gchar *name )
 {
-  /* [FIXME] client map */
-  gint fixme_client_map;
-  lpt_tree_add_client(game->tree, name);
+  LptClient *client;
+  client = lpt_tree_add_client(game->tree, name);
+  g_hash_table_insert(game->lpt_clients, GUINT_TO_POINTER(id), client);
+  g_hash_table_insert(game->lpt_rclients, client, GUINT_TO_POINTER(id));
 }
 
 
@@ -133,4 +149,17 @@ void mbs_game_start ( MbsGame *game )
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);
+}
+
+
+
+/* mbs_game_lpt_event:
+ */
+void mbs_game_lpt_event ( MbsGame *game,
+                          guint clid,
+                          LObject *event )
+{
+  LptClient *client;
+  client = g_hash_table_lookup(game->lpt_clients, GUINT_TO_POINTER(clid));
+  lpt_tree_handle_message(game->tree, client, event);
 }

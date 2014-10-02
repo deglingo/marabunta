@@ -4,6 +4,8 @@ lib_LTLIBRARIES = libmarabunta-common.la
 
 libmarabunta_common_la_CFLAGS = -I$(top_srcdir) -I$(top_builddir) @LOS_CFLAGS@
 
+libmarabunta_common_la_LIBADD = @LPTREE_LIBS@
+
 libmarabunta_common_la_SOURCES = \
 	mbbase.c \
 	mbmessage.c \
