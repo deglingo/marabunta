@@ -1,6 +1,7 @@
 /* mbwatch.c -
  */
 
+#include "common/private.h"
 #include "common/mbwatch.h"
 
 
@@ -27,6 +28,7 @@ typedef struct _WatchSource
 
 static gboolean watch_source_prepare ( GSource *source,
                                     gint *timeout );
+static gboolean watch_source_check ( GSource *source );
 static gboolean watch_source_dispatch ( GSource *source,
                                      GSourceFunc callback,
                                      gpointer data );
@@ -36,7 +38,7 @@ static gboolean watch_source_dispatch ( GSource *source,
 static GSourceFuncs WATCH_SOURCE_FUNCS =
   {
     watch_source_prepare,
-    NULL,
+    watch_source_check,
     watch_source_dispatch,
     NULL,
   };
@@ -47,7 +49,18 @@ static gboolean watch_source_prepare ( GSource *source,
                                     gint *timeout )
 {
   *timeout = -1;
-  return TRUE;
+  return FALSE;
+}
+
+
+
+static gboolean watch_source_check ( GSource *source )
+{
+  MBWatch *watch = ((WatchSource *) source)->watch;
+  if (watch->pollfd.revents)
+    return TRUE;
+  else
+    return FALSE;
 }
 
 
