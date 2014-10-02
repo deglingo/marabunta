@@ -121,6 +121,7 @@ static void _process_write ( MainData *data,
 static void _on_server_event ( MbsServerEvent *event,
 							   MainData *data )
 {
+  CL_DEBUG("server event: %d", event->type);
   switch (event->type)
 	{
 	case MBS_SERVER_EVENT_ACCEPT:
@@ -138,10 +139,14 @@ static void _on_server_event ( MbsServerEvent *event,
       {
         Client *client = g_hash_table_lookup(data->client_map, GUINT_TO_POINTER(event->ready.clid));
         ASSERT(client);
-        if (event->ready.condition & G_IO_IN)
+        if (event->ready.condition & G_IO_IN) {
+          CL_DEBUG("read ready");
           _process_read(data, client);
-        if (event->ready.condition & G_IO_OUT)
+        }
+        if (event->ready.condition & G_IO_OUT) {
+          CL_DEBUG("write ready");
           _process_write(data, client);
+        }
       }
       break;
     /* case MBS_SERVER_EVENT_MESSAGE: */

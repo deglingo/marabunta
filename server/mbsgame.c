@@ -143,9 +143,9 @@ void mbs_game_start ( MbsGame *game )
 {
   CL_DEBUG("starting game...");
   game->timer = g_timer_new();
-  game->fps = 10.0;
+  game->fps = 1.0;
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
-                     1,
+                     1000,
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);

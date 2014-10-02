@@ -72,6 +72,7 @@ gint mbc_client_connect ( MbcClient *cli,
   ASSERT(cli->stream);
   /* create the watch */
   cli->watch = mb_watch_new(cli->sock, _on_client_watch, cli, NULL);
+  mb_watch_add_condition(cli->watch, G_IO_IN);
   return 0;
 }
 

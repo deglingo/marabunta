@@ -23,6 +23,9 @@ static void _message_handler ( LptTree *tree,
 static void mbc_app_init ( LObject *object )
 {
   MbcApp *app = MBC_APP(object);
+  /* [FIXME] */
+  LPT_CLASS_NSPEC_INT;
+  LPT_CLASS_NSPEC_DIR;
   app->client = mbc_client_new(_on_client_ready, app);
   app->tree = lpt_tree_new();
   lpt_tree_set_message_handler(app->tree, _message_handler, app, NULL);
@@ -41,7 +44,26 @@ static void _on_client_ready ( MbcClient *client,
   MbcApp *app = MBC_APP(data);
   GError *error = NULL;
   if (condition & G_IO_IN)
-    CL_DEBUG("[TODO] client input...");
+    {
+      LObject *msg;
+      while ((msg = l_unpacker_recv(app->unpacker, &error)))
+        {
+          ASSERT(L_IS_TUPLE(msg));
+          ASSERT(L_TUPLE_SIZE(msg) >= 1);
+          ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0)));
+          switch (L_INT_VALUE(L_TUPLE_ITEM(msg, 0)))
+            {
+            case MB_MESSAGE_KEY_LPT_EVENT:
+              ASSERT(L_TUPLE_SIZE(msg) == 2);
+              lpt_tree_handle_message(app->tree, app->tclient_server, L_TUPLE_ITEM(msg, 1));
+              break;
+            default:
+              CL_DEBUG("[TODO] message: %s", l_object_to_string(msg));
+            }
+          l_object_unref(msg);
+        }
+      ASSERT(!error);
+    }
   if (condition & G_IO_OUT)
     {
       gboolean r;
@@ -96,6 +118,22 @@ void mbc_app_connect ( MbcApp *app )
 
 
 
+static gboolean _wait_tree ( MbcApp *app )
+{
+  LptNode *n = lpt_tree_get_node(app->tree, "/game");
+  if (n)
+    {
+      CL_DEBUG("got game node!!");
+      return G_SOURCE_REMOVE;
+    }
+  else
+    {
+      return G_SOURCE_CONTINUE;
+    }
+}
+
+
+
 /* mbc_app_join_game:
  */
 void mbc_app_join_game ( MbcApp *app )
@@ -104,4 +142,6 @@ void mbc_app_join_game ( MbcApp *app )
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
   lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
+  /* [FIXME] */
+  g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
 }
