@@ -1,6 +1,7 @@
 /* mbalmain.c -
  */
 
+#include "client-al/alprivate.h"
 #include "client-al/mbalbase.h"
 #include "client-al/mbalapp.h"
 
@@ -93,9 +94,23 @@ AltkWidget *_create_dialog ( AltkDisplay *display )
 {
   AltkWidget *dlg, *lbl;
   dlg = altk_dialog_new(display);
-  lbl = altk_label_new("Hello!");
+  lbl = altk_label_new("GAME TIME: 0");
+  altk_widget_set_name(lbl, "game-time");
   altk_container_add(ALTK_CONTAINER(dlg), lbl);
   return dlg;
+}
+
+
+
+static void _on_game_time_set ( LptNode *node,
+                                AltkWidget *label )
+{
+  LObject *value = lpt_node_get_value(node);
+  gchar *text;
+  ASSERT(L_IS_INT(value));
+  text = g_strdup_printf("GAME TIME: %d", L_INT_VALUE(value));
+  altk_label_set_text(ALTK_LABEL(label), text);
+  g_free(text);
 }
 
 
@@ -103,6 +118,15 @@ AltkWidget *_create_dialog ( AltkDisplay *display )
 static void _on_game_started ( MbalApp *app,
                                gpointer data )
 {
+  LptTree *tree = MBC_APP(app)->tree;
+  AltkWidget *dlg = data;
+  AltkWidget *game_time_label = altk_widget_find(dlg, "game-time");
+  LptNode *game_time_node = lpt_tree_get_node(tree, "/game/sim-time");
+  l_signal_connect(L_OBJECT(game_time_node),
+                   "value_set",
+                   (LSignalHandler) _on_game_time_set,
+                   game_time_label,
+                   NULL);
   CL_DEBUG("GAME STARTED!");
 }
 
@@ -120,13 +144,13 @@ int main ( int argc,
   al_init();
   altk_init();
   app = mbal_app_new();
-  l_signal_connect(L_OBJECT(app), "game_started", (LSignalHandler) _on_game_started, NULL, NULL);
   display = altk_display_new();
   dlg = _create_dialog(display);
   al_source = al_source_new();
   g_source_attach(al_source, NULL);
   /* al_register_event_source(((AlSource *) al_source)->queue, */
   /*                          al_get_display_event_source(display)); */
+  l_signal_connect(L_OBJECT(app), "game_started", (LSignalHandler) _on_game_started, dlg, NULL);
   mbc_app_connect(MBC_APP(app));
   mbc_app_join_game(MBC_APP(app));
   altk_widget_show_all(dlg);

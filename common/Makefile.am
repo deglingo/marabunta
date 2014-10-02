@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libmarabunta-common.la
 
 libmarabunta_common_la_CFLAGS = -DCL_LOG_DOMAIN=\"mbcommon\" -I$(top_srcdir) -I$(top_builddir) @LOS_CFLAGS@
 
-libmarabunta_common_la_LIBADD = @LPTREE_LIBS@
+# libmarabunta_common_la_LIBADD = @LPTREE_LIBS@
 
 libmarabunta_common_la_SOURCES = \
 	mbbase.c \
