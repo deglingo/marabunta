@@ -12,11 +12,16 @@ marabunta_al_LDFLAGS = \
 	@GLIB_LIBS@ @CLOG_LIBS@ @ALTK_LIBS@ @LPTREE_LIBS@
 
 marabunta_al_SOURCES = \
+	mbaldialog-main.c \
 	mbalapp.c \
 	mbalmain.c
 
 BUILT_SOURCES = \
+	mbaldialog-main.c \
 	mbalapp-def.h mbalapp.inl
+
+mbaldialog-main.c: mbaldialog-main.xml
+	$(ALTK_XML2C) -n DIALOG_MAIN -o mbaldialog-main $<
 
 mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h

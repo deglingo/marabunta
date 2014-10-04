@@ -7,6 +7,10 @@
 
 
 
+extern const char DIALOG_MAIN[];
+
+
+
 /* AlSource:
  */
 typedef struct _AlSource AlSource;
@@ -92,12 +96,17 @@ static GSource *al_source_new ( void )
  */
 AltkWidget *_create_dialog ( AltkDisplay *display )
 {
-  AltkWidget *dlg, *lbl;
-  dlg = altk_dialog_new(display);
-  lbl = altk_label_new("GAME TIME: 0");
-  altk_widget_set_name(lbl, "game-time");
-  altk_container_add(ALTK_CONTAINER(dlg), lbl);
-  return dlg;
+  GError *error = NULL;
+  LObject *dlg;
+  /* [FIXME] */
+  ALTK_CLASS_DIALOG;
+  ALTK_CLASS_LABEL;
+  /* go */
+  if (!(dlg = altk_builder_quick_parse(DIALOG_MAIN, -1, "dialog", &error)))
+    CL_ERROR("AltkBuilder error");
+  ASSERT(ALTK_IS_DIALOG(dlg));
+  altk_dialog_set_display(ALTK_DIALOG(dlg), display);
+  return ALTK_WIDGET(dlg);
 }
 
 
@@ -118,15 +127,15 @@ static void _on_game_time_set ( LptNode *node,
 static void _on_game_started ( MbalApp *app,
                                gpointer data )
 {
-  LptTree *tree = MBC_APP(app)->tree;
-  AltkWidget *dlg = data;
-  AltkWidget *game_time_label = altk_widget_find(dlg, "game-time");
-  LptNode *game_time_node = lpt_tree_get_node(tree, "/game/sim-time");
-  l_signal_connect(L_OBJECT(game_time_node),
-                   "value_set",
-                   (LSignalHandler) _on_game_time_set,
-                   game_time_label,
-                   NULL);
+  /* LptTree *tree = MBC_APP(app)->tree; */
+  /* AltkWidget *dlg = data; */
+  /* AltkWidget *game_time_label = altk_widget_find(dlg, "game-time"); */
+  /* LptNode *game_time_node = lpt_tree_get_node(tree, "/game/sim-time"); */
+  /* l_signal_connect(L_OBJECT(game_time_node), */
+  /*                  "value_set", */
+  /*                  (LSignalHandler) _on_game_time_set, */
+  /*                  game_time_label, */
+  /*                  NULL); */
   CL_DEBUG("GAME STARTED!");
 }
 

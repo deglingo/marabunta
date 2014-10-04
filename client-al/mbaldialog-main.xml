@@ -1,0 +1,7 @@
+<object type="AltkDialog" id="dialog">
+  <child>
+    <object type="AltkLabel">
+      <property name="text">Hello!</property>
+    </object>
+  </child>
+</object>

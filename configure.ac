@@ -15,6 +15,7 @@ test x"$LOS_GENTYPES" != x || AC_ERROR([los-gentypes not found])
 PKG_CHECK_MODULES([LPTREE], [lptree])
 dnl PKG_CHECK_MODULES([AL5], [allegro-debug-5 allegro_main-debug-5])
 PKG_CHECK_MODULES([ALTK], [altk])
+AC_PATH_PROG([ALTK_XML2C], [altk-xml2c])
 
 AC_CONFIG_FILES([ \
   Makefile \
