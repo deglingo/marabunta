@@ -30,10 +30,17 @@ struct _MbcApp
 struct _MbcAppClass
 {
   MBC_APP_CLASS_HEADER;
+
+  gint (* run) ( MbcApp *app,
+                 gint argc,
+                 gchar **argv );
 };
 
 
 
+gint mbc_app_run ( MbcApp *app,
+                   gint argc,
+                   gchar **argv );
 void mbc_app_connect ( MbcApp *app );
 void mbc_app_join_game ( MbcApp *app );
 

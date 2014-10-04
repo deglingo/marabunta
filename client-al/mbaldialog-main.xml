@@ -1,7 +1,18 @@
 <object type="AltkDialog" id="dialog">
   <child>
-    <object type="AltkLabel">
-      <property name="text">Hello!</property>
+    <object type="AltkBox">
+      <property name="orientation">1</property>
+      <child>
+        <object type="AltkLabel">
+          <property name="text">Time:</property>
+        </object>
+      </child>
+      <child>
+        <object type="AltkLabel">
+          <property name="name">sim-time</property>
+          <property name="text">0</property>
+        </object>
+      </child>
     </object>
   </child>
 </object>

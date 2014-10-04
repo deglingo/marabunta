@@ -19,6 +19,9 @@ static LSignalID signals[SIG_COUNT] = { 0, };
 
 
 
+static gint _run ( MbcApp *app,
+                   gint argc,
+                   gchar **argv );
 static void _on_client_ready ( MbcClient *client,
                                GIOCondition condition,
                                LStream *stream,
@@ -34,6 +37,8 @@ static void _message_handler ( LptTree *tree,
  */
 static void mbc_app_class_init ( LObjectClass *cls )
 {
+  MBC_APP_CLASS(cls)->run = _run;
+
   signals[SIG_GAME_STARTED] =
     l_signal_new(cls,
                  "game_started");
@@ -53,6 +58,31 @@ static void mbc_app_init ( LObject *object )
   app->tree = lpt_tree_new();
   lpt_tree_set_message_handler(app->tree, _message_handler, app, NULL);
   app->tclient_server = lpt_tree_add_client(app->tree, "server");
+}
+
+
+
+/* run:
+ */
+gint mbc_app_run ( MbcApp *app,
+                   gint argc,
+                   gchar **argv )
+{
+  return MBC_APP_GET_CLASS(app)->run(app, argc, argv);
+}
+
+
+
+/* _run:
+ */
+static gint _run ( MbcApp *app,
+                   gint argc,
+                   gchar **argv )
+{
+  GMainLoop *loop;
+  loop = g_main_loop_new(NULL, FALSE);
+  g_main_loop_run(loop);
+  return 0;
 }
 
 
@@ -141,23 +171,6 @@ void mbc_app_connect ( MbcApp *app )
 
 
 
-static gboolean _wait_tree ( MbcApp *app )
-{
-  LptNode *n = lpt_tree_get_node(app->tree, "/game");
-  if (n)
-    {
-      CL_DEBUG("got game node!!");
-      l_signal_emit(L_OBJECT(app), signals[SIG_GAME_STARTED]);
-      return G_SOURCE_REMOVE;
-    }
-  else
-    {
-      return G_SOURCE_CONTINUE;
-    }
-}
-
-
-
 /* mbc_app_join_game:
  */
 void mbc_app_join_game ( MbcApp *app )
@@ -166,6 +179,4 @@ void mbc_app_join_game ( MbcApp *app )
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
   lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
-  /* [FIXME] */
-  g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
 }

@@ -14,6 +14,8 @@
 struct _MbalApp
 {
   MBAL_APP_INSTANCE_HEADER;
+
+  AltkWidget *dialog;
 };
 
 
