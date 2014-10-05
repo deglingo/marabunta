@@ -151,7 +151,7 @@ static void _message_handler ( LptTree *tree,
 {
   MbcApp *app = data;
   LTuple *mbmsg = l_tuple_new(2);
-  CL_DEBUG("lpt_event: %s", l_object_to_string(message));
+  /* CL_DEBUG("lpt_event: %s", l_object_to_string(message)); */
   l_tuple_give_item(mbmsg, 0, L_OBJECT(l_int_new(MB_MESSAGE_KEY_LPT_EVENT)));
   l_tuple_give_item(mbmsg, 1, l_object_ref(message));
   _send(app, L_OBJECT(mbmsg));

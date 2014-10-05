@@ -127,11 +127,11 @@ static void _on_server_event ( MbsServerEvent *event,
         Client *client = mbs_client_get_data(event->ready.client);
         ASSERT(client);
         if (event->ready.condition & G_IO_IN) {
-          CL_DEBUG("client ready (in) : %p", client->clid);
+          /* CL_DEBUG("client ready (in) : %p", client->clid); */
           _process_read(app, client);
         }
         if (event->ready.condition & G_IO_OUT) {
-          CL_DEBUG("client ready (out) : %p", client->clid);
+          /* CL_DEBUG("client ready (out) : %p", client->clid); */
           _process_write(app, client);
         }
       }
