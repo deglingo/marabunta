@@ -13,6 +13,7 @@ extern const char DIALOG_MAIN[];
 static gint _run ( MbcApp *app,
                    gint argc,
                    gchar **argv );
+static void _setup_game ( MbcApp *app );
 
 
 
@@ -21,6 +22,7 @@ static gint _run ( MbcApp *app,
 static void mbal_app_class_init ( LObjectClass *cls )
 {
   MBC_APP_CLASS(cls)->run = _run;
+  MBC_APP_CLASS(cls)->setup_game = _setup_game;
 }
 
 
@@ -31,25 +33,6 @@ MbalApp *mbal_app_new ( void )
 {
   MbalApp *app = MBAL_APP(l_object_new(MBAL_CLASS_APP, NULL));
   return app;
-}
-
-
-
-/* _wait_tree:
- */
-static gboolean _wait_tree ( MbalApp *app )
-{
-  LptNode *n = lpt_tree_get_node(MBC_APP(app)->tree, "/game");
-  if (n)
-    {
-      CL_DEBUG("got game node!!");
-      mbal_dialog_setup_game(app->dialog, MBC_APP(app)->tree);
-      return G_SOURCE_REMOVE;
-    }
-  else
-    {
-      return G_SOURCE_CONTINUE;
-    }
 }
 
 
@@ -68,7 +51,14 @@ static gint _run ( MbcApp *app,
   altk_display_open(display);
   mbc_app_connect(MBC_APP(app));
   mbc_app_join_game(MBC_APP(app));
-  /* [FIXME] */
-  g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
   return MBC_APP_CLASS(parent_class)->run(app, argc, argv);
+}
+
+
+
+/* _setup_game:
+ */
+static void _setup_game ( MbcApp *app )
+{
+  mbal_dialog_setup_game(MBAL_APP(app)->dialog, app->tree);
 }

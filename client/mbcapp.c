@@ -172,6 +172,25 @@ void mbc_app_connect ( MbcApp *app )
 
 
 
+/* _wait_tree:
+ */
+static gboolean _wait_tree ( MbcApp *app )
+{
+  LptNode *n = lpt_tree_get_node(app->tree, "/game");
+  if (n)
+    {
+      CL_DEBUG("got game node!!");
+      MBC_APP_GET_CLASS(app)->setup_game(app);
+      return G_SOURCE_REMOVE;
+    }
+  else
+    {
+      return G_SOURCE_CONTINUE;
+    }
+}
+
+
+
 /* mbc_app_join_game:
  */
 void mbc_app_join_game ( MbcApp *app )
@@ -180,4 +199,6 @@ void mbc_app_join_game ( MbcApp *app )
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
   lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
+  /* [FIXME] */
+  g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
 }

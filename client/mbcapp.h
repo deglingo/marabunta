@@ -34,6 +34,8 @@ struct _MbcAppClass
   gint (* run) ( MbcApp *app,
                  gint argc,
                  gchar **argv );
+
+  void (* setup_game) ( MbcApp *app );
 };
 
 
