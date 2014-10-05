@@ -3,6 +3,7 @@
 
 #include "client-al/alprivate.h"
 #include "client-al/mbalapp.h"
+#include "client-al/mbaldialog.h"
 #include "client-al/mbalapp.inl"
 
 
@@ -30,26 +31,6 @@ MbalApp *mbal_app_new ( void )
 {
   MbalApp *app = MBAL_APP(l_object_new(MBAL_CLASS_APP, NULL));
   return app;
-}
-
-
-
-/* _create_dialog:
- */
-static AltkWidget *_create_dialog ( AltkDisplay *display )
-{
-  GError *error = NULL;
-  LObject *dlg;
-  /* [FIXME] */
-  ALTK_CLASS_DIALOG;
-  ALTK_CLASS_BOX;
-  ALTK_CLASS_LABEL;
-  /* go */
-  if (!(dlg = altk_builder_quick_parse(DIALOG_MAIN, -1, "dialog", &error)))
-    CL_ERROR("AltkBuilder error");
-  ASSERT(ALTK_IS_DIALOG(dlg));
-  altk_dialog_set_display(ALTK_DIALOG(dlg), display);
-  return ALTK_WIDGET(dlg);
 }
 
 
@@ -125,7 +106,7 @@ static gint _run ( MbcApp *app,
   AltkDisplay *display;
   altk_init();
   display = altk_display_new();
-  MBAL_APP(app)->dialog = _create_dialog(display);
+  MBAL_APP(app)->dialog = mbal_dialog_create(display);
   altk_widget_show_all(MBAL_APP(app)->dialog);
   altk_display_open(display);
   mbc_app_connect(MBC_APP(app));

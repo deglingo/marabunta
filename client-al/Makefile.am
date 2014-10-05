@@ -13,6 +13,7 @@ marabunta_al_LDFLAGS = \
 
 marabunta_al_SOURCES = \
 	mbaldialog-main.c \
+	mbaldialog.c \
 	mbalapp.c \
 	mbalmain.c
 
