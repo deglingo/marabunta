@@ -7,8 +7,13 @@
 #include "server/mbsbase.h"
 #include "server/mbsgame-def.h"
 
-/* [FIXME] MbsApp */
-struct _MainData;
+
+
+typedef gpointer MbsPlayerID;
+
+typedef void (* MbsGameTreeHandler) ( LptTree *tree,
+                                      LObject *message,
+                                      gpointer player_data );
 
 
 
@@ -18,10 +23,9 @@ struct _MbsGame
 {
   MBS_GAME_INSTANCE_HEADER;
 
-  struct _MainData *app;
+  GList *players;
   LptTree *tree;
-  GHashTable *lpt_clients; /* map < guint clid, LptClient * > */
-  GHashTable *lpt_rclients;
+  MbsGameTreeHandler tree_handler;
   LptNode *n_sim_time;
   GTimer *timer;
   gdouble fps;
@@ -41,13 +45,14 @@ struct _MbsGameClass
 
 
 
-MbsGame *mbs_game_new ( struct _MainData *app );
-void mbs_game_add_player ( MbsGame *game,
-                           guint id,
-                           const gchar *name );
+MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler );                        
+MbsPlayerID mbs_game_add_player ( MbsGame *game,
+                                  const gchar *name,
+                                  gpointer data,
+                                  GDestroyNotify destroy_data );
 void mbs_game_start ( MbsGame *game );
 void mbs_game_lpt_event ( MbsGame *game,
-                          guint clid,
+                          MbsPlayerID player,
                           LObject *event );
 
 

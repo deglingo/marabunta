@@ -9,6 +9,7 @@
 
 
 typedef struct _MbsServer MbsServer;
+typedef gpointer MbsClientID;
 
 typedef enum _MbsServerEventType MbsServerEventType;
 typedef struct _MbsServerEventAccept MbsServerEventAccept;
@@ -30,14 +31,14 @@ struct _MbsServer
   guint16 port;
   gint listen_sock;
   GIOChannel *listen_chan;
-  guint client_counter;
-  GHashTable *client_map;
+  GList *clients;
 };
 
 
 
 #define _MBS_SERVER_EVENT_HEADER \
-  MbsServerEventType type
+  MbsServerEventType type; \
+  MbsClientID client
 
 
 
@@ -46,7 +47,6 @@ struct _MbsServer
 enum _MbsServerEventType
   {
 	MBS_SERVER_EVENT_ACCEPT,
-    MBS_SERVER_EVENT_MESSAGE,
     MBS_SERVER_EVENT_READY,
   };
 
@@ -56,19 +56,7 @@ enum _MbsServerEventType
  */
 struct _MbsServerEventAccept {
   _MBS_SERVER_EVENT_HEADER;
-  guint clid;
   LStream *stream;
-};
-
-
-
-/* MbsServerEventMessage:
- */
-struct _MbsServerEventMessage
-{
-  _MBS_SERVER_EVENT_HEADER;
-  guint clid;
-  MbMessage *message;
 };
 
 
@@ -78,7 +66,6 @@ struct _MbsServerEventMessage
 struct _MbsServerEventReady
 {
   _MBS_SERVER_EVENT_HEADER;
-  guint clid;
   GIOCondition condition;
 };
 
@@ -90,7 +77,6 @@ union _MbsServerEvent
 {
   MbsServerEventType type;
   MbsServerEventAccept accept;
-  MbsServerEventMessage message;
   MbsServerEventReady ready;
 };
 
@@ -99,11 +85,16 @@ union _MbsServerEvent
 MbsServer *mbs_server_new ( MbsServerHandler handler,
 							gpointer handler_data );
 void mbs_server_start ( MbsServer *server );
+
+void mbs_client_set_data ( MbsClientID client,
+                           gpointer data,
+                           GDestroyNotify destroy );
+gpointer mbs_client_get_data ( MbsClientID client );
 void mbs_server_add_watch ( MbsServer *server,
-                            guint clid,
+                            MbsClientID client,
                             GIOCondition condition );
 void mbs_server_remove_watch ( MbsServer *server,
-                               guint clid,
+                               MbsClientID client,
                                GIOCondition condition );
 
 

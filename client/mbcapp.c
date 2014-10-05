@@ -57,7 +57,7 @@ static void mbc_app_init ( LObject *object )
   app->client = mbc_client_new(_on_client_ready, app);
   app->tree = lpt_tree_new();
   lpt_tree_set_message_handler(app->tree, _message_handler, app, NULL);
-  app->tclient_server = lpt_tree_add_client(app->tree, "server");
+  app->tclient_server = lpt_tree_add_client(app->tree, "server", NULL, NULL);
 }
 
 
@@ -115,7 +115,8 @@ static void _on_client_ready ( MbcClient *client,
             }
           l_object_unref(msg);
         }
-      ASSERT(!error);
+      if (error)
+        CL_GERROR(error);
     }
   if (condition & G_IO_OUT)
     {

@@ -18,11 +18,37 @@ typedef struct _Client Client;
 struct _Client
 {
   MbsServer *server;
-  guint clid;
   gint sock;
   MBWatch *watch;
   LStream *stream;
+  /* user data */
+  gpointer data;
+  GDestroyNotify destroy_data;
 };
+
+
+
+/* mbs_client_set_data:
+ */
+void mbs_client_set_data ( MbsClientID client_,
+                           gpointer data,
+                           GDestroyNotify destroy )
+{
+  Client *client = client_;
+  if (client->data && client->destroy_data)
+    client->destroy_data(client->data);
+  client->data = data;
+  client->destroy_data = destroy;
+}
+
+
+
+/* mbs_client_get_data:
+ */
+gpointer mbs_client_get_data ( MbsClientID client )
+{
+  return ((Client *) client)->data;
+}
 
 
 
@@ -36,8 +62,6 @@ MbsServer *mbs_server_new ( MbsServerHandler handler,
   s->port = 6666;
   s->handler = handler;
   s->handler_data = handler_data;
-  s->client_counter = 0;
-  s->client_map = g_hash_table_new(NULL, NULL);
   return s;
 }
 
@@ -69,12 +93,12 @@ static void _on_client_watch ( GIOCondition cond,
   Client *client = (Client *) data;
   MbsServerEvent event;
   event.type = MBS_SERVER_EVENT_READY;
-  event.ready.clid = client->clid;
+  event.ready.client = client;
   event.ready.condition = cond;
   client->server->handler(&event, client->server->handler_data);
   /* [FIXME] handle EOF */
   if ((cond & G_IO_IN) && l_stream_eof(client->stream)) {
-    CL_DEBUG("[TODO] got EOF from client %d", client->clid);
+    CL_DEBUG("[TODO] got EOF from client %p", client);
     mb_watch_remove_condition(client->watch, G_IO_IN | G_IO_OUT);
   }
 }
@@ -101,17 +125,16 @@ client_name, &size)) < 0)
   client->sock = sock;
   if (fcntl(client->sock, F_SETFL, O_NONBLOCK) < 0)
     CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR);
-  client->clid = ++(server->client_counter);
   if (!(client->stream = l_file_fdopen(client->sock, "rw", NULL)))
     CL_ERROR("[TODO] could not create client stream");
   client->watch = mb_watch_new(client->sock, _on_client_watch, client, NULL);
-  g_hash_table_insert(server->client_map, GUINT_TO_POINTER(client->clid), client);
+  server->clients = g_list_append(server->clients, client);
   /* create and send the event */
   event.type = MBS_SERVER_EVENT_ACCEPT;
-  event.accept.clid = client->clid;
+  event.accept.client = client;
   event.accept.stream = client->stream;
-  CL_DEBUG("client %d connected: %s:%hd",
-           client->clid,
+  CL_DEBUG("client %p connected: %s:%hd",
+           client,
            inet_ntoa(client_name.sin_addr),
            ntohs(client_name.sin_port));
   server->handler(&event, server->handler_data);
@@ -137,13 +160,11 @@ void mbs_server_start ( MbsServer *server )
 /* mbs_server_add_watch:
  */
 void mbs_server_add_watch ( MbsServer *server,
-                            guint clid,
+                            MbsClientID client,
                             GIOCondition condition )
 {
-  Client *client;
-  if (!(client = g_hash_table_lookup(server->client_map, GUINT_TO_POINTER(clid))))
-    CL_ERROR("unknown client: %d", clid);
-  mb_watch_add_condition(client->watch, condition);
+  ASSERT(g_list_find(server->clients, client));
+  mb_watch_add_condition(((Client *) client)->watch, condition);
 }
 
 
@@ -151,11 +172,9 @@ void mbs_server_add_watch ( MbsServer *server,
 /* mbs_server_remove_watch:
  */
 void mbs_server_remove_watch ( MbsServer *server,
-                               guint clid,
+                               MbsClientID client,
                                GIOCondition condition )
 {
-  Client *client;
-  if (!(client = g_hash_table_lookup(server->client_map, GUINT_TO_POINTER(clid))))
-    CL_ERROR("unknown client: %d", clid);
-  mb_watch_remove_condition(client->watch, condition);
+  ASSERT(g_list_find(server->clients, client));
+  mb_watch_remove_condition(((Client *) client)->watch, condition);
 }

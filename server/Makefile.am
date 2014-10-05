@@ -13,12 +13,14 @@ marabunta_server_LDFLAGS = \
 marabunta_server_SOURCES = \
 	mbsserver.c \
 	mbsgame.c \
-	mbsmain.c
+	mbsapp.c
 
 BUILT_SOURCES = \
-	mbsgame-def.h mbsgame.inl
+	mbsgame-def.h mbsgame.inl \
+	mbsapp-def.h mbsapp.inl
 
 mbsgame-def.h mbsgame.inl \
+mbsapp-def.h mbsapp.inl \
 : mbstypes.stamp-h
 
 mbstypes.stamp-h: mbstypes.in
