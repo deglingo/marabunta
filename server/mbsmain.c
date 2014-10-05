@@ -187,6 +187,7 @@ int main ()
 {
   MainData *data;
   /* CL_DEBUG("hello!"); */
+  lptree_init();
   data = g_new0(MainData, 1);
   data->client_map = g_hash_table_new(NULL, NULL);
   data->game = mbs_game_new(data);

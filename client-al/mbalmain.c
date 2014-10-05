@@ -169,6 +169,8 @@ int main ( gint argc,
 {
   MbalApp *app;
   gint r;
+  /* [fixme] */
+  lptree_init();
   app = mbal_app_new();
   r = mbc_app_run(MBC_APP(app), argc, argv);
   l_object_unref(app);
