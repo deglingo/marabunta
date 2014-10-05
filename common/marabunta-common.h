@@ -15,5 +15,7 @@
 
 #include "common/mbwatch.h"
 
+#include "common/mbworld.h"
+
 
 #endif

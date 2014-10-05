@@ -11,12 +11,15 @@ libmarabunta_common_la_SOURCES = \
 	mbmessage.c \
 	mbmessagewriter.c \
 	mbmessagereader.c \
-	mbwatch.c
+	mbwatch.c \
+	mbworld.c
 
 BUILT_SOURCES = \
 	mbmessage-def.h mbmessage.inl
+	mbworld-def.h mbworld.inl
 
 mbmessage-def.h mbmessage.inl \
+mbworld-def.h mbworld.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in

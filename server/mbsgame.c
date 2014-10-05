@@ -60,10 +60,11 @@ static void mbs_game_class_init ( LObjectClass *cls )
 static void _create_tree ( MbsGame *game )
 {
   MbsGameClass *cls = MBS_GAME_GET_CLASS(game);
+  l_trash_push();
 
-  lpt_tree_create_node(game->tree,
-                       "/game",
-                       cls->nspec_dir);
+  game->n_game = lpt_tree_create_node(game->tree,
+                                      "/game",
+                                      cls->nspec_dir);
 
   game->n_sim_time =
     lpt_tree_create_node(game->tree,
@@ -76,11 +77,19 @@ static void _create_tree ( MbsGame *game )
     l_object_unref(v);
   }
 
+  game->world = mb_world_new();
+  mb_world_create(game->world,
+                  game->n_game,
+                  L_TRASH_OBJECT(l_string_new("world")),
+                  3, 2);
+
   /* setup the shares */
   lpt_tree_create_share(game->tree,
                         "GAME",
                         "/game",
                         0 /* [flags] */);
+
+  l_trash_pop();
 }
 
 

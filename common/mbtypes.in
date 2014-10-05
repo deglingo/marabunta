@@ -3,4 +3,5 @@
 namespace Mb
 {
   class Message;
+  class World;
 }
