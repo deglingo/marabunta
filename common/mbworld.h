@@ -37,6 +37,8 @@ void mb_world_create ( MbWorld *world,
                        LObject *key,
                        guint width,
                        guint height );
+void mb_world_bind ( MbWorld *world,
+                     LptNode *root );
 
 
 

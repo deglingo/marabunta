@@ -60,5 +60,6 @@ static gint _run ( MbcApp *app,
  */
 static void _setup_game ( MbcApp *app )
 {
+  MBC_APP_CLASS(parent_class)->setup_game(app);
   mbal_dialog_setup_game(MBAL_APP(app)->dialog, app->tree);
 }

@@ -21,6 +21,7 @@ struct _MbcApp
   LUnpacker *unpacker;
   LptTree *tree;
   LptClient *tclient_server;
+  MbWorld *world;
 };
 
 

@@ -149,7 +149,7 @@ static void _game_update ( MbsGame *game )
   LInt *frame, *frame2;
   frame = L_INT(lpt_node_get_value(game->n_sim_time));
   frame2 = l_int_new(L_INT_VALUE(frame) + 1);
-  CL_DEBUG("frame %d", L_INT_VALUE(frame2));
+  /* CL_DEBUG("frame %d", L_INT_VALUE(frame2)); */
   lpt_node_set_value(game->n_sim_time, L_OBJECT(frame2));
   l_object_unref(frame2);
 }

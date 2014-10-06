@@ -24,6 +24,7 @@ static LSignalID signals[SIG_COUNT] = { 0, };
 static gint _run ( MbcApp *app,
                    gint argc,
                    gchar **argv );
+static void _setup_game ( MbcApp *app );
 static void _on_client_ready ( MbcClient *client,
                                GIOCondition condition,
                                LStream *stream,
@@ -40,6 +41,7 @@ static void _message_handler ( LptTree *tree,
 static void mbc_app_class_init ( LObjectClass *cls )
 {
   MBC_APP_CLASS(cls)->run = _run;
+  MBC_APP_CLASS(cls)->setup_game = _setup_game;
 
   signals[SIG_GAME_STARTED] =
     l_signal_new(cls,
@@ -210,4 +212,14 @@ void mbc_app_join_game ( MbcApp *app )
   lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
   /* [FIXME] */
   g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
+}
+
+
+
+/* _setup_game:
+ */
+static void _setup_game ( MbcApp *app )
+{
+  app->world = mb_world_new();
+  mb_world_bind(app->world, lpt_tree_get_node(app->tree, "/game/world"));
 }

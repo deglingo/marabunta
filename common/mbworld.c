@@ -1,6 +1,7 @@
 /* mbworld.c -
  */
 
+#include "common/private.h"
 #include "common/mbworld.h"
 #include "common/mbworld.inl"
 
@@ -47,5 +48,26 @@ void mb_world_create ( MbWorld *world,
                L_TRASH_OBJECT(l_string_new("height")));
   /* add the whole tree */
   lpt_node_add(parent, world->n_root, key);
+  l_trash_pop();
+}
+
+
+
+/* mb_world_bind:
+ */
+void mb_world_bind ( MbWorld *world,
+                     LptNode *root )
+{
+  ASSERT(root);
+  l_trash_push();
+  world->n_root = root;
+  world->n_width = 
+    lpt_node_get_child(world->n_root,
+                       L_TRASH_OBJECT(l_string_new("width")));
+  ASSERT(world->n_width);
+  world->n_height = 
+    lpt_node_get_child(world->n_root,
+                       L_TRASH_OBJECT(l_string_new("height")));
+  ASSERT(world->n_height);
   l_trash_pop();
 }

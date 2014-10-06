@@ -32,6 +32,7 @@ static AltkWidget *side_panel_create ( void )
     (altk_box_new(ALTK_VERTICAL));
   map_frame = L_TRASH_OBJECT
     (altk_frame_new("map"));
+  altk_widget_set_name(map_frame, "map-frame");
   altk_box_pack_start(ALTK_BOX(box), map_frame, 0);
   return box;
 }
@@ -45,6 +46,32 @@ static AltkWidget *body_box_create ( void )
     (altk_box_new(ALTK_HORIZONTAL));
   altk_box_pack_start(ALTK_BOX(box), side_panel_create(), 0);
   return box;
+}
+
+
+
+static AltkWidget *map_create ( void )
+{
+  guint width=3, height=2;
+  guint x, y;
+  AltkWidget *table;
+  table = L_TRASH_OBJECT
+    (altk_table_new());
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width; x++)
+        {
+          gchar *label = L_TRASH_GPOINTER
+            (g_strdup_printf("[%d,%d]", x, y));
+          AltkWidget *sector = L_TRASH_OBJECT
+            (altk_button_new_with_label(label));
+          altk_table_attach(ALTK_TABLE(table),
+                            sector,
+                            y, x, y+1, x+1, 0);
+        }
+    }
+  altk_widget_show_all(table);
+  return table;
 }
 
 
@@ -107,8 +134,14 @@ static void _bind_node_label ( LptNode *node,
 void mbal_dialog_setup_game ( AltkWidget *dialog,
                               LptTree *tree )
 {
+  AltkWidget *map_frame;
+  l_trash_push();
   /* sim-time */
   _bind_node_label(lpt_tree_get_node(tree, "/game/sim-time"),
                    altk_widget_find(dialog, "sim-time"));
-
+  /* map */
+  map_frame = altk_widget_find(dialog, "map-frame");
+  ALTK_CONTAINER_ADD(map_frame, map_create());
+  /* cleanup */
+  l_trash_pop();
 }
