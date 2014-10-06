@@ -5,6 +5,8 @@
 #include "client/mbcapp.h"
 #include "client/mbcapp.inl"
 
+#include <sys/resource.h>
+
 
 
 /* Signals:
@@ -51,6 +53,13 @@ static void mbc_app_class_init ( LObjectClass *cls )
 static void mbc_app_init ( LObject *object )
 {
   MbcApp *app = MBC_APP(object);
+  struct rlimit limit;
+  limit.rlim_cur = RLIM_INFINITY;
+  limit.rlim_max = RLIM_INFINITY;
+  if (setrlimit(RLIMIT_CORE, &limit) < 0)
+    {
+      CL_DEBUG("ERROR: setrlimit() failed: %s", strerror(errno));
+    }
   /* [FIXME] */
   LPT_CLASS_NSPEC_INT;
   LPT_CLASS_NSPEC_DIR;
