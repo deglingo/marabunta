@@ -19,8 +19,7 @@ MbWorld *mb_world_new ( void )
 /* mb_world_create:
  */
 void mb_world_create ( MbWorld *world,
-                       LptNode *parent,
-                       LObject *key,
+                       LptNode *root,
                        guint width,
                        guint height )
 {
@@ -32,8 +31,7 @@ void mb_world_create ( MbWorld *world,
   ns_uint = L_TRASH_OBJECT
     (lpt_nspec_int_new("UINT", 0, G_MAXINT, 0));
   /* root */
-  world->n_root = L_TRASH_OBJECT
-    (lpt_node_new(ns_dir));
+  world->n_root = l_object_ref(root);
   /* width */
   world->n_width = L_TRASH_OBJECT
     (lpt_node_new(ns_uint));
@@ -46,8 +44,6 @@ void mb_world_create ( MbWorld *world,
   lpt_node_set_value(world->n_height, L_TRASH_OBJECT(l_int_new(height)));
   lpt_node_add(world->n_root, world->n_height,
                L_TRASH_OBJECT(l_string_new("height")));
-  /* add the whole tree */
-  lpt_node_add(parent, world->n_root, key);
   l_trash_pop();
 }
 
@@ -60,7 +56,7 @@ void mb_world_bind ( MbWorld *world,
 {
   ASSERT(root);
   l_trash_push();
-  world->n_root = root;
+  world->n_root = l_object_ref(root);
   world->n_width = 
     lpt_node_get_child(world->n_root,
                        L_TRASH_OBJECT(l_string_new("width")));

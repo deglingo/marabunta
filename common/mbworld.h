@@ -33,8 +33,7 @@ struct _MbWorldClass
 
 MbWorld *mb_world_new ( void );
 void mb_world_create ( MbWorld *world,
-                       LptNode *parent,
-                       LObject *key,
+                       LptNode *node,
                        guint width,
                        guint height );
 void mb_world_bind ( MbWorld *world,
