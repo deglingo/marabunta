@@ -18,5 +18,5 @@ mbcapp-def.h mbcapp.inl \
 : mbctypes.stamp-h
 
 mbctypes.stamp-h: mbctypes.in
-	cpp $< | $(LOS_GENTYPES)
+	cpp $< | $(LOS_GENTYPES) -s $(srcdir) -u 'client/'
 	echo >$@

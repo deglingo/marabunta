@@ -24,5 +24,5 @@ mbsapp-def.h mbsapp.inl \
 : mbstypes.stamp-h
 
 mbstypes.stamp-h: mbstypes.in
-	cpp $< | $(LOS_GENTYPES)
+	cpp $< | $(LOS_GENTYPES) -s $(srcdir) -u 'server/'
 	echo >$@

@@ -23,5 +23,5 @@ mbworld-def.h mbworld.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in
-	cpp $< | $(LOS_GENTYPES)
+	cpp $< | $(LOS_GENTYPES) -s $(srcdir) -u 'common/'
 	echo >$@

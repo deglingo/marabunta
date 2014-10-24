@@ -28,5 +28,5 @@ mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h
 
 mbaltypes.stamp-h: mbaltypes.in
-	cpp $< | $(LOS_GENTYPES)
+	cpp $< | $(LOS_GENTYPES) -s $(srcdir) -u 'client-al/'
 	echo >$@

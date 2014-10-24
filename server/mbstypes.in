@@ -2,9 +2,12 @@
 
 namespace Mbs
 {
-  class App;
+  class App
+  {
+  };
 
-  class Game {
+  class Game
+  {
     void class_init ();
   };
 }
