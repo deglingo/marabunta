@@ -7,6 +7,8 @@
 #include <glib.h>
 
 #include "common/marabunta-common.h"
+/* [fixme] ?? */
+#include "server/marabunta-server.h"
 
 
 

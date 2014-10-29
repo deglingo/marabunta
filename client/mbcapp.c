@@ -84,6 +84,15 @@ gint mbc_app_run ( MbcApp *app,
 
 
 
+/* _setup_solo_game:
+ */
+static void _setup_solo_game ( MbcApp *app )
+{
+  app->game = mbs_game_new(NULL);
+}
+
+
+
 /* _run:
  */
 static gint _run ( MbcApp *app,
@@ -91,6 +100,8 @@ static gint _run ( MbcApp *app,
                    gchar **argv )
 {
   GMainLoop *loop;
+  /* [TEMP] */
+  _setup_solo_game(app);
   loop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(loop);
   return 0;

@@ -22,6 +22,7 @@ struct _MbcApp
   LptTree *tree;
   LptClient *tclient_server;
   /* MbWorld *world; */
+  MbsGame *game;
 };
 
 

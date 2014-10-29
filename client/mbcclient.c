@@ -56,23 +56,24 @@ gint mbc_client_connect ( MbcClient *cli,
 						  const gchar *host,
 						  guint16 port )
 {
-  struct sockaddr_in server_name;
-  /* create the socket */
-  if ((cli->sock = socket(PF_INET, SOCK_STREAM, 0)) < 0)
-	CL_ERROR("could not create socket: %s", STRERROR);
-  init_sockaddr(&server_name, host, port);
-  /* connect */
-  if (connect(cli->sock, (struct sockaddr *) &server_name, sizeof(server_name)) < 0)
-	CL_ERROR("connect failed: %s", STRERROR);
-  /* set the non-blocking flag */
-  if (fcntl(cli->sock, F_SETFL, O_NONBLOCK) < 0)
-    CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR);
-  /* create the stream */
-  cli->stream = l_file_fdopen(cli->sock, "rw", NULL);
-  ASSERT(cli->stream);
-  /* create the watch */
-  cli->watch = mb_watch_new(cli->sock, _on_client_watch, cli, NULL);
-  mb_watch_add_condition(cli->watch, G_IO_IN);
+  CL_DEBUG("[TODO]");
+  /* struct sockaddr_in server_name; */
+  /* /\* create the socket *\/ */
+  /* if ((cli->sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) */
+  /*   CL_ERROR("could not create socket: %s", STRERROR); */
+  /* init_sockaddr(&server_name, host, port); */
+  /* /\* connect *\/ */
+  /* if (connect(cli->sock, (struct sockaddr *) &server_name, sizeof(server_name)) < 0) */
+  /*   CL_ERROR("connect failed: %s", STRERROR); */
+  /* /\* set the non-blocking flag *\/ */
+  /* if (fcntl(cli->sock, F_SETFL, O_NONBLOCK) < 0) */
+  /*   CL_ERROR("SETFL(NONBLOCK) failed: %s", STRERROR); */
+  /* /\* create the stream *\/ */
+  /* cli->stream = l_file_fdopen(cli->sock, "rw", NULL); */
+  /* ASSERT(cli->stream); */
+  /* /\* create the watch *\/ */
+  /* cli->watch = mb_watch_new(cli->sock, _on_client_watch, cli, NULL); */
+  /* mb_watch_add_condition(cli->watch, G_IO_IN); */
   return 0;
 }
 

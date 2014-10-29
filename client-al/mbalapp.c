@@ -49,8 +49,8 @@ static gint _run ( MbcApp *app,
   MBAL_APP(app)->dialog = mbal_dialog_create(display);
   altk_widget_show_all(MBAL_APP(app)->dialog);
   altk_display_open(display);
-  mbc_app_connect(MBC_APP(app));
-  mbc_app_join_game(MBC_APP(app));
+  /* mbc_app_connect(MBC_APP(app)); */
+  /* mbc_app_join_game(MBC_APP(app)); */
   return MBC_APP_CLASS(parent_class)->run(app, argc, argv);
 }
 

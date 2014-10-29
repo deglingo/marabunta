@@ -159,19 +159,19 @@ void mbs_app_send ( MbsApp *app,
 
 
 
-/* main:
- */
-gint main ( gint argc,
-            gchar **argv )
-{
-  MbsApp *app;
-  gint r;
-  los_init();
-  app = mbs_app_new();
-  r = mbs_app_main(app, argc, argv);
-  l_object_unref(app);
-  return r;
-}
+/* /\* main: */
+/*  *\/ */
+/* gint main ( gint argc, */
+/*             gchar **argv ) */
+/* { */
+/*   MbsApp *app; */
+/*   gint r; */
+/*   los_init(); */
+/*   app = mbs_app_new(); */
+/*   r = mbs_app_main(app, argc, argv); */
+/*   l_object_unref(app); */
+/*   return r; */
+/* } */
 
 
 

@@ -1,16 +1,12 @@
 #
 
-bin_PROGRAMS = marabunta-server
+lib_LTLIBRARIES = libmarabunta-server.la
 
-marabunta_server_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) -DCL_LOG_DOMAIN=\"mbserver\"
+libmarabunta_server_la_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) -DCL_LOG_DOMAIN=\"mbserver\"
 
-marabunta_server_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@ @LPTREE_CFLAGS@
+libmarabunta_server_la_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@ @LPTREE_CFLAGS@
 
-marabunta_server_LDFLAGS = \
-	$(top_builddir)/common/libmarabunta-common.la \
-	@CLOG_LIBS@ @GLIB_LIBS@ @LPTREE_LIBS@
-
-marabunta_server_SOURCES = \
+libmarabunta_server_la_SOURCES = \
 	mbsserver.c \
 	mbsgame.c \
 	mbsapp.c
