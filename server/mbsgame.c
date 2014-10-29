@@ -142,12 +142,8 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
  */
 static void _game_update ( MbsGame *game )
 {
-  LInt *frame, *frame2;
-  frame = L_INT(lpt_node_get_value(game->n_sim_time));
-  frame2 = l_int_new(L_INT_VALUE(frame) + 1);
-  /* CL_DEBUG("frame %d", L_INT_VALUE(frame2)); */
-  lpt_node_set_value(game->n_sim_time, L_OBJECT(frame2));
-  l_object_unref(frame2);
+  CL_TRACE("%d", game->frame);
+  game->frame++;
 }
 
 
@@ -156,11 +152,12 @@ static void _game_update ( MbsGame *game )
  */
 static gboolean _on_game_timer ( MbsGame *game )
 {
-  guint frame;
-  frame = (guint) (g_timer_elapsed(game->timer, NULL) * (gdouble) game->fps);
-  /* CL_DEBUG(" - %d/%d (%f)", frame, game->frame, g_timer_elapsed(game->timer, NULL)); */
-  while (frame > L_INT_VALUE(lpt_node_get_value(game->n_sim_time)))
-    _game_update(game);
+  gdouble elapsed = g_timer_elapsed(game->timer, NULL);
+  while (elapsed >= game->next_frame)
+    {
+      _game_update(game);
+      game->next_frame = ((gdouble) game->frame) / game->fps;
+    }
   return G_SOURCE_CONTINUE;
 }
 
@@ -171,10 +168,11 @@ static gboolean _on_game_timer ( MbsGame *game )
 void mbs_game_start ( MbsGame *game )
 {
   CL_DEBUG("starting game...");
+  game->fps = 1.0;
+  game->next_frame = 0.0;
   game->timer = g_timer_new();
-  game->fps = 10.0;
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
-                     10,
+                     1,
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);

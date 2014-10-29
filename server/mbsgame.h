@@ -28,8 +28,12 @@ struct _MbsGame
   MbsGameTreeHandler tree_handler;
   LptNode *n_game;
   LptNode *n_sim_time;
-  GTimer *timer;
+  /* game timer */
   gdouble fps;
+  GTimer *timer;
+  guint frame;
+  gdouble next_frame;
+  /* game data */
   MbWorld *world;
 };
 
