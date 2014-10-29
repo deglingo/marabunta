@@ -89,6 +89,7 @@ gint mbc_app_run ( MbcApp *app,
 static void _setup_solo_game ( MbcApp *app )
 {
   app->game = mbs_game_new(NULL);
+  app->player = mbs_game_add_player(app->game, "Player1", NULL, NULL);
 }
 
 

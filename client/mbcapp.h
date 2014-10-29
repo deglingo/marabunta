@@ -23,6 +23,7 @@ struct _MbcApp
   LptClient *tclient_server;
   /* MbWorld *world; */
   MbsGame *game;
+  MbsPlayerID player;
 };
 
 
