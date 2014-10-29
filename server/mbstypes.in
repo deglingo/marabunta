@@ -6,6 +6,10 @@ namespace Mbs
   {
   };
 
+  class World
+  {
+  };
+
   class Game
   {
     void class_init ();

@@ -38,27 +38,27 @@ static void _process_message ( MbsApp *app,
                                Client *cli,
                                LObject *msg )
 {
-  gint key;
-  ASSERT(L_IS_TUPLE(msg));
-  ASSERT(L_TUPLE_SIZE(msg) >= 1);
-  ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0)));
-  key = L_INT_VALUE(L_TUPLE_ITEM(msg, 0));
-  switch (key)
-    {
-    case MB_MESSAGE_KEY_JOIN:
-      ASSERT(cli->playerid == 0);
-      cli->playerid = mbs_game_add_player(app->game, "player", cli, NULL); /* [fixme] name */
-      CL_DEBUG("client %p joined the game (player %p)",
-               cli->clid, cli->playerid);
-      /* [FIXME] */
-      mbs_game_start(app->game);
-      break;
-    case MB_MESSAGE_KEY_LPT_EVENT:
-      mbs_game_lpt_event(app->game, cli->playerid, L_TUPLE_ITEM(msg, 1));
-      break;
-    default:
-      CL_DEBUG("ERROR: unknown message key: %d", key);
-    }
+  /* gint key; */
+  /* ASSERT(L_IS_TUPLE(msg)); */
+  /* ASSERT(L_TUPLE_SIZE(msg) >= 1); */
+  /* ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0))); */
+  /* key = L_INT_VALUE(L_TUPLE_ITEM(msg, 0)); */
+  /* switch (key) */
+  /*   { */
+  /*   case MB_MESSAGE_KEY_JOIN: */
+  /*     ASSERT(cli->playerid == 0); */
+  /*     cli->playerid = mbs_game_add_player(app->game, "player", cli, NULL); /\* [fixme] name *\/ */
+  /*     CL_DEBUG("client %p joined the game (player %p)", */
+  /*              cli->clid, cli->playerid); */
+  /*     /\* [FIXME] *\/ */
+  /*     mbs_game_start(app->game); */
+  /*     break; */
+  /*   case MB_MESSAGE_KEY_LPT_EVENT: */
+  /*     mbs_game_lpt_event(app->game, cli->playerid, L_TUPLE_ITEM(msg, 1)); */
+  /*     break; */
+  /*   default: */
+  /*     CL_DEBUG("ERROR: unknown message key: %d", key); */
+  /*   } */
 }
 
 

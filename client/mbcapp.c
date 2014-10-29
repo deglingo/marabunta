@@ -29,10 +29,6 @@ static void _on_client_ready ( MbcClient *client,
                                GIOCondition condition,
                                LStream *stream,
                                gpointer data );
-static void _message_handler ( LptTree *tree,
-                               LptClient *client,
-                               LObject *message,
-                               gpointer data );
 
 
 
@@ -67,7 +63,6 @@ static void mbc_app_init ( LObject *object )
   LPT_CLASS_NSPEC_DIR;
   app->client = mbc_client_new(_on_client_ready, app);
   app->tree = lpt_tree_new();
-  lpt_tree_set_message_handler(app->tree, _message_handler, app, NULL);
   app->tclient_server = lpt_tree_add_client(app->tree, "server", NULL, NULL);
 }
 
@@ -84,12 +79,24 @@ gint mbc_app_run ( MbcApp *app,
 
 
 
+/* _message_handler:
+ */
+static void _message_handler ( MbsPlayerID player,
+                               LObject *message,
+                               gpointer data )
+{
+  MbcApp *app = data;
+  CL_TRACE("%p, %s", app, l_object_to_string(message));
+}
+
+
+
 /* _setup_solo_game:
  */
 static void _setup_solo_game ( MbcApp *app )
 {
   app->game = mbs_game_new(NULL);
-  app->player = mbs_game_add_player(app->game, "Player1", NULL, NULL);
+  app->player = mbs_game_add_player(app->game, "Player1", _message_handler, app, NULL);
   mbs_game_start(app->game);
 }
 
@@ -162,24 +169,6 @@ static void _send ( MbcApp *app,
 {
   l_packer_add(app->packer, msg);
   mbc_client_add_watch(app->client, G_IO_OUT);
-}
-
-
-
-/* _message_handler:
- */
-static void _message_handler ( LptTree *tree,
-                               LptClient *client,
-                               LObject *message,
-                               gpointer data )
-{
-  MbcApp *app = data;
-  LTuple *mbmsg = l_tuple_new(2);
-  /* CL_DEBUG("lpt_event: %s", l_object_to_string(message)); */
-  l_tuple_give_item(mbmsg, 0, L_OBJECT(l_int_new(MB_MESSAGE_KEY_LPT_EVENT)));
-  l_tuple_give_item(mbmsg, 1, l_object_ref(message));
-  _send(app, L_OBJECT(mbmsg));
-  l_object_unref(mbmsg);
 }
 
 

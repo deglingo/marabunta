@@ -19,6 +19,7 @@ enum _MbMessageKey
   {
     MB_MESSAGE_KEY_JOIN,
     MB_MESSAGE_KEY_LPT_EVENT,
+    MB_MESSAGE_KEY_GAME_UPDATE,
   };
 
 

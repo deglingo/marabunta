@@ -5,6 +5,7 @@
 #define _MBSGAME_H_
 
 #include "server/mbsbase.h"
+#include "server/mbsworld.h"
 #include "server/mbsgame-def.h"
 
 
@@ -14,6 +15,9 @@ typedef gpointer MbsPlayerID;
 typedef void (* MbsGameTreeHandler) ( LptTree *tree,
                                       LObject *message,
                                       gpointer player_data );
+typedef void (* MbsMessageHandler) ( MbsPlayerID player,
+                                     LObject *message,
+                                     gpointer data );
 
 
 
@@ -34,7 +38,7 @@ struct _MbsGame
   guint frame;
   gdouble next_frame;
   /* game data */
-  MbWorld *world;
+  MbsWorld *world;
 };
 
 
@@ -54,7 +58,8 @@ struct _MbsGameClass
 MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler );                        
 MbsPlayerID mbs_game_add_player ( MbsGame *game,
                                   const gchar *name,
-                                  gpointer data,
+                                  MbsMessageHandler message_handler,
+                                  gpointer message_data,
                                   GDestroyNotify destroy_data );
 void mbs_game_start ( MbsGame *game );
 void mbs_game_lpt_event ( MbsGame *game,

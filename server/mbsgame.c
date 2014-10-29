@@ -15,7 +15,8 @@ typedef struct _Player
   MbsGame *game;
   gchar *name;
   LptClient *lpt_client;
-  gpointer data;
+  MbsMessageHandler message_handler;
+  gpointer handler_data;
   GDestroyNotify destroy_data;
 }
   Player;
@@ -26,13 +27,15 @@ typedef struct _Player
  */
 static Player *player_new ( MbsGame *game,
                             const gchar *name,
-                            gpointer data,
+                            MbsMessageHandler message_handler,
+                            gpointer handler_data,
                             GDestroyNotify destroy_data )
 {
   Player *p = g_new0(Player, 1);
   p->game = game;
   p->name = g_strdup(name);
-  p->data = data;
+  p->message_handler = message_handler;
+  p->handler_data = handler_data;
   p->destroy_data = destroy_data;
   return p;
 }
@@ -55,56 +58,6 @@ static void mbs_game_class_init ( LObjectClass *cls )
 
 
 
-/* _create_tree:
- */
-static void _create_tree ( MbsGame *game )
-{
-  MbsGameClass *cls = MBS_GAME_GET_CLASS(game);
-  l_trash_push();
-
-  game->n_game = lpt_tree_create_node(game->tree,
-                                      "/game",
-                                      cls->nspec_dir);
-
-  game->n_sim_time =
-    lpt_tree_create_node(game->tree,
-                         "/game/sim-time",
-                         cls->nspec_uint);
-
-  { /* [removeme] */
-    LInt *v = l_int_new(0);
-    lpt_node_set_value(game->n_sim_time, L_OBJECT(v));
-    l_object_unref(v);
-  }
-
-  game->world = mb_world_new();
-
-  /* setup the shares */
-  lpt_tree_create_share(game->tree,
-                        "GAME",
-                        "/game",
-                        0 /* [flags] */);
-
-  l_trash_pop();
-}
-
-
-
-/* _message_handler:
- */
-static void _message_handler ( LptTree *tree,
-                               LptClient *client,
-                               LObject *message,
-                               gpointer data )
-{
-  MbsGame *game = data;
-  Player *player = lpt_client_get_data(client);
-  ASSERT(player);
-  game->tree_handler(tree, message, player->data);
-}
-
-
-
 /* mbs_game_new:
  */
 MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler )
@@ -116,8 +69,6 @@ MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler )
   /* game->lpt_rclients = g_hash_table_new(NULL, NULL); */
   game->tree_handler = tree_handler;
   game->tree = lpt_tree_new();
-  lpt_tree_set_message_handler(game->tree, _message_handler, game, NULL);
-  _create_tree(game);
   return game;
 }
 
@@ -127,13 +78,25 @@ MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler )
  */
 MbsPlayerID mbs_game_add_player ( MbsGame *game,
                                   const gchar *name,
-                                  gpointer data,
+                                  MbsMessageHandler message_handler,
+                                  gpointer message_handler_data,
                                   GDestroyNotify destroy_data )
 {
-  Player *player = player_new(game, name, data, destroy_data);
+  Player *player = player_new(game, name, message_handler, message_handler_data, destroy_data);
   game->players = g_list_append(game->players, player);
   player->lpt_client = lpt_tree_add_client(game->tree, name, player, NULL);
   return player;
+}
+
+
+
+/* send:
+ */
+static void _send ( MbsGame *game,
+                    Player *player,
+                    LObject *message )
+{
+  player->message_handler(player, message, player->handler_data);
 }
 
 
@@ -142,8 +105,19 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
  */
 static void _game_update ( MbsGame *game )
 {
-  CL_TRACE("%d", game->frame);
+  GList *l;
   game->frame++;
+  CL_TRACE("%d", game->frame);
+  for (l = game->players; l; l = l->next)
+    {
+      Player *p = l->data;
+      LTuple *msg = l_tuple_newl_give(2,
+                                      l_int_new(MB_MESSAGE_KEY_GAME_UPDATE),
+                                      l_int_new(game->frame),
+                                      NULL);
+      _send(game, p, L_OBJECT(msg));
+      l_object_unref(msg);
+    }
 }
 
 
@@ -168,6 +142,7 @@ static gboolean _on_game_timer ( MbsGame *game )
 void mbs_game_start ( MbsGame *game )
 {
   CL_DEBUG("starting game...");
+  game->world = mbs_world_new();
   game->fps = 1.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
