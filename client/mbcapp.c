@@ -220,6 +220,6 @@ void mbc_app_join_game ( MbcApp *app )
  */
 static void _setup_game ( MbcApp *app )
 {
-  app->world = mb_world_new();
-  mb_world_bind(app->world, lpt_tree_get_node(app->tree, "/game/world"));
+  /* app->world = mb_world_new(); */
+  /* mb_world_bind(app->world, lpt_tree_get_node(app->tree, "/game/world")); */
 }

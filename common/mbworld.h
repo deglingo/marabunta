@@ -14,10 +14,6 @@
 struct _MbWorld
 {
   MB_WORLD_INSTANCE_HEADER;
-
-  LptNode *n_root;
-  LptNode *n_width;
-  LptNode *n_height;
 };
 
 
@@ -32,12 +28,6 @@ struct _MbWorldClass
 
 
 MbWorld *mb_world_new ( void );
-void mb_world_create ( MbWorld *world,
-                       LptNode *node,
-                       guint width,
-                       guint height );
-void mb_world_bind ( MbWorld *world,
-                     LptNode *root );
 
 
 

@@ -78,11 +78,6 @@ static void _create_tree ( MbsGame *game )
   }
 
   game->world = mb_world_new();
-  mb_world_create(game->world,
-                  lpt_tree_create_node(game->tree,
-                                       "/game/world",
-                                       cls->nspec_dir),
-                  3, 2);
 
   /* setup the shares */
   lpt_tree_create_share(game->tree,
