@@ -6,6 +6,7 @@
 
 #include "client/mbcbase.h"
 #include "client/mbcclient.h"
+#include "client/mbcgameproxy.h"
 #include "client/mbcapp-def.h"
 
 
@@ -24,6 +25,8 @@ struct _MbcApp
   /* MbWorld *world; */
   MbsGame *game;
   MbsPlayerID player;
+  /* proxy datas */
+  MbcGameProxy *game_proxy;
 };
 
 

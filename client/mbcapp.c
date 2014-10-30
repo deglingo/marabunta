@@ -85,7 +85,8 @@ static void _process_game_update ( MbcApp *app,
                                    MbsPlayerID player,
                                    MbMessage *message )
 {
-  CL_DEBUG("[TODO] game update %d", message->frame);
+  CL_DEBUG("game update %d", message->frame);
+  mbc_game_proxy_process_update(app->game_proxy, message);
 }
 
 
@@ -116,6 +117,7 @@ static void _setup_solo_game ( MbcApp *app )
 {
   app->game = mbs_game_new(NULL);
   app->player = mbs_game_add_player(app->game, "Player1", _message_handler, app, NULL);
+  app->game_proxy = mbc_game_proxy_new();
   mbs_game_start(app->game);
 }
 
