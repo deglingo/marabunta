@@ -118,13 +118,13 @@ static void _bind_node_label_handler ( LptNode *node,
 static void _bind_node_label ( LptNode *node,
                                AltkWidget *label )
 {
-  ASSERT(node);
-  ASSERT(ALTK_IS_LABEL(label));
-  l_signal_connect(L_OBJECT(node),
-                   "value_set",
-                   (LSignalHandler) _bind_node_label_handler,
-                   label,
-                   NULL);
+  /* ASSERT(node); */
+  /* ASSERT(ALTK_IS_LABEL(label)); */
+  /* l_signal_connect(L_OBJECT(node), */
+  /*                  "value_set", */
+  /*                  (LSignalHandler) _bind_node_label_handler, */
+  /*                  label, */
+  /*                  NULL); */
 }
 
 

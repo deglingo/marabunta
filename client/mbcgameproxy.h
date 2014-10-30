@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbcGameProxy
 {
   MBC_GAME_PROXY_INSTANCE_HEADER;
+
+  guint frame;
 };
 
 

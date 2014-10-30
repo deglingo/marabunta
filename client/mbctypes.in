@@ -4,6 +4,7 @@ namespace Mbc
 {
   class GameProxy
   {
+    void class_init ();
   };
   
   class App
