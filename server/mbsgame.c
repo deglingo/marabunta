@@ -18,6 +18,7 @@ typedef struct _Player
   MbsMessageHandler message_handler;
   gpointer handler_data;
   GDestroyNotify destroy_data;
+  MbMessage *message;
 }
   Player;
 
@@ -94,7 +95,7 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
  */
 static void _send ( MbsGame *game,
                     Player *player,
-                    LObject *message )
+                    MbMessage *message )
 {
   player->message_handler(player, message, player->handler_data);
 }
@@ -108,15 +109,21 @@ static void _game_update ( MbsGame *game )
   GList *l;
   game->frame++;
   CL_TRACE("%d", game->frame);
+  /* prepare the messages */
   for (l = game->players; l; l = l->next)
     {
       Player *p = l->data;
-      LTuple *msg = l_tuple_newl_give(2,
-                                      l_int_new(MB_MESSAGE_KEY_GAME_UPDATE),
-                                      l_int_new(game->frame),
-                                      NULL);
-      _send(game, p, L_OBJECT(msg));
-      l_object_unref(msg);
+      p->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE);
+      /* [fixme] */
+      p->message->frame = game->frame;
+    }
+  /* [TODO] game update */
+  /* send all the messages */
+  for (l = game->players; l; l = l->next)
+    {
+      Player *p = l->data;
+      _send(game, p, p->message);
+      L_OBJECT_CLEAR(p->message);
     }
 }
 

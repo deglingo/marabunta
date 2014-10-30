@@ -16,7 +16,7 @@ typedef void (* MbsGameTreeHandler) ( LptTree *tree,
                                       LObject *message,
                                       gpointer player_data );
 typedef void (* MbsMessageHandler) ( MbsPlayerID player,
-                                     LObject *message,
+                                     MbMessage *message,
                                      gpointer data );
 
 

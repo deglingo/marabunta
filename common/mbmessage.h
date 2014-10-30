@@ -31,6 +31,8 @@ struct _MbMessage
   MB_MESSAGE_INSTANCE_HEADER;
 
   MbMessageKey key;
+  /* [removeme] */
+  guint frame;
 };
 
 
@@ -44,10 +46,7 @@ struct _MbMessageClass
 
 
 
-MbMessage *mb_message_new ( MbMessageKey key,
-                            const gchar *format,
-                            ... )
-G_GNUC_NULL_TERMINATED;
+MbMessage *mb_message_new ( MbMessageKey key );
 
 
 

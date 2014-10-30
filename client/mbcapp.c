@@ -79,14 +79,33 @@ gint mbc_app_run ( MbcApp *app,
 
 
 
+/* _process_game_update:
+ */
+static void _process_game_update ( MbcApp *app,
+                                   MbsPlayerID player,
+                                   MbMessage *message )
+{
+  CL_DEBUG("[TODO] game update %d", message->frame);
+}
+
+
+
 /* _message_handler:
  */
 static void _message_handler ( MbsPlayerID player,
-                               LObject *message,
+                               MbMessage *message,
                                gpointer data )
 {
   MbcApp *app = data;
-  CL_TRACE("%p, %s", app, l_object_to_string(message));
+  CL_TRACE("%p, %s", app, L_OBJECT_REPR(message));
+  switch (message->key)
+    {
+    case MB_MESSAGE_KEY_GAME_UPDATE:
+      _process_game_update(app, player, message);
+      break;
+    default:
+      CL_DEBUG("[TODO] msg key %d", message->key);
+    }
 }
 
 

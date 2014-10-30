@@ -10,9 +10,7 @@
 
 /* mb_message_new:
  */
-MbMessage *mb_message_new ( MbMessageKey key,
-                            const gchar *format,
-                            ... )
+MbMessage *mb_message_new ( MbMessageKey key )
 {
   MbMessage *msg;
   msg = MB_MESSAGE(l_object_new(MB_CLASS_MESSAGE, NULL));
