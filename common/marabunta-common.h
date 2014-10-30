@@ -7,6 +7,8 @@
 
 #include "common/mbbase.h"
 
+#include "common/mbapp.h"
+
 #include "common/mbmessage.h"
 
 #include "common/mbmessagewriter.h"

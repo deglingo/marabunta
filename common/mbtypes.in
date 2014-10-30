@@ -2,6 +2,10 @@
 
 namespace Mb
 {
+  class App
+  {
+  };
+  
   class Message
   {
   };

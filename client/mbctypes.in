@@ -1,5 +1,10 @@
 /* -*- c++ -*- */
 
+namespace Mb
+{
+  extern class App;
+}
+
 namespace Mbc
 {
   class GameProxy
@@ -7,7 +12,7 @@ namespace Mbc
     void class_init ();
   };
   
-  class App
+  class App : Mb::App
   {
     void class_init ();
     void init ();
