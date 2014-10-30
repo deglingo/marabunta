@@ -14,7 +14,6 @@ typedef struct _Player
 {
   MbsGame *game;
   gchar *name;
-  LptClient *lpt_client;
   MbsMessageHandler message_handler;
   gpointer handler_data;
   GDestroyNotify destroy_data;
@@ -47,29 +46,17 @@ static Player *player_new ( MbsGame *game,
  */
 static void mbs_game_class_init ( LObjectClass *cls )
 {
-  MbsGameClass *gcls = (MbsGameClass *) cls;
-
-  gcls->nspec_dir = lpt_nspec_dir_new("DIR");
-
-  gcls->nspec_uint = lpt_nspec_int_new("UINT",
-                                       0,
-                                       G_MAXINT,
-                                       0);
+  /* MbsGameClass *gcls = (MbsGameClass *) cls; */
 }
 
 
 
 /* mbs_game_new:
  */
-MbsGame *mbs_game_new ( MbsGameTreeHandler tree_handler )
+MbsGame *mbs_game_new ( void )
 {
   MbsGame *game;
   game = MBS_GAME(l_object_new(MBS_CLASS_GAME, NULL));
-  /* game->app = app; */
-  /* game->lpt_clients = g_hash_table_new(NULL, NULL); */
-  /* game->lpt_rclients = g_hash_table_new(NULL, NULL); */
-  game->tree_handler = tree_handler;
-  game->tree = lpt_tree_new();
   return game;
 }
 
@@ -85,7 +72,6 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
 {
   Player *player = player_new(game, name, message_handler, message_handler_data, destroy_data);
   game->players = g_list_append(game->players, player);
-  player->lpt_client = lpt_tree_add_client(game->tree, name, player, NULL);
   return player;
 }
 
@@ -158,16 +144,4 @@ void mbs_game_start ( MbsGame *game )
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);
-}
-
-
-
-/* mbs_game_lpt_event:
- */
-void mbs_game_lpt_event ( MbsGame *game,
-                          MbsPlayerID player,
-                          LObject *event )
-{
-  LptClient *client = ((Player *) player)->lpt_client;
-  lpt_tree_handle_message(game->tree, client, event);
 }

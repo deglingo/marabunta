@@ -175,31 +175,15 @@ void mbs_app_send ( MbsApp *app,
 
 
 
-/* _send:
- */
-static void _send ( MbsApp *app,
-                    Client *client,
-                    LObject *packet )
-{
-  l_packer_add(client->packer, packet);
-  mbs_server_add_watch(app->server, client->clid, G_IO_OUT);
-}
-
-
-
-/* _lptree_message_handler:
- */
-static void _lptree_message_handler ( LptTree *tree,
-                                      LObject *message,
-                                      gpointer player_data )
-{
-  Client *client = player_data;
-  LTuple *packet = l_tuple_new(2);
-  l_tuple_give_item(packet, 0, L_OBJECT(l_int_new(MB_MESSAGE_KEY_LPT_EVENT)));
-  l_tuple_give_item(packet, 1, l_object_ref(message));
-  _send(client->app, client, L_OBJECT(packet));
-  l_object_unref(packet);
-}
+/* /\* _send: */
+/*  *\/ */
+/* static void _send ( MbsApp *app, */
+/*                     Client *client, */
+/*                     LObject *packet ) */
+/* { */
+/*   l_packer_add(client->packer, packet); */
+/*   mbs_server_add_watch(app->server, client->clid, G_IO_OUT); */
+/* } */
 
 
 
@@ -209,12 +193,11 @@ gint mbs_app_main ( MbsApp *app,
                     gint argc,
                     gchar **argv )
 {
-  lptree_init();
   /* init */
   app->loop = g_main_loop_new(NULL, FALSE);
   app->server = mbs_server_new
     ((MbsServerHandler) _on_server_event, app);
-  app->game = mbs_game_new(_lptree_message_handler);
+  app->game = mbs_game_new();
   /* start */
   mbs_server_start(app->server);
   g_main_loop_run(app->loop);

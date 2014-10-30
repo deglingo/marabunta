@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libmarabunta-server.la
 
 libmarabunta_server_la_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) -DCL_LOG_DOMAIN=\"mbserver\"
 
-libmarabunta_server_la_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@ @LPTREE_CFLAGS@
+libmarabunta_server_la_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@
 
 libmarabunta_server_la_SOURCES = \
 	mbsserver.c \

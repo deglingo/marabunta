@@ -59,11 +59,7 @@ static void mbc_app_init ( LObject *object )
       CL_DEBUG("ERROR: setrlimit() failed: %s", strerror(errno));
     }
   /* [FIXME] */
-  LPT_CLASS_NSPEC_INT;
-  LPT_CLASS_NSPEC_DIR;
   app->client = mbc_client_new(_on_client_ready, app);
-  app->tree = lpt_tree_new();
-  app->tclient_server = lpt_tree_add_client(app->tree, "server", NULL, NULL);
 }
 
 
@@ -115,7 +111,7 @@ static void _message_handler ( MbsPlayerID player,
  */
 static void _setup_solo_game ( MbcApp *app )
 {
-  app->game = mbs_game_new(NULL);
+  app->game = mbs_game_new();
   app->player = mbs_game_add_player(app->game, "Player1", _message_handler, app, NULL);
   app->game_proxy = mbc_game_proxy_new();
   mbs_game_start(app->game);
@@ -146,39 +142,40 @@ static void _on_client_ready ( MbcClient *client,
                                LStream *stream,
                                gpointer data )
 {
-  MbcApp *app = MBC_APP(data);
-  GError *error = NULL;
-  if (condition & G_IO_IN)
-    {
-      LObject *msg;
-      while ((msg = l_unpacker_recv(app->unpacker, &error)))
-        {
-          ASSERT(L_IS_TUPLE(msg));
-          ASSERT(L_TUPLE_SIZE(msg) >= 1);
-          ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0)));
-          switch (L_INT_VALUE(L_TUPLE_ITEM(msg, 0)))
-            {
-            case MB_MESSAGE_KEY_LPT_EVENT:
-              ASSERT(L_TUPLE_SIZE(msg) == 2);
-              lpt_tree_handle_message(app->tree, app->tclient_server, L_TUPLE_ITEM(msg, 1));
-              break;
-            default:
-              CL_DEBUG("[TODO] message: %s", l_object_to_string(msg));
-            }
-          l_object_unref(msg);
-        }
-      if (error)
-        CL_GERROR(error);
-    }
-  if (condition & G_IO_OUT)
-    {
-      gboolean r;
-      r = l_packer_send(app->packer, &error);
-      if (error)
-        CL_ERROR("[TODO] write error");
-      if (r)
-        mbc_client_remove_watch(client, G_IO_OUT);
-    }
+  CL_ERROR("[TODO]");
+  /* MbcApp *app = MBC_APP(data); */
+  /* GError *error = NULL; */
+  /* if (condition & G_IO_IN) */
+  /*   { */
+  /*     LObject *msg; */
+  /*     while ((msg = l_unpacker_recv(app->unpacker, &error))) */
+  /*       { */
+  /*         ASSERT(L_IS_TUPLE(msg)); */
+  /*         ASSERT(L_TUPLE_SIZE(msg) >= 1); */
+  /*         ASSERT(L_IS_INT(L_TUPLE_ITEM(msg, 0))); */
+  /*         switch (L_INT_VALUE(L_TUPLE_ITEM(msg, 0))) */
+  /*           { */
+  /*           case MB_MESSAGE_KEY_LPT_EVENT: */
+  /*             ASSERT(L_TUPLE_SIZE(msg) == 2); */
+  /*             lpt_tree_handle_message(app->tree, app->tclient_server, L_TUPLE_ITEM(msg, 1)); */
+  /*             break; */
+  /*           default: */
+  /*             CL_DEBUG("[TODO] message: %s", l_object_to_string(msg)); */
+  /*           } */
+  /*         l_object_unref(msg); */
+  /*       } */
+  /*     if (error) */
+  /*       CL_GERROR(error); */
+  /*   } */
+  /* if (condition & G_IO_OUT) */
+  /*   { */
+  /*     gboolean r; */
+  /*     r = l_packer_send(app->packer, &error); */
+  /*     if (error) */
+  /*       CL_ERROR("[TODO] write error"); */
+  /*     if (r) */
+  /*       mbc_client_remove_watch(client, G_IO_OUT); */
+  /*   } */
 }
 
 
@@ -206,25 +203,6 @@ void mbc_app_connect ( MbcApp *app )
 
 
 
-/* _wait_tree:
- */
-static gboolean _wait_tree ( MbcApp *app )
-{
-  LptNode *n = lpt_tree_get_node(app->tree, "/game");
-  if (n)
-    {
-      CL_DEBUG("got game node!!");
-      MBC_APP_GET_CLASS(app)->setup_game(app);
-      return G_SOURCE_REMOVE;
-    }
-  else
-    {
-      return G_SOURCE_CONTINUE;
-    }
-}
-
-
-
 /* mbc_app_join_game:
  */
 void mbc_app_join_game ( MbcApp *app )
@@ -232,9 +210,6 @@ void mbc_app_join_game ( MbcApp *app )
   LTuple *msg = l_tuple_newl_give(1, l_int_new(MB_MESSAGE_KEY_JOIN), NULL);
   _send(app, L_OBJECT(msg));
   l_object_unref(msg);
-  lpt_tree_connect_share(app->tree, app->tclient_server, "GAME", "/game", 0);
-  /* [FIXME] */
-  g_timeout_add_full(0, 10, (GSourceFunc) _wait_tree, app, NULL);
 }
 
 

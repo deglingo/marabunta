@@ -5,7 +5,6 @@
 #define _MBBASE_H_
 
 #include <los.h>
-#include <lptree.h>
 
 
 

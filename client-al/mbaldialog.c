@@ -97,48 +97,12 @@ AltkWidget *mbal_dialog_create ( AltkDisplay *display )
 
 
 
-/* _bind_node_label_handler:
- */
-static void _bind_node_label_handler ( LptNode *node,
-                                       AltkWidget *label )
-{
-  LObject *value = lpt_node_get_value(node);
-  gchar *text;
-  ASSERT(L_IS_INT(value));
-  text = g_strdup_printf("%d", L_INT_VALUE(value));
-  altk_label_set_text(ALTK_LABEL(label), text);
-  g_free(text);
-  l_object_unref(value);
-}
-
-
-
-/* _bind_node_label:
- */
-static void _bind_node_label ( LptNode *node,
-                               AltkWidget *label )
-{
-  /* ASSERT(node); */
-  /* ASSERT(ALTK_IS_LABEL(label)); */
-  /* l_signal_connect(L_OBJECT(node), */
-  /*                  "value_set", */
-  /*                  (LSignalHandler) _bind_node_label_handler, */
-  /*                  label, */
-  /*                  NULL); */
-}
-
-
-
 /* mbal_dialog_setup_game:
  */
-void mbal_dialog_setup_game ( AltkWidget *dialog,
-                              LptTree *tree )
+void mbal_dialog_setup_game ( AltkWidget *dialog )
 {
   AltkWidget *map_frame;
   l_trash_push();
-  /* sim-time */
-  _bind_node_label(lpt_tree_get_node(tree, "/game/sim-time"),
-                   altk_widget_find(dialog, "sim-time"));
   /* map */
   map_frame = altk_widget_find(dialog, "map-frame");
   ALTK_CONTAINER_ADD(map_frame, map_create());

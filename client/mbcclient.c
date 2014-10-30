@@ -27,26 +27,26 @@ MbcClient *mbc_client_new ( MbcClientHandler handler,
 
 /* init_sockaddr:
  */
-static void init_sockaddr ( struct sockaddr_in *name,
-							const gchar *host,
-							guint16 port )
-{
-  struct hostent *hostinfo;
-  name->sin_family = AF_INET;
-  name->sin_port = htons(port);
-  if (!(hostinfo = gethostbyname(host)))
-	CL_ERROR("unknown host: '%s'", host);
-  name->sin_addr = *(struct in_addr *) hostinfo->h_addr;
-}
+/* static void init_sockaddr ( struct sockaddr_in *name, */
+/* 							const gchar *host, */
+/* 							guint16 port ) */
+/* { */
+/*   struct hostent *hostinfo; */
+/*   name->sin_family = AF_INET; */
+/*   name->sin_port = htons(port); */
+/*   if (!(hostinfo = gethostbyname(host))) */
+/* 	CL_ERROR("unknown host: '%s'", host); */
+/*   name->sin_addr = *(struct in_addr *) hostinfo->h_addr; */
+/* } */
 
 
 
-static void _on_client_watch ( GIOCondition condition,
-                               gpointer data )
-{
-  MbcClient *cli = (MbcClient *) data;
-  cli->handler(cli, condition, cli->stream, cli->handler_data);
-}
+/* static void _on_client_watch ( GIOCondition condition, */
+/*                                gpointer data ) */
+/* { */
+/*   MbcClient *cli = (MbcClient *) data; */
+/*   cli->handler(cli, condition, cli->stream, cli->handler_data); */
+/* } */
 
 
 
