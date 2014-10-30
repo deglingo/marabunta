@@ -15,6 +15,7 @@ struct _MbalApp
 {
   MBAL_APP_INSTANCE_HEADER;
 
+  AltkDisplay *display;
   AltkWidget *dialog;
 };
 
@@ -29,7 +30,7 @@ struct _MbalAppClass
 
 
 
-MbalApp *mbal_app_new ( void );
+MbApp *mbal_app_new ( void );
 
 
 

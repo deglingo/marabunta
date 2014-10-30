@@ -18,11 +18,13 @@ struct _MbcApp
   MBC_APP_INSTANCE_HEADER;
 
   MbcClient *client;
-  LPacker *packer;
-  LUnpacker *unpacker;
-  /* MbWorld *world; */
+  /* LPacker *packer; */
+  /* LUnpacker *unpacker; */
+
+  /* solo game */
   MbsGame *game;
   MbsPlayerID player;
+
   /* proxy datas */
   MbcGameProxy *game_proxy;
 };
@@ -34,21 +36,11 @@ struct _MbcApp
 struct _MbcAppClass
 {
   MBC_APP_CLASS_HEADER;
-
-  gint (* run) ( MbcApp *app,
-                 gint argc,
-                 gchar **argv );
-
-  void (* setup_game) ( MbcApp *app );
 };
 
 
 
-gint mbc_app_run ( MbcApp *app,
-                   gint argc,
-                   gchar **argv );
-void mbc_app_connect ( MbcApp *app );
-void mbc_app_join_game ( MbcApp *app );
+void mbc_app_setup_solo_game ( MbcApp *app );
 
 
 

@@ -140,7 +140,7 @@ void mbs_game_start ( MbsGame *game )
   game->next_frame = 0.0;
   game->timer = g_timer_new();
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
-                     1,
+                     100,
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);

@@ -25,7 +25,17 @@ struct _MbApp
 struct _MbAppClass
 {
   MB_APP_CLASS_HEADER;
+
+  void (* setup) ( MbApp *app );
+
+  gint (* run) ( MbApp *app );
 };
+
+
+
+gint mb_app_main ( MbApp *app,
+                   gint argc,
+                   gchar **argv );
 
 
 

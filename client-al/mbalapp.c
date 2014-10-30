@@ -10,10 +10,8 @@
 
 extern const char DIALOG_MAIN[];
 
-static gint _run ( MbcApp *app,
-                   gint argc,
-                   gchar **argv );
-static void _setup_game ( MbcApp *app );
+static void _setup ( MbApp *app );
+static gint _run ( MbApp *app );
 
 
 
@@ -21,45 +19,46 @@ static void _setup_game ( MbcApp *app );
  */
 static void mbal_app_class_init ( LObjectClass *cls )
 {
-  MBC_APP_CLASS(cls)->run = _run;
-  MBC_APP_CLASS(cls)->setup_game = _setup_game;
+  MB_APP_CLASS(cls)->setup = _setup;
+  MB_APP_CLASS(cls)->run = _run;
 }
 
 
 
 /* mbal_app_new:
  */
-MbalApp *mbal_app_new ( void )
+MbApp *mbal_app_new ( void )
 {
-  MbalApp *app = MBAL_APP(l_object_new(MBAL_CLASS_APP, NULL));
+  MbApp *app = MB_APP(l_object_new(MBAL_CLASS_APP, NULL));
   return app;
+}
+
+
+
+/* _setup:
+ */
+static void _setup ( MbApp *app )
+{
 }
 
 
 
 /* _run:
  */
-static gint _run ( MbcApp *app,
-                   gint argc,
-                   gchar **argv )
+static gint _run ( MbApp *app )
 {
-  AltkDisplay *display;
-  altk_init();
-  display = altk_display_new();
-  MBAL_APP(app)->dialog = mbal_dialog_create(display);
+  /* create a display and the dialog */
+  MBAL_APP(app)->display = altk_display_new(); /* [fixme] unref */
+  MBAL_APP(app)->dialog = mbal_dialog_create(MBAL_APP(app)->display);
+  /* setup the game */
+  mbc_app_setup_solo_game(MBC_APP(app));
+  /* setup the dialog */
+  mbal_dialog_setup(MBAL_APP(app)->dialog, MBAL_APP(app));
+  /* [fixme] */
+  mbs_game_start(MBC_APP(app)->game);
+  /* open the display */
   altk_widget_show_all(MBAL_APP(app)->dialog);
-  altk_display_open(display);
-  /* mbc_app_connect(MBC_APP(app)); */
-  /* mbc_app_join_game(MBC_APP(app)); */
-  return MBC_APP_CLASS(parent_class)->run(app, argc, argv);
-}
-
-
-
-/* _setup_game:
- */
-static void _setup_game ( MbcApp *app )
-{
-  MBC_APP_CLASS(parent_class)->setup_game(app);
-  mbal_dialog_setup_game(MBAL_APP(app)->dialog);
+  altk_display_open(MBAL_APP(app)->display);
+  /* go */
+  return MB_APP_CLASS(parent_class)->run(app);
 }

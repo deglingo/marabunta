@@ -97,12 +97,28 @@ AltkWidget *mbal_dialog_create ( AltkDisplay *display )
 
 
 
-/* mbal_dialog_setup_game:
- */
-void mbal_dialog_setup_game ( AltkWidget *dialog )
+static void _on_frame ( MbcGameProxy *game_proxy,
+                        AltkWidget *widget )
 {
+  gchar text[256]; /* [fixme] */
+  sprintf(text, "Time: %d", game_proxy->frame);
+  altk_label_set_text(ALTK_LABEL(widget), text);
+}
+
+
+
+/* mbal_dialog_setup:
+ */
+void mbal_dialog_setup ( AltkWidget *dialog,
+                         MbalApp *app )
+{
+  MbcGameProxy *game = MBC_APP(app)->game_proxy;
+  AltkWidget *sim_time_label;
   AltkWidget *map_frame;
   l_trash_push();
+  /* sim-time */
+  sim_time_label = altk_widget_find(dialog, "sim-time");
+  l_signal_connect(L_OBJECT(game), "notify", g_quark_from_string("frame"), (LSignalHandler) _on_frame, sim_time_label, NULL);
   /* map */
   map_frame = altk_widget_find(dialog, "map-frame");
   ALTK_CONTAINER_ADD(map_frame, map_create());
