@@ -202,6 +202,14 @@ static void _frame_notify ( MbcGameProxy *proxy,
 
 
 
+static void _pop_notify ( MbcColonyProxy *proxy,
+                          AltkWidget *label )
+{
+  CL_ERROR("[TODO]");
+}
+
+
+
 /* mbtk_dialog_setup:
  */
 void mbtk_dialog_setup ( MbtkDialog *dialog,
@@ -210,9 +218,21 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
   Private *priv = PRIVATE(dialog);
   /* map view */
   mbtk_map_view_setup(MBTK_MAP_VIEW(priv->map_view), game_proxy);
+  /* sim time label */
   l_signal_connect(L_OBJECT(game_proxy),
                    "notify", g_quark_from_string("frame"),
                    (LSignalHandler) _frame_notify,
                    priv->sim_time_label,
                    NULL);
+  /* pop table */
+  {
+    MbcSectorProxy *sector = game_proxy->world->sectors[0][0];
+    MbcColonyProxy *colony = sector->colony;
+    l_signal_connect(L_OBJECT(colony),
+                     "notify",
+                     g_quark_from_string("pop_eggs"),
+                     (LSignalHandler) _pop_notify,
+                     priv->pop_eggs,
+                     NULL);
+  }
 }

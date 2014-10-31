@@ -5,6 +5,7 @@
 #define _MBCGAMEPROXY_H_
 
 #include "client/mbcbase.h"
+#include "client/mbcworldproxy.h"
 #include "client/mbcgameproxy-def.h"
 
 G_BEGIN_DECLS
@@ -18,6 +19,9 @@ struct _MbcGameProxy
   MBC_GAME_PROXY_INSTANCE_HEADER;
 
   guint frame;
+
+  /* world proxy */
+  MbcWorldProxy *world;
 };
 
 

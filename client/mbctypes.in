@@ -11,6 +11,18 @@ namespace Mbc
   {
     void class_init ();
   };
+
+  class WorldProxy
+  {
+  };
+
+  class SectorProxy
+  {
+  };
+
+  class ColonyProxy
+  {
+  };
   
   class App : Mb::App
   {

@@ -38,6 +38,7 @@ MbcGameProxy *mbc_game_proxy_new ( void )
 {
   MbcGameProxy *gp;
   gp = MBC_GAME_PROXY(l_object_new(MBC_CLASS_GAME_PROXY, NULL));
+  gp->world = mbc_world_proxy_new();
   return gp;
 }
 
