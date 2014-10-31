@@ -1,5 +1,11 @@
 /* -*- c++ -*- */
 
+namespace Altk
+{
+  extern class Dialog;
+  extern class Table;
+}
+
 namespace Mbc
 {
   extern class App;
@@ -10,5 +16,16 @@ namespace Mbal
   class App : Mbc::App
   {
     void class_init ();
+  };
+}
+
+namespace Mbtk
+{
+  class Dialog : Altk::Dialog
+  {
+  };
+
+  class MapView : Altk::Table
+  {
   };
 }

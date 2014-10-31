@@ -3,7 +3,7 @@
 
 #include "client-al/alprivate.h"
 #include "client-al/mbalapp.h"
-#include "client-al/mbaldialog.h"
+#include "client-al/mbtkdialog.h"
 #include "client-al/mbalapp.inl"
 
 
@@ -49,11 +49,11 @@ static gint _run ( MbApp *app )
 {
   /* create a display and the dialog */
   MBAL_APP(app)->display = altk_display_new(); /* [fixme] unref */
-  MBAL_APP(app)->dialog = mbal_dialog_create(MBAL_APP(app)->display);
+  MBAL_APP(app)->dialog = mbtk_dialog_new(MBAL_APP(app)->display);
   /* setup the game */
   mbc_app_setup_solo_game(MBC_APP(app));
   /* setup the dialog */
-  mbal_dialog_setup(MBAL_APP(app)->dialog, MBAL_APP(app));
+  mbtk_dialog_setup(MBTK_DIALOG(MBAL_APP(app)->dialog), MBC_APP(app)->game_proxy);
   /* [fixme] */
   mbs_game_start(MBC_APP(app)->game);
   /* open the display */

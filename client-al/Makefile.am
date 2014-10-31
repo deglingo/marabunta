@@ -13,18 +13,24 @@ marabunta_al_LDFLAGS = \
 	@GLIB_LIBS@ @CLOG_LIBS@ @ALTK_LIBS@
 
 marabunta_al_SOURCES = \
+	mbtkdialog.c \
+	mbtkmapview.c \
 	mbaldialog-main.c \
 	mbaldialog.c \
 	mbalapp.c \
 	mbalmain.c
 
 BUILT_SOURCES = \
+	mbtkdialog-def.h mbtkdialog.inl \
+	mbtkmapview-def.h mbtkmapview.inl \
 	mbaldialog-main.c \
 	mbalapp-def.h mbalapp.inl
 
 mbaldialog-main.c: mbaldialog-main.xml
 	$(ALTK_XML2C) -n DIALOG_MAIN -o mbaldialog-main $<
 
+mbtkdialog-def.h mbtkdialog.inl \
+mbtkmapview-def.h mbtkmapview.inl \
 mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h
 
