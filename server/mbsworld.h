@@ -5,6 +5,7 @@
 #define _MBSWORLD_H_
 
 #include "server/mbsbase.h"
+#include "server/mbssector.h"
 #include "server/mbsworld-def.h"
 
 G_BEGIN_DECLS
@@ -16,6 +17,10 @@ G_BEGIN_DECLS
 struct _MbsWorld
 {
   MBS_WORLD_INSTANCE_HEADER;
+
+  guint width;
+  guint height;
+  MbsSector ***sectors;
 };
 
 
@@ -29,7 +34,8 @@ struct _MbsWorldClass
 
 
 
-MbsWorld *mbs_world_new ( void );
+MbsWorld *mbs_world_new ( guint width,
+                          guint heigt );
 
 
 

@@ -130,12 +130,23 @@ static gboolean _on_game_timer ( MbsGame *game )
 
 
 
+/* _setup:
+ */
+static void _setup ( MbsGame *game )
+{
+  game->world = mbs_world_new(1, 2);
+  mbs_sector_create_colony(game->world->sectors[0][0], 0);
+}
+
+
+
 /* mbs_game_start:
  */
 void mbs_game_start ( MbsGame *game )
 {
   CL_DEBUG("starting game...");
-  game->world = mbs_world_new();
+  /* [fixme] should not be here */
+  _setup(game);
   game->fps = 1.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
