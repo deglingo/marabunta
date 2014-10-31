@@ -25,6 +25,59 @@ static AltkWidget *header_box_create ( void )
 
 
 
+static void _pop_label ( AltkWidget *table,
+                         const gchar *text,
+                         const gchar *name,
+                         gint top,
+                         gint left,
+                         gint bottom,
+                         gint right )
+{
+  AltkWidget *label = L_TRASH_OBJECT
+    (altk_label_new(text));
+  if (name)
+    altk_widget_set_name(label, name);
+  altk_table_attach(ALTK_TABLE(table),
+                    label,
+                    top, left,
+                    bottom, right,
+                    0);
+}
+
+
+
+static AltkWidget *pop_table_new ( void )
+{
+  AltkWidget *frame, *table;
+  frame = altk_frame_new("pop");
+  table = altk_table_new();
+  ALTK_CONTAINER_ADD(frame, table);
+  _pop_label(table, "E", NULL, 0, 0, 1, 1);
+  _pop_label(table, "L", NULL, 0, 2, 1, 3);
+  _pop_label(table, "A", NULL, 0, 3, 1, 4);
+  _pop_label(table, "T", NULL, 0, 4, 1, 5);
+  _pop_label(table, "Q", NULL, 1, 1, 2, 2);
+  _pop_label(table, "W", NULL, 2, 1, 3, 2);
+  _pop_label(table, "S", NULL, 3, 1, 4, 2);
+  _pop_label(table, "T", NULL, 4, 1, 5, 2);
+  _pop_label(table, "0", "pop-eggs", 1, 0, 4, 1);
+  _pop_label(table, "0", "pop-lq",   1, 2, 2, 3);
+  _pop_label(table, "0", "pop-aq",   1, 3, 2, 4);
+  _pop_label(table, "0", "pop-tq",   1, 4, 2, 5);
+  _pop_label(table, "0", "pop-lw",   2, 2, 3, 3);
+  _pop_label(table, "0", "pop-aw",   2, 3, 3, 4);
+  _pop_label(table, "0", "pop-tw",   2, 4, 3, 5);
+  _pop_label(table, "0", "pop-ls",   3, 2, 4, 3);
+  _pop_label(table, "0", "pop-as",   3, 3, 4, 4);
+  _pop_label(table, "0", "pop-ts",   3, 4, 4, 5);
+  _pop_label(table, "0", "pop-tl",   4, 2, 5, 3);
+  _pop_label(table, "0", "pop-ta",   4, 3, 5, 4);
+  _pop_label(table, "0", "pop-tt",   4, 4, 5, 5);
+  return frame;
+}
+
+
+
 static AltkWidget *side_panel_create ( void )
 {
   AltkWidget *box, *map_frame;
@@ -34,6 +87,7 @@ static AltkWidget *side_panel_create ( void )
     (altk_frame_new("map"));
   altk_widget_set_name(map_frame, "map-frame");
   altk_box_pack_start(ALTK_BOX(box), map_frame, 0);
+  altk_box_pack_start(ALTK_BOX(box), L_TRASH_OBJECT(pop_table_new()), 0);
   return box;
 }
 
