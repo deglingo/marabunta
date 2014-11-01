@@ -56,7 +56,7 @@ static void mbc_app_init ( LObject *object )
 /* process_game_update:
  */
 static void _process_game_update ( MbcApp *app,
-                                   MbsPlayerID *player,
+                                   MbsPlayerID player,
                                    MbMessage *message )
 {
   mbc_game_proxy_process_update(app->game_proxy, message);

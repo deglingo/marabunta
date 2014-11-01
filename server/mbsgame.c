@@ -8,11 +8,16 @@
 
 
 
+#define MAX_PLAYERS 8
+
+
+
 /* Player:
  */
 typedef struct _Player
 {
   MbsGame *game;
+  MbsPlayerID id;
   gchar *name;
   MbsMessageHandler message_handler;
   gpointer handler_data;
@@ -27,7 +32,8 @@ typedef struct _Player
  */
 typedef struct _Private
 {
-  int dummy;
+  Player *players[MAX_PLAYERS];
+  gint n_players;
 }
   Private;
 
@@ -38,6 +44,7 @@ typedef struct _Private
 /* player_new:
  */
 static Player *player_new ( MbsGame *game,
+                            MbsPlayerID id,
                             const gchar *name,
                             MbsMessageHandler message_handler,
                             gpointer handler_data,
@@ -45,6 +52,7 @@ static Player *player_new ( MbsGame *game,
 {
   Player *p = g_new0(Player, 1);
   p->game = game;
+  p->id = id;
   p->name = g_strdup(name);
   p->message_handler = message_handler;
   p->handler_data = handler_data;
@@ -89,9 +97,15 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
                                   gpointer message_handler_data,
                                   GDestroyNotify destroy_data )
 {
-  Player *player = player_new(game, name, message_handler, message_handler_data, destroy_data);
-  game->players = g_list_append(game->players, player);
-  return player;
+  Private *priv = PRIVATE(game);
+  MbsPlayerID id;
+  Player *player;
+  ASSERT(priv->n_players < MAX_PLAYERS);
+  id = priv->n_players;
+  player = player_new(game, id, name, message_handler, message_handler_data, destroy_data);
+  priv->players[id] = player;
+  CL_DEBUG("player %d added: '%s'", id, name);
+  return player->id;
 }
 
 
@@ -102,7 +116,7 @@ static void _send ( MbsGame *game,
                     Player *player,
                     MbMessage *message )
 {
-  player->message_handler(player, message, player->handler_data);
+  player->message_handler(player->id, message, player->handler_data);
 }
 
 
@@ -111,24 +125,25 @@ static void _send ( MbsGame *game,
  */
 static void _game_update ( MbsGame *game )
 {
-  GList *l;
+  Private *priv = PRIVATE(game);
+  gint p;
   game->frame++;
   CL_TRACE("%d", game->frame);
   /* prepare the messages */
-  for (l = game->players; l; l = l->next)
+  for (p = 0; p < priv->n_players; p++)
     {
-      Player *p = l->data;
-      p->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE);
+      Player *player = priv->players[p];
+      player->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE);
       /* [fixme] */
-      p->message->frame = game->frame;
+      player->message->frame = game->frame;
     }
   /* [TODO] game update */
   /* send all the messages */
-  for (l = game->players; l; l = l->next)
+  for (p = 0; p < priv->n_players; p++)
     {
-      Player *p = l->data;
-      _send(game, p, p->message);
-      L_OBJECT_CLEAR(p->message);
+      Player *player = priv->players[p];
+      _send(game, player, player->message);
+      L_OBJECT_CLEAR(player->message);
     }
 }
 

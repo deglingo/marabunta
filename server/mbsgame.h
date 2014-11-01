@@ -10,7 +10,7 @@
 
 
 
-typedef gpointer MbsPlayerID;
+typedef gint MbsPlayerID;
 
 typedef void (* MbsMessageHandler) ( MbsPlayerID player,
                                      MbMessage *message,
@@ -26,7 +26,6 @@ struct _MbsGame
 
   gpointer private;
   
-  GList *players;
   /* game timer */
   gdouble fps;
   GTimer *timer;
