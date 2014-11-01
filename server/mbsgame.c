@@ -23,6 +23,18 @@ typedef struct _Player
 
 
 
+/* Private:
+ */
+typedef struct _Private
+{
+  int dummy;
+}
+  Private;
+
+#define PRIVATE(game) ((Private *)(MBS_GAME(game)))
+
+
+
 /* player_new:
  */
 static Player *player_new ( MbsGame *game,
@@ -42,7 +54,7 @@ static Player *player_new ( MbsGame *game,
 
 
 
-/* mbs_game_class:
+/* mbs_game_class_init:
  */
 static void mbs_game_class_init ( LObjectClass *cls )
 {
@@ -51,13 +63,20 @@ static void mbs_game_class_init ( LObjectClass *cls )
 
 
 
+/* mbs_game_init:
+ */
+static void mbs_game_init ( LObject *obj )
+{
+  MBS_GAME(obj)->private = g_new0(Private, 1);
+}
+
+
+
 /* mbs_game_new:
  */
 MbsGame *mbs_game_new ( void )
 {
-  MbsGame *game;
-  game = MBS_GAME(l_object_new(MBS_CLASS_GAME, NULL));
-  return game;
+  return MBS_GAME_NEW(NULL);
 }
 
 

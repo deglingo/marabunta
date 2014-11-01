@@ -24,6 +24,8 @@ struct _MbsGame
 {
   MBS_GAME_INSTANCE_HEADER;
 
+  gpointer private;
+  
   GList *players;
   /* game timer */
   gdouble fps;
