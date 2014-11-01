@@ -38,6 +38,8 @@ struct _MbcGameProxyClass
 MbcGameProxy *mbc_game_proxy_new ( void );
 void mbc_game_proxy_process_update ( MbcGameProxy *proxy,
                                      MbMessage *message );
+void mbc_game_proxy_reset ( MbcGameProxy *proxy );
+void mbc_game_proxy_started ( MbcGameProxy *proxy );
 
 
 

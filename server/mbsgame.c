@@ -104,6 +104,7 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
   id = priv->n_players;
   player = player_new(game, id, name, message_handler, message_handler_data, destroy_data);
   priv->players[id] = player;
+  priv->n_players++;
   CL_DEBUG("player %d added: '%s'", id, name);
   return player->id;
 }
@@ -116,6 +117,7 @@ static void _send ( MbsGame *game,
                     Player *player,
                     MbMessage *message )
 {
+  CL_DEBUG("send(player=%d, key=%d)", player->id, message->key);
   player->message_handler(player->id, message, player->handler_data);
 }
 
@@ -180,7 +182,7 @@ static void _send_game_state ( MbsGame *game,
                                Player *player )
 {
   MbState *state = mb_state_new();
-  MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_STATE, L_OBJECT(state));
+  MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_SETUP, L_OBJECT(state));
   MbStateBlock *block;
   block = mb_state_next(state, MB_STATE_RESET);
   block = mb_state_next(state, MB_STATE_WORLD_SIZE);

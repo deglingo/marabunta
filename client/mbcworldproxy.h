@@ -35,6 +35,9 @@ struct _MbcWorldProxyClass
 
 
 MbcWorldProxy *mbc_world_proxy_new ( void );
+void mbc_world_proxy_set_size ( MbcWorldProxy *proxy,
+                                guint width,
+                                guint height );
 
 
 

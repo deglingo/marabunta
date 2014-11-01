@@ -64,16 +64,51 @@ static void _process_game_update ( MbcApp *app,
 
 
 
+/* _process_game_state:
+ */
+static void _process_game_state ( MbcApp *app,
+                                  MbsPlayerID player,
+                                  MbState *state )
+{
+  MbStateBlock *block;
+  guint b;
+  for (b = 0, block = state->blocks; b < state->n_blocks; b++, block++)
+    {
+      switch (block->type)
+        {
+        case MB_STATE_RESET:
+          break;
+        case MB_STATE_WORLD_SIZE:
+          mbc_world_proxy_set_size(app->game_proxy->world, block->v0.v_int, block->v1.v_int);
+          break;
+        default:
+          CL_ERROR("[TODO] block type: %d", block->type);
+        }
+    }
+}
+
+
+
 /* player_message_handler:
  */
 static void player_message_handler ( MbsPlayerID player,
                                      MbMessage *message,
                                      gpointer data )
 {
+  MbcApp *app = data;
   switch (message->key)
     {
     case MB_MESSAGE_KEY_GAME_UPDATE:
       _process_game_update(MBC_APP(data), player, message);
+      break;
+    case MB_MESSAGE_KEY_GAME_SETUP:
+      mbc_game_proxy_reset(app->game_proxy);
+      _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
+      mbc_game_proxy_started(app->game_proxy);
+      break;
+    case MB_MESSAGE_KEY_GAME_STATE:
+      ASSERT(MB_IS_STATE(message->arg));
+      _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
       break;
     default:
       CL_DEBUG("[TODO] msg key %d", message->key);
