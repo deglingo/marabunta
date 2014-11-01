@@ -10,6 +10,7 @@ libmarabunta_common_la_SOURCES = \
 	mbbase.c \
 	mbapp.c \
 	mbmessage.c \
+	mbstate.c \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
@@ -18,10 +19,12 @@ libmarabunta_common_la_SOURCES = \
 BUILT_SOURCES = \
 	mbapp-def.h mbapp.inl \
 	mbmessage-def.h mbmessage.inl
+	mbstate-def.h mbstate.inl \
 	mbworld-def.h mbworld.inl
 
 mbapp-def.h mbapp.inl \
 mbmessage-def.h mbmessage.inl \
+mbstate-def.h mbstate.inl \
 mbworld-def.h mbworld.inl \
 : mbtypes.stamp-h
 

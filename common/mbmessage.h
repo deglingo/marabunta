@@ -20,6 +20,7 @@ enum _MbMessageKey
     MB_MESSAGE_KEY_JOIN,
     MB_MESSAGE_KEY_LPT_EVENT,
     MB_MESSAGE_KEY_GAME_UPDATE,
+    MB_MESSAGE_KEY_GAME_STATE,
   };
 
 
@@ -31,6 +32,7 @@ struct _MbMessage
   MB_MESSAGE_INSTANCE_HEADER;
 
   MbMessageKey key;
+  LObject *arg;
   /* [removeme] */
   guint frame;
 };
@@ -46,7 +48,8 @@ struct _MbMessageClass
 
 
 
-MbMessage *mb_message_new ( MbMessageKey key );
+MbMessage *mb_message_new ( MbMessageKey key,
+                            LObject *arg );
 
 
 

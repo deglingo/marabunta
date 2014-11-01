@@ -133,7 +133,7 @@ static void _game_update ( MbsGame *game )
   for (p = 0; p < priv->n_players; p++)
     {
       Player *player = priv->players[p];
-      player->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE);
+      player->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE, NULL);
       /* [fixme] */
       player->message->frame = game->frame;
     }
@@ -174,13 +174,40 @@ static void _setup ( MbsGame *game )
 
 
 
+/* _send_game_state:
+ */
+static void _send_game_state ( MbsGame *game,
+                               Player *player )
+{
+  MbState *state = mb_state_new();
+  MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_STATE, L_OBJECT(state));
+  MbStateBlock *block;
+  block = mb_state_next(state, MB_STATE_RESET);
+  block = mb_state_next(state, MB_STATE_WORLD_SIZE);
+  block->v0.v_int = game->world->width;
+  block->v1.v_int = game->world->height;
+  _send(game, player, msg);
+  l_object_unref(state);
+  l_object_unref(msg);
+}
+
+
+
 /* mbs_game_start:
  */
 void mbs_game_start ( MbsGame *game )
 {
+  Private *priv = PRIVATE(game);
+  gint p;
   CL_DEBUG("starting game...");
   /* [fixme] should not be here */
   _setup(game);
+  /* send the game state */
+  for (p = 0; p < priv->n_players; p++)
+    {
+      _send_game_state(game, priv->players[p]);
+    }
+  /* setup the game timer */
   game->fps = 1.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
