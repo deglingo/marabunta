@@ -25,6 +25,7 @@ enum _MbStateType
   {
     MB_STATE_RESET,
     MB_STATE_WORLD_SIZE,
+    MB_STATE_SIM_TIME,
   };
 
 

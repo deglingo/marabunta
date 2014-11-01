@@ -12,7 +12,7 @@
 enum
   {
     PROP_0,
-    PROP_FRAME,
+    PROP_SIM_TIME,
     PROP_COUNT,
   };
 
@@ -36,8 +36,8 @@ static LSignalID signals[SIG_COUNT] = { 0, };
  */
 static void mbc_game_proxy_class_init ( LObjectClass *cls )
 {
-  pspecs[PROP_FRAME] =
-    l_param_spec_int("frame", 0);
+  pspecs[PROP_SIM_TIME] =
+    l_param_spec_int("sim_time", 0);
 
   l_object_class_install_properties(cls, PROP_COUNT, pspecs);
 
@@ -60,24 +60,23 @@ MbcGameProxy *mbc_game_proxy_new ( void )
 
 
 
-/* mbc_game_proxy:
- */
-void mbc_game_proxy_process_update ( MbcGameProxy *proxy,
-                                     MbMessage *message )
-{
-  CL_DEBUG("[TODO] %d", message->frame);
-  proxy->frame = message->frame;
-  l_object_notify(L_OBJECT(proxy), pspecs[PROP_FRAME]);
-}
-
-
-
 /* mbc_game_proxy_reset:
  */
 void mbc_game_proxy_reset ( MbcGameProxy *proxy )
 {
   CL_DEBUG("[TODO] reset");
-  proxy->frame = 0;
+  mbc_game_proxy_set_sim_time(proxy, 0);
+}
+
+
+
+/* mbc_game_proxy_set_sim_time:
+ */
+void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
+                                   guint sim_time )
+{
+  proxy->sim_time = sim_time;
+  l_object_notify(L_OBJECT(proxy), pspecs[PROP_SIM_TIME]);
 }
 
 

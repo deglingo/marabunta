@@ -22,7 +22,7 @@ typedef struct _Player
   MbsMessageHandler message_handler;
   gpointer handler_data;
   GDestroyNotify destroy_data;
-  MbMessage *message;
+  MbState *state;
 }
   Player;
 
@@ -37,7 +37,7 @@ typedef struct _Private
 }
   Private;
 
-#define PRIVATE(game) ((Private *)(MBS_GAME(game)))
+#define PRIVATE(game) ((Private *)(MBS_GAME(game)->private))
 
 
 
@@ -105,7 +105,7 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
   player = player_new(game, id, name, message_handler, message_handler_data, destroy_data);
   priv->players[id] = player;
   priv->n_players++;
-  CL_DEBUG("player %d added: '%s'", id, name);
+  CL_DEBUG("game %p/%p: player %d added: '%s'", game, priv, id, name);
   return player->id;
 }
 
@@ -131,21 +131,27 @@ static void _game_update ( MbsGame *game )
   gint p;
   game->frame++;
   CL_TRACE("%d", game->frame);
+  CL_TRACE("game=%p/%p, n_players=%d", game, priv, priv->n_players);
   /* prepare the messages */
   for (p = 0; p < priv->n_players; p++)
     {
       Player *player = priv->players[p];
-      player->message = mb_message_new(MB_MESSAGE_KEY_GAME_UPDATE, NULL);
-      /* [fixme] */
-      player->message->frame = game->frame;
+      CL_TRACE("%d", p);
+      MbStateBlock *block;
+      player->state = mb_state_new();
+      block = mb_state_next(player->state, MB_STATE_SIM_TIME);
+      block->v0.v_int = game->frame;
     }
   /* [TODO] game update */
   /* send all the messages */
   for (p = 0; p < priv->n_players; p++)
     {
       Player *player = priv->players[p];
-      _send(game, player, player->message);
-      L_OBJECT_CLEAR(player->message);
+      MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_STATE,
+                                      L_OBJECT(player->state));
+      _send(game, player, msg);
+      l_object_unref(msg);
+      L_OBJECT_CLEAR(player->state);
     }
 }
 

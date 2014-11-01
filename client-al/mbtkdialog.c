@@ -192,11 +192,11 @@ AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
 
 
 
-static void _frame_notify ( MbcGameProxy *proxy,
+static void _sim_time_notify ( MbcGameProxy *proxy,
                             AltkWidget *label )
 {
   gchar text[256];
-  sprintf(text, "%d", proxy->frame);
+  sprintf(text, "%d", proxy->sim_time);
   altk_label_set_text(ALTK_LABEL(label), text);
 }
 
@@ -220,8 +220,8 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
   mbtk_map_view_setup(MBTK_MAP_VIEW(priv->map_view), game_proxy);
   /* sim time label */
   l_signal_connect(L_OBJECT(game_proxy),
-                   "notify", g_quark_from_string("frame"),
-                   (LSignalHandler) _frame_notify,
+                   "notify", g_quark_from_string("sim_time"),
+                   (LSignalHandler) _sim_time_notify,
                    priv->sim_time_label,
                    NULL);
   /* pop table */

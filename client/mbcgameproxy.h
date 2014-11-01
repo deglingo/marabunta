@@ -18,7 +18,7 @@ struct _MbcGameProxy
 {
   MBC_GAME_PROXY_INSTANCE_HEADER;
 
-  guint frame;
+  guint sim_time;
 
   /* world proxy */
   MbcWorldProxy *world;
@@ -36,9 +36,9 @@ struct _MbcGameProxyClass
 
 
 MbcGameProxy *mbc_game_proxy_new ( void );
-void mbc_game_proxy_process_update ( MbcGameProxy *proxy,
-                                     MbMessage *message );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
+void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
+                                   guint sim_time );
 void mbc_game_proxy_started ( MbcGameProxy *proxy );
 
 
