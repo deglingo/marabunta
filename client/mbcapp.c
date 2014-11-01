@@ -73,6 +73,10 @@ static void _process_game_state ( MbcApp *app,
         case MB_STATE_SIM_TIME:
           mbc_game_proxy_set_sim_time(app->game_proxy, block->v0.v_int);
           break;
+        case MB_STATE_COLONY:
+          mbc_sector_proxy_create_colony(app->game_proxy->world->sectors[block->v1.v_int][block->v0.v_int],
+                                         block->v2.v_int);
+          break;
         default:
           CL_ERROR("[TODO] block type: %d", block->type);
         }

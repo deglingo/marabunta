@@ -1,6 +1,7 @@
 /* mbcsectorproxy.c -
  */
 
+#include "client/cliprivate.h"
 #include "client/mbcsectorproxy.h"
 #include "client/mbcsectorproxy.inl"
 
@@ -10,8 +11,16 @@
  */
 MbcSectorProxy *mbc_sector_proxy_new ( void )
 {
-  MbcSectorProxy *sp;
-  sp = MBC_SECTOR_PROXY(l_object_new(MBC_CLASS_SECTOR_PROXY, NULL));
-  sp->colony = mbc_colony_proxy_new();
-  return sp;
+  return MBC_SECTOR_PROXY_NEW(NULL);
+}
+
+
+
+/* mbc_sector_proxy_create_colony:
+ */
+void mbc_sector_proxy_create_colony ( MbcSectorProxy *proxy,
+                                      MbsPlayerID owner )
+{
+  ASSERT(!proxy->colony);
+  proxy->colony = mbc_colony_proxy_new(owner);
 }

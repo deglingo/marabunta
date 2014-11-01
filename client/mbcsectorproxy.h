@@ -33,6 +33,8 @@ struct _MbcSectorProxyClass
 
 
 MbcSectorProxy *mbc_sector_proxy_new ( void );
+void mbc_sector_proxy_create_colony ( MbcSectorProxy *proxy,
+                                      MbsPlayerID owner );
 
 
 

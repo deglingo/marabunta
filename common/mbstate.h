@@ -26,6 +26,7 @@ enum _MbStateType
     MB_STATE_RESET,
     MB_STATE_WORLD_SIZE,
     MB_STATE_SIM_TIME,
+    MB_STATE_COLONY,
   };
 
 
@@ -46,6 +47,7 @@ struct _MbStateBlock
   MbStateType type;
   MbStateValue v0;
   MbStateValue v1;
+  MbStateValue v2;
 };
 
 

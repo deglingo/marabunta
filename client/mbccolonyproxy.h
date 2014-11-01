@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbcColonyProxy
 {
   MBC_COLONY_PROXY_INSTANCE_HEADER;
+
+  gint owner;
 };
 
 
@@ -29,7 +31,7 @@ struct _MbcColonyProxyClass
 
 
 
-MbcColonyProxy *mbc_colony_proxy_new ( void );
+MbcColonyProxy *mbc_colony_proxy_new ( gint owner );
 
 
 

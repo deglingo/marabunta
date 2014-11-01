@@ -182,18 +182,33 @@ static void _setup ( MbsGame *game )
 
 
 
-/* _send_game_state:
+/* _send_game_setup:
  */
-static void _send_game_state ( MbsGame *game,
+static void _send_game_setup ( MbsGame *game,
                                Player *player )
 {
   MbState *state = mb_state_new();
   MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_SETUP, L_OBJECT(state));
   MbStateBlock *block;
+  guint x, y;
   block = mb_state_next(state, MB_STATE_RESET);
   block = mb_state_next(state, MB_STATE_WORLD_SIZE);
   block->v0.v_int = game->world->width;
   block->v1.v_int = game->world->height;
+  for (y = 0; y < game->world->height; y++)
+    {
+      for (x = 0; x < game->world->width; x++)
+        {
+          MbsSector *sector = game->world->sectors[y][x];
+          if (sector->colony)
+            {
+              block = mb_state_next(state, MB_STATE_COLONY);
+              block->v0.v_int = x;
+              block->v1.v_int = y;
+              block->v2.v_int = sector->colony->owner;
+            }
+        }
+    }
   _send(game, player, msg);
   l_object_unref(state);
   l_object_unref(msg);
@@ -213,7 +228,7 @@ void mbs_game_start ( MbsGame *game )
   /* send the game state */
   for (p = 0; p < priv->n_players; p++)
     {
-      _send_game_state(game, priv->players[p]);
+      _send_game_setup(game, priv->players[p]);
     }
   /* setup the game timer */
   game->fps = 1.0;
