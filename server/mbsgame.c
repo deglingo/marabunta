@@ -216,6 +216,8 @@ static void _setup ( MbsGame *game )
 {
   game->world = mbs_world_new(1, 2);
   mbs_sector_create_colony(game->world->sectors[0][0], 0);
+  mb_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
+                  MB_POP_ADULT_QUEEN, 0, 1);
 }
 
 
@@ -240,9 +242,13 @@ static void _send_game_setup ( MbsGame *game,
           if (sector->colony)
             {
               MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
-              st_colony->x = x;
-              st_colony->y = y;
+              MbStatePop *st_pop = (MbStatePop *) mb_state_next(state, MB_STATE_POP);
+              gint tp;
+              st_colony->x = st_pop->x = x;
+              st_colony->y = st_pop->y = y;
               st_colony->owner = sector->colony->owner;
+              for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+                st_pop->pop[tp] = sector->colony->pop_tree->pop[tp];
             }
         }
     }

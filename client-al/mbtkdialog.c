@@ -222,6 +222,7 @@ static void _pop_notify ( MbcColonyProxy *proxy,
 {
   Private *priv = PRIVATE(dialog);
   set_pop_label(priv->pop_eggs, proxy->pop[MB_POP_EGG]);
+  set_pop_label(priv->pop_aq, proxy->pop[MB_POP_ADULT_QUEEN]);
 }
 
 
