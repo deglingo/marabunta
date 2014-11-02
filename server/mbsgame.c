@@ -123,11 +123,25 @@ static void _send ( MbsGame *game,
 
 
 
+static void _pop_unit_update_aq ( MbsColony *colony,
+                                  MbPopUnit *unit )
+{
+  CL_DEBUG("[TODO]");
+}
+
+
+
 static void _pop_unit_update ( MbPopUnit *unit,
                                gpointer data )
 {
   MbsColony *col = data;
-
+  switch(unit->type)
+    {
+    case MB_POP_ADULT_QUEEN:
+      _pop_unit_update_aq(col, unit);
+    default:
+      CL_DEBUG("[TODO] pop type %d", unit->type);
+    }
 }
 
 

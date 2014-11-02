@@ -18,6 +18,10 @@ namespace Mbs
   {
   };
 
+  class Task
+  {
+  };
+
   class Game
   {
     void class_init ();

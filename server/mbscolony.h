@@ -22,6 +22,7 @@ struct _MbsColony
   struct _MbsSector *sector;
   guint owner;
   MbPopTree *pop_tree;
+  GList *tasks;
 };
 
 
