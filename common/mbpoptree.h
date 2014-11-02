@@ -70,7 +70,7 @@ struct _MbPopUnit
 {
   MbPopType type;
   guint birthdate;
-  guint64 count;
+  gint64 count;
 };
 
 
@@ -80,7 +80,9 @@ struct _MbPopUnit
 struct _MbPopTree
 {
   gint64 pop[MB_POP_TYPE_COUNT];
-  MbPopUnit *root;
+  /* [fixme] */
+  /* MbPopUnit *root; */
+  GList *units;
 };
 
 
