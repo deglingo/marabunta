@@ -10,5 +10,8 @@
  */
 MbsColony *mbs_colony_new ( guint owner )
 {
-  return MBS_COLONY_NEW(NULL);
+  MbsColony *col = MBS_COLONY_NEW(NULL);
+  col->owner = owner;
+  col->pop_tree = mb_pop_tree_new();
+  return col;
 }

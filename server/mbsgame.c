@@ -123,12 +123,34 @@ static void _send ( MbsGame *game,
 
 
 
+/* _colony_update:
+ */
+static void _colony_update ( MbsGame *game,
+                             MbsColony *colony )
+{
+  CL_DEBUG("[TODO]");
+}
+
+
+
+/* _sector_update:
+ */
+static void _sector_update ( MbsGame *game,
+                             MbsSector *sector )
+{
+  if (sector->colony)
+    _colony_update(game, sector->colony);
+}
+
+
+
 /* _game_update:
  */
 static void _game_update ( MbsGame *game )
 {
   Private *priv = PRIVATE(game);
   gint p;
+  gint x, y;
   game->frame++;
   CL_TRACE("%d", game->frame);
   CL_TRACE("game=%p/%p, n_players=%d", game, priv, priv->n_players);
@@ -142,7 +164,10 @@ static void _game_update ( MbsGame *game )
       block = mb_state_next(player->state, MB_STATE_SIM_TIME);
       block->v0.v_int = game->frame;
     }
-  /* [TODO] game update */
+  /* game update */
+  for (y = 0; y < game->world->height; y++)
+    for (x = 0; x < game->world->width; x++)
+      _sector_update(game, game->world->sectors[y][x]);
   /* send all the messages */
   for (p = 0; p < priv->n_players; p++)
     {

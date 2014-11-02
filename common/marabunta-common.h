@@ -21,5 +21,7 @@
 
 #include "common/mbworld.h"
 
+#include "common/mbpoptree.h"
+
 
 #endif

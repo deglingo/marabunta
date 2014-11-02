@@ -14,7 +14,8 @@ libmarabunta_common_la_SOURCES = \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
-	mbworld.c
+	mbworld.c \
+	mbpoptree.c
 
 BUILT_SOURCES = \
 	mbapp-def.h mbapp.inl \

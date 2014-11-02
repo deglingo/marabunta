@@ -18,6 +18,7 @@ struct _MbsColony
   MBS_COLONY_INSTANCE_HEADER;
 
   guint owner;
+  MbPopTree *pop_tree;
 };
 
 
