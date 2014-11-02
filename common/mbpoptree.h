@@ -14,6 +14,9 @@ typedef enum _MbCast MbCast;
 typedef struct _MbPopUnit MbPopUnit;
 typedef struct _MbPopTree MbPopTree;
 
+typedef void (* MbPopTreeTraverseFunc) ( MbPopUnit *unit,
+                                         gpointer data );
+
 
 
 /* MbPopType:
@@ -92,6 +95,9 @@ void mb_pop_tree_add ( MbPopTree *tree,
                        MbPopType type,
                        guint birthdate,
                        gint64 count );
+void mb_pop_tree_traverse ( MbPopTree *tree,
+                            MbPopTreeTraverseFunc func,
+                            gpointer data );
 
 
 

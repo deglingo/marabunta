@@ -123,6 +123,15 @@ static void _send ( MbsGame *game,
 
 
 
+static void _pop_unit_update ( MbPopUnit *unit,
+                               gpointer data )
+{
+  MbsColony *col = data;
+
+}
+
+
+
 /* _colony_update:
  */
 static void _colony_update ( MbsGame *game,
@@ -131,9 +140,10 @@ static void _colony_update ( MbsGame *game,
   Private *priv = PRIVATE(game);
   MbStatePop *st_pop;
   gint tp;
-  mb_pop_tree_add(colony->pop_tree,
-                  MB_POP_EGG, game->frame,
-                  10);
+  mb_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
+  /* mb_pop_tree_add(colony->pop_tree, */
+  /*                 MB_POP_EGG, game->frame, */
+  /*                 10); */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
   st_pop->x = colony->sector->x;

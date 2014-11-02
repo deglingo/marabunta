@@ -105,3 +105,18 @@ void mb_pop_tree_add ( MbPopTree *tree,
     }
   tree->pop[type] += count;
 }
+
+
+
+/* mb_pop_tree_traverse:
+ */
+void mb_pop_tree_traverse ( MbPopTree *tree,
+                            MbPopTreeTraverseFunc func,
+                            gpointer data )
+{
+  GList *l;
+  for (l = tree->units; l; l = l->next)
+    {
+      func(l->data, data);
+    }
+}
