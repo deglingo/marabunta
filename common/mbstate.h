@@ -11,11 +11,13 @@ G_BEGIN_DECLS
 
 
 
-#define MB_STATE_MAX_BLOCKS 256
+#define MB_STATE_BLOCKS_SIZE 256
 
 typedef enum _MbStateType MbStateType;
-typedef union _MbStateValue MbStateValue;
 typedef struct _MbStateBlock MbStateBlock;
+typedef struct _MbStateReset MbStateReset;
+typedef struct _MbStateFrame MbStateFrame;
+typedef struct _MbStateColony MbStateColony;
 
 
 
@@ -24,19 +26,10 @@ typedef struct _MbStateBlock MbStateBlock;
 enum _MbStateType
   {
     MB_STATE_RESET,
-    MB_STATE_WORLD_SIZE,
-    MB_STATE_SIM_TIME,
+    MB_STATE_FRAME,
     MB_STATE_COLONY,
+    MB_STATE_COUNT,
   };
-
-
-
-/* MbStateValue:
- */
-union _MbStateValue
-{
-  gint v_int;
-};
 
 
 
@@ -45,9 +38,39 @@ union _MbStateValue
 struct _MbStateBlock
 {
   MbStateType type;
-  MbStateValue v0;
-  MbStateValue v1;
-  MbStateValue v2;
+};
+
+
+
+/* MbStateReset:
+ */
+struct _MbStateReset
+{
+  MbStateBlock block;
+  guint world_width;
+  guint world_height;
+};
+
+
+
+/* MbStateFrame:
+ */
+struct _MbStateFrame
+{
+  MbStateBlock block;
+  guint sim_time;
+};
+
+
+
+/* MbStateColony:
+ */
+struct _MbStateColony
+{
+  MbStateBlock block;
+  guint x;
+  guint y;
+  gint owner;
 };
 
 
@@ -58,8 +81,8 @@ struct _MbState
 {
   MB_STATE_INSTANCE_HEADER;
 
-  MbStateBlock blocks[MB_STATE_MAX_BLOCKS];
-  guint n_blocks;
+  gchar blocks[MB_STATE_BLOCKS_SIZE];
+  guint blocks_count;
 };
 
 
@@ -76,6 +99,8 @@ struct _MbStateClass
 MbState *mb_state_new ( void );
 MbStateBlock *mb_state_next ( MbState *state,
                               MbStateType type );
+MbStateBlock *mb_state_read ( MbState *state,
+                              guint *offset );
 
 
 

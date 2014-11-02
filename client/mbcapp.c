@@ -60,22 +60,31 @@ static void _process_game_state ( MbcApp *app,
                                   MbState *state )
 {
   MbStateBlock *block;
-  guint b;
-  for (b = 0, block = state->blocks; b < state->n_blocks; b++, block++)
+  guint offset = 0;
+  while ((block = mb_state_read(state, &offset)))
     {
       switch (block->type)
         {
         case MB_STATE_RESET:
-          break;
-        case MB_STATE_WORLD_SIZE:
-          mbc_world_proxy_set_size(app->game_proxy->world, block->v0.v_int, block->v1.v_int);
-          break;
-        case MB_STATE_SIM_TIME:
-          mbc_game_proxy_set_sim_time(app->game_proxy, block->v0.v_int);
+          {
+            MbStateReset *st_reset = (MbStateReset *) block;
+            mbc_world_proxy_set_size(app->game_proxy->world,
+                                     st_reset->world_width,
+                                     st_reset->world_height);
+          }
           break;
         case MB_STATE_COLONY:
-          mbc_sector_proxy_create_colony(app->game_proxy->world->sectors[block->v1.v_int][block->v0.v_int],
-                                         block->v2.v_int);
+          {
+            MbStateColony *st_col = (MbStateColony *) block;
+            mbc_sector_proxy_create_colony(app->game_proxy->world->sectors[st_col->y][st_col->x],
+                                           st_col->owner);
+          }
+          break;
+        case MB_STATE_FRAME:
+          {
+            MbStateFrame *st_frame = (MbStateFrame *) block;
+            mbc_game_proxy_set_sim_time(app->game_proxy, st_frame->sim_time);
+          }
           break;
         default:
           CL_ERROR("[TODO] block type: %d", block->type);

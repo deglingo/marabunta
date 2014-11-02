@@ -161,10 +161,10 @@ static void _game_update ( MbsGame *game )
     {
       Player *player = priv->players[p];
       CL_TRACE("%d", p);
-      MbStateBlock *block;
+      MbStateFrame *st_frame;
       player->state = mb_state_new();
-      block = mb_state_next(player->state, MB_STATE_SIM_TIME);
-      block->v0.v_int = game->frame;
+      st_frame = (MbStateFrame *) mb_state_next(player->state, MB_STATE_FRAME);
+      st_frame->sim_time = game->frame;
     }
   /* game update */
   for (y = 0; y < game->world->height; y++)
@@ -216,12 +216,11 @@ static void _send_game_setup ( MbsGame *game,
 {
   MbState *state = mb_state_new();
   MbMessage *msg = mb_message_new(MB_MESSAGE_KEY_GAME_SETUP, L_OBJECT(state));
-  MbStateBlock *block;
+  MbStateReset *reset;
   guint x, y;
-  block = mb_state_next(state, MB_STATE_RESET);
-  block = mb_state_next(state, MB_STATE_WORLD_SIZE);
-  block->v0.v_int = game->world->width;
-  block->v1.v_int = game->world->height;
+  reset = (MbStateReset *) mb_state_next(state, MB_STATE_RESET);
+  reset->world_width = game->world->width;
+  reset->world_height = game->world->height;
   for (y = 0; y < game->world->height; y++)
     {
       for (x = 0; x < game->world->width; x++)
@@ -229,10 +228,10 @@ static void _send_game_setup ( MbsGame *game,
           MbsSector *sector = game->world->sectors[y][x];
           if (sector->colony)
             {
-              block = mb_state_next(state, MB_STATE_COLONY);
-              block->v0.v_int = x;
-              block->v1.v_int = y;
-              block->v2.v_int = sector->colony->owner;
+              MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
+              st_colony->x = x;
+              st_colony->y = y;
+              st_colony->owner = sector->colony->owner;
             }
         }
     }
