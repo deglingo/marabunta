@@ -128,7 +128,9 @@ static void _send ( MbsGame *game,
 static void _colony_update ( MbsGame *game,
                              MbsColony *colony )
 {
-  CL_DEBUG("[TODO]");
+  mb_pop_tree_add(colony->pop_tree,
+                  MB_POP_EGG, game->frame,
+                  10);
 }
 
 
