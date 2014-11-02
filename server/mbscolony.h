@@ -9,6 +9,8 @@
 
 G_BEGIN_DECLS
 
+struct _MbsSector;
+
 
 
 /* MbsColony:
@@ -17,6 +19,7 @@ struct _MbsColony
 {
   MBS_COLONY_INSTANCE_HEADER;
 
+  struct _MbsSector *sector;
   guint owner;
   MbPopTree *pop_tree;
 };
@@ -32,7 +35,8 @@ struct _MbsColonyClass
 
 
 
-MbsColony *mbs_colony_new ( guint owner );
+MbsColony *mbs_colony_new ( struct _MbsSector *sector,
+                            guint owner );
 
 
 

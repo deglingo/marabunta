@@ -5,6 +5,7 @@
 #define _MBSTATE_H_
 
 #include "common/mbbase.h"
+#include "common/mbpoptree.h"
 #include "common/mbstate-def.h"
 
 G_BEGIN_DECLS
@@ -18,6 +19,7 @@ typedef struct _MbStateBlock MbStateBlock;
 typedef struct _MbStateReset MbStateReset;
 typedef struct _MbStateFrame MbStateFrame;
 typedef struct _MbStateColony MbStateColony;
+typedef struct _MbStatePop MbStatePop;
 
 
 
@@ -28,6 +30,7 @@ enum _MbStateType
     MB_STATE_RESET,
     MB_STATE_FRAME,
     MB_STATE_COLONY,
+    MB_STATE_POP,
     MB_STATE_COUNT,
   };
 
@@ -71,6 +74,18 @@ struct _MbStateColony
   guint x;
   guint y;
   gint owner;
+};
+
+
+
+/* MbStatePop:
+ */
+struct _MbStatePop
+{
+  MbStateBlock block;
+  guint x;
+  guint y;
+  gint64 pop[MB_POP_TYPE_COUNT];
 };
 
 

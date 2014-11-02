@@ -14,6 +14,7 @@ static const guint MB_STATE_BLOCK_TYPE_SIZE[MB_STATE_COUNT] =
     [MB_STATE_RESET] = sizeof(MbStateReset),
     [MB_STATE_FRAME] = sizeof(MbStateFrame),
     [MB_STATE_COLONY] = sizeof(MbStateColony),
+    [MB_STATE_POP] = sizeof(MbStatePop),
   };
 
 

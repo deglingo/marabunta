@@ -18,6 +18,7 @@ struct _MbcColonyProxy
   MBC_COLONY_PROXY_INSTANCE_HEADER;
 
   gint owner;
+  gint64 pop[MB_POP_TYPE_COUNT];
 };
 
 
@@ -32,6 +33,8 @@ struct _MbcColonyProxyClass
 
 
 MbcColonyProxy *mbc_colony_proxy_new ( gint owner );
+void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
+                                gint64 *pop );
 
 
 

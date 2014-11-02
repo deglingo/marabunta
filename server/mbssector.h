@@ -18,6 +18,8 @@ struct _MbsSector
 {
   MBS_SECTOR_INSTANCE_HEADER;
 
+  guint x;
+  guint y;
   MbsColony *colony;
 };
 
@@ -32,7 +34,8 @@ struct _MbsSectorClass
 
 
 
-MbsSector *mbs_sector_new ( void );
+MbsSector *mbs_sector_new ( guint x,
+                            guint y );
 void mbs_sector_create_colony ( MbsSector *sector,
                                 guint player );
 

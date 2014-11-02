@@ -9,10 +9,13 @@
 
 /* mbs_sector_new:
  */
-MbsSector *mbs_sector_new ( void )
+MbsSector *mbs_sector_new ( guint x,
+                            guint y )
 {
   MbsSector *sector;
   sector = MBS_SECTOR_NEW(NULL);
+  sector->x = x;
+  sector->y = y;
   return sector;
 }
 
@@ -24,5 +27,5 @@ void mbs_sector_create_colony ( MbsSector *sector,
                                 guint player )
 {
   ASSERT(!sector->colony);
-  sector->colony = mbs_colony_new(player);
+  sector->colony = mbs_colony_new(sector, player);
 }

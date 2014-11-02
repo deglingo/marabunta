@@ -202,10 +202,26 @@ static void _sim_time_notify ( MbcGameProxy *proxy,
 
 
 
-static void _pop_notify ( MbcColonyProxy *proxy,
-                          AltkWidget *label )
+static void set_pop_label ( AltkWidget *label,
+                            gint64 pop )
 {
-  CL_ERROR("[TODO]");
+  gchar text[12]; /* ?? */
+  if (pop < 1000)
+    sprintf(text, "%dU", (gint) pop);
+  else if (pop < 1000000)
+    sprintf(text, "%.1fK", ((gdouble) pop) / 1000.0);
+  else
+    sprintf(text, "%.1fM", ((gdouble) pop) / 1000000.0);    
+  altk_label_set_text(ALTK_LABEL(label), text);
+}
+
+
+
+static void _pop_notify ( MbcColonyProxy *proxy,
+                          AltkWidget *dialog )
+{
+  Private *priv = PRIVATE(dialog);
+  set_pop_label(priv->pop_eggs, proxy->pop[MB_POP_EGG]);
 }
 
 
@@ -229,10 +245,10 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
     MbcSectorProxy *sector = game_proxy->world->sectors[0][0];
     MbcColonyProxy *colony = sector->colony;
     l_signal_connect(L_OBJECT(colony),
-                     "notify",
-                     g_quark_from_string("pop_eggs"),
+                     "pop_notify",
+                     0,
                      (LSignalHandler) _pop_notify,
-                     priv->pop_eggs,
+                     dialog,
                      NULL);
   }
 }

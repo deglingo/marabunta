@@ -22,7 +22,7 @@ MbsWorld *mbs_world_new ( guint width,
       world->sectors[y] = g_new(MbsSector *, width);
       for (x = 0; x < width; x++)
         {
-          world->sectors[y][x] = mbs_sector_new();
+          world->sectors[y][x] = mbs_sector_new(x, y);
         }
     }
   return world;

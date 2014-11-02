@@ -128,9 +128,20 @@ static void _send ( MbsGame *game,
 static void _colony_update ( MbsGame *game,
                              MbsColony *colony )
 {
+  Private *priv = PRIVATE(game);
+  MbStatePop *st_pop;
+  gint tp;
   mb_pop_tree_add(colony->pop_tree,
                   MB_POP_EGG, game->frame,
                   10);
+  st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
+                                        MB_STATE_POP);
+  st_pop->x = colony->sector->x;
+  st_pop->y = colony->sector->y;
+  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+    {
+      st_pop->pop[tp] = colony->pop_tree->pop[tp];
+    }
 }
 
 

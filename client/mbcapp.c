@@ -86,6 +86,13 @@ static void _process_game_state ( MbcApp *app,
             mbc_game_proxy_set_sim_time(app->game_proxy, st_frame->sim_time);
           }
           break;
+        case MB_STATE_POP:
+          {
+            MbStatePop *st_pop = (MbStatePop *) block;
+            MbcColonyProxy *col = app->game_proxy->world->sectors[st_pop->y][st_pop->x]->colony;
+            mbc_colony_proxy_set_pop(col, st_pop->pop);
+          }
+          break;
         default:
           CL_ERROR("[TODO] block type: %d", block->type);
         }
