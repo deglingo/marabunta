@@ -23,7 +23,7 @@ static gboolean t_spawn_check ( MbsTask *task,
  */
 static void t_spawn_process ( MbsTask *task )
 {
-  CL_ERROR("[TODO]");
+  CL_DEBUG("process: t_spawn(%qd)", task->workers);
 }
 
 

@@ -30,6 +30,15 @@ gboolean mbs_task_check ( MbsTask *task,
 
 
 
+/* mbs_task_process:
+ */
+void mbs_task_process ( MbsTask *task )
+{
+  task->funcs.process(task);
+}
+
+
+
 /* mbs_task_get_score:
  */
 gint64 mbs_task_get_score ( MbsTask *task )

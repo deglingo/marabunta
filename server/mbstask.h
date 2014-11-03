@@ -53,6 +53,7 @@ MbsTask *mbs_task_new ( struct _MbsColony *colony,
                         MbsTaskFuncs *funcs );
 gboolean mbs_task_check ( MbsTask *task,
                           MbPopType pop_type );
+void mbs_task_process ( MbsTask *task );
 gint64 mbs_task_get_score ( MbsTask *task );
 void mbs_task_adjust_workers ( MbsTask *task,
                                gint64 count );

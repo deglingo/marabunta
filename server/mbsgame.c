@@ -127,8 +127,12 @@ static void _send ( MbsGame *game,
 static void _pop_unit_affect_task ( MbPopUnit *unit,
                                     MbsTask *task )
 {
-  unit->task = task;
-  mbs_task_adjust_workers(task, unit->count);
+  if (unit->task == task)
+    return;
+  if (unit->task)
+    mbs_task_adjust_workers(unit->task, -unit->count);
+  if ((unit->task = task))
+    mbs_task_adjust_workers(task, unit->count);
 }
 
 
@@ -137,6 +141,7 @@ static void _pop_unit_update_aq ( MbsColony *colony,
                                   MbPopUnit *unit )
 {
   MbsTask *task;
+  _pop_unit_affect_task(unit, NULL);
   if ((task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN)))
     {
       _pop_unit_affect_task(unit, task);
@@ -169,10 +174,17 @@ static void _colony_update ( MbsGame *game,
   Private *priv = PRIVATE(game);
   MbStatePop *st_pop;
   gint tp;
+  GList *l;
+  /* update the pop tree */
   mb_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
-  /* mb_pop_tree_add(colony->pop_tree, */
-  /*                 MB_POP_EGG, game->frame, */
-  /*                 10); */
+  /* process all the tasks */
+  for (l = colony->tasks; l; l = l->next)
+    {
+      MbsTask *task = l->data;
+      if (task->workers)
+        mbs_task_process(task);
+    }
+  /* send pop state */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
   st_pop->x = colony->sector->x;
