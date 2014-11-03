@@ -10,6 +10,8 @@
 
 G_BEGIN_DECLS
 
+struct _MbsGame;
+
 
 
 /* MbsWorld:
@@ -18,6 +20,7 @@ struct _MbsWorld
 {
   MBS_WORLD_INSTANCE_HEADER;
 
+  struct _MbsGame *game;
   guint width;
   guint height;
   MbsSector ***sectors;
@@ -34,7 +37,8 @@ struct _MbsWorldClass
 
 
 
-MbsWorld *mbs_world_new ( guint width,
+MbsWorld *mbs_world_new ( struct _MbsGame *game,
+                          guint width,
                           guint heigt );
 
 

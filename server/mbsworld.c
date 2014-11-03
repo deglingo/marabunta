@@ -8,12 +8,14 @@
 
 /* mbs_world_new:
  */
-MbsWorld *mbs_world_new ( guint width,
+MbsWorld *mbs_world_new ( struct _MbsGame *game,
+                          guint width,
                           guint height )
 {
   MbsWorld *world;
   guint x, y;
   world = MBS_WORLD(l_object_new(MBS_CLASS_WORLD, NULL));
+  world->game = game;
   world->width = width;
   world->height = height;
   world->sectors = g_new(MbsSector **, height);
@@ -22,7 +24,7 @@ MbsWorld *mbs_world_new ( guint width,
       world->sectors[y] = g_new(MbsSector *, width);
       for (x = 0; x < width; x++)
         {
-          world->sectors[y][x] = mbs_sector_new(x, y);
+          world->sectors[y][x] = mbs_sector_new(world, x, y);
         }
     }
   return world;

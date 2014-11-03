@@ -9,11 +9,13 @@
 
 /* mbs_sector_new:
  */
-MbsSector *mbs_sector_new ( guint x,
+MbsSector *mbs_sector_new ( struct _MbsWorld *world,
+                            guint x,
                             guint y )
 {
   MbsSector *sector;
   sector = MBS_SECTOR_NEW(NULL);
+  sector->world = world;
   sector->x = x;
   sector->y = y;
   return sector;

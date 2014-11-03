@@ -51,6 +51,15 @@ static MbPopUnit *mb_pop_unit_new ( MbPopType type,
 
 
 
+/* mb_pop_unit_free:
+ */
+static void mb_pop_unit_free ( MbPopUnit *unit )
+{
+  g_free(unit);
+}
+
+
+
 /* mb_pop_tree_new:
  */
 MbPopTree *mb_pop_tree_new ( void )
@@ -118,5 +127,23 @@ void mb_pop_tree_traverse ( MbPopTree *tree,
   for (l = tree->units; l; l = l->next)
     {
       func(l->data, data);
+    }
+}
+
+
+
+/* mb_pop_tree_update:
+ */
+void mb_pop_tree_update ( MbPopTree *tree,
+                          MbPopTree *adj )
+{
+  GList *l;
+  for (l = adj->units; l; l = l->next)
+    {
+      MbPopUnit *unit = l->data;
+      /* [FIXME] should adjust task workers count!! */
+      mb_pop_tree_add(tree, unit->type, unit->birthdate, unit->count);
+      g_list_free_full(adj->units, (GDestroyNotify) mb_pop_unit_free);
+      adj->units = NULL;
     }
 }

@@ -4,6 +4,8 @@
 #include "server/srvprivate.h"
 #include "server/mbscolony.h"
 #include "server/mbssector.h"
+#include "server/mbsworld.h"
+#include "server/mbsgame.h"
 #include "server/mbstask.h"
 #include "server/mbscolony.inl"
 
@@ -24,6 +26,7 @@ static gboolean t_spawn_check ( MbsTask *task,
 static void t_spawn_process ( MbsTask *task )
 {
   CL_DEBUG("process: t_spawn(%qd)", task->workers);
+  mbs_colony_adjust_pop(task->colony, MB_POP_EGG, task->colony->sector->world->game->frame, 10 * task->workers);
 }
 
 
@@ -42,6 +45,7 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   col->sector = sector;
   col->owner = owner;
   col->pop_tree = mb_pop_tree_new();
+  col->pop_adj = mb_pop_tree_new();
   col->tasks = g_list_append(col->tasks, mbs_task_new(col, &t_spawn_funcs));
   return col;
 }
@@ -70,4 +74,25 @@ MbsTask *mbs_colony_select_task ( MbsColony *colony,
         }
     }
   return found;
+}
+
+
+
+/* mbs_colony_adjust_pop:
+ */
+void mbs_colony_adjust_pop ( MbsColony *colony,
+                             MbPopType type,
+                             guint birthdate,
+                             gint64 count )
+{
+  mb_pop_tree_add(colony->pop_adj, type, birthdate, count);
+}
+
+
+
+/* mbs_colony_update_pop_tree:
+ */
+void mbs_colony_update_pop_tree ( MbsColony *colony )
+{
+  mb_pop_tree_update(colony->pop_tree, colony->pop_adj);
 }

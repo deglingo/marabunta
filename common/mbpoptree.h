@@ -103,6 +103,8 @@ void mb_pop_tree_add ( MbPopTree *tree,
 void mb_pop_tree_traverse ( MbPopTree *tree,
                             MbPopTreeTraverseFunc func,
                             gpointer data );
+void mb_pop_tree_update ( MbPopTree *tree,
+                          MbPopTree *adj );
 
 
 

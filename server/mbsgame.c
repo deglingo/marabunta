@@ -184,6 +184,8 @@ static void _colony_update ( MbsGame *game,
       if (task->workers)
         mbs_task_process(task);
     }
+  /* adjust pop tree */
+  mbs_colony_update_pop_tree(colony);
   /* send pop state */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
@@ -265,7 +267,7 @@ static gboolean _on_game_timer ( MbsGame *game )
  */
 static void _setup ( MbsGame *game )
 {
-  game->world = mbs_world_new(1, 2);
+  game->world = mbs_world_new(game, 1, 2);
   mbs_sector_create_colony(game->world->sectors[0][0], 0);
   mb_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
                   MB_POP_ADULT_QUEEN, 0, 1);

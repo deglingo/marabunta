@@ -10,6 +10,8 @@
 
 G_BEGIN_DECLS
 
+struct _MbsWorld;
+
 
 
 /* MbsSector:
@@ -18,6 +20,7 @@ struct _MbsSector
 {
   MBS_SECTOR_INSTANCE_HEADER;
 
+  struct _MbsWorld *world;
   guint x;
   guint y;
   MbsColony *colony;
@@ -34,7 +37,8 @@ struct _MbsSectorClass
 
 
 
-MbsSector *mbs_sector_new ( guint x,
+MbsSector *mbs_sector_new ( struct _MbsWorld *world,
+                            guint x,
                             guint y );
 void mbs_sector_create_colony ( MbsSector *sector,
                                 guint player );

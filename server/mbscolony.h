@@ -23,6 +23,7 @@ struct _MbsColony
   struct _MbsSector *sector;
   guint owner;
   MbPopTree *pop_tree;
+  MbPopTree *pop_adj;
   GList *tasks;
 };
 
@@ -41,6 +42,11 @@ MbsColony *mbs_colony_new ( struct _MbsSector *sector,
                             guint owner );
 MbsTask *mbs_colony_select_task ( MbsColony *colony,
                                   MbPopType pop_type );
+void mbs_colony_adjust_pop ( MbsColony *colony,
+                             MbPopType type,
+                             guint birthdate,
+                             gint64 count );
+void mbs_colony_update_pop_tree ( MbsColony *colony );
 
 
 
