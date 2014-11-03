@@ -6,6 +6,9 @@
 
 #include "common/mbbase.h"
 
+/* [FIXME] */
+struct _MbsTask;
+
 
 
 typedef enum _MbPopType MbPopType;
@@ -74,6 +77,8 @@ struct _MbPopUnit
   MbPopType type;
   guint birthdate;
   gint64 count;
+  /* [FIXME] */
+  struct _MbsTask *task;
 };
 
 

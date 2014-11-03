@@ -9,12 +9,17 @@
 
 G_BEGIN_DECLS
 
+struct _MbsColony;
+
 
 
 /* MbsTaskFuncs:
  */
 typedef struct _MbsTaskFuncs
 {
+  gboolean (* check) ( MbsTask *task,
+                       MbPopType pop_type );
+  
   void (* process) ( MbsTask *task );
 }
   MbsTaskFuncs;
@@ -27,7 +32,10 @@ struct _MbsTask
 {
   MBS_TASK_INSTANCE_HEADER;
 
+  struct _MbsColony *colony;
   MbsTaskFuncs funcs;
+  gint64 score;
+  gint64 workers;
 };
 
 
@@ -41,7 +49,13 @@ struct _MbsTaskClass
 
 
 
-MbsTask *mbs_task_new ( MbsTaskFuncs *funcs );
+MbsTask *mbs_task_new ( struct _MbsColony *colony,
+                        MbsTaskFuncs *funcs );
+gboolean mbs_task_check ( MbsTask *task,
+                          MbPopType pop_type );
+gint64 mbs_task_get_score ( MbsTask *task );
+void mbs_task_adjust_workers ( MbsTask *task,
+                               gint64 count );
 
 
 

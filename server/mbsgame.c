@@ -4,6 +4,7 @@
 #include "server/srvprivate.h"
 #include "server/mbsgame.h"
 #include "server/mbsapp.h"
+#include "server/mbstask.h"
 #include "server/mbsgame.inl"
 
 
@@ -123,10 +124,23 @@ static void _send ( MbsGame *game,
 
 
 
+static void _pop_unit_affect_task ( MbPopUnit *unit,
+                                    MbsTask *task )
+{
+  unit->task = task;
+  mbs_task_adjust_workers(task, unit->count);
+}
+
+
+
 static void _pop_unit_update_aq ( MbsColony *colony,
                                   MbPopUnit *unit )
 {
-  CL_DEBUG("[TODO]");
+  MbsTask *task;
+  if ((task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN)))
+    {
+      _pop_unit_affect_task(unit, task);
+    }
 }
 
 
@@ -139,6 +153,7 @@ static void _pop_unit_update ( MbPopUnit *unit,
     {
     case MB_POP_ADULT_QUEEN:
       _pop_unit_update_aq(col, unit);
+      break;
     default:
       CL_DEBUG("[TODO] pop type %d", unit->type);
     }

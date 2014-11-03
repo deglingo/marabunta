@@ -5,6 +5,7 @@
 #define _MBSCOLONY_H_
 
 #include "server/mbsbase.h"
+#include "server/mbstask.h"
 #include "server/mbscolony-def.h"
 
 G_BEGIN_DECLS
@@ -38,6 +39,8 @@ struct _MbsColonyClass
 
 MbsColony *mbs_colony_new ( struct _MbsSector *sector,
                             guint owner );
+MbsTask *mbs_colony_select_task ( MbsColony *colony,
+                                  MbPopType pop_type );
 
 
 
