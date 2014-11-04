@@ -42,7 +42,7 @@ static MbPopUnit *mb_pop_unit_new ( MbPopType type,
                                     gint64 count )
 {
   MbPopUnit *unit;
-  unit = g_new(MbPopUnit, 1);
+  unit = g_new0(MbPopUnit, 1);
   unit->type = type;
   unit->birthdate = birthdate;
   unit->count = count;
@@ -143,7 +143,8 @@ void mb_pop_tree_update ( MbPopTree *tree,
       MbPopUnit *unit = l->data;
       /* [FIXME] should adjust task workers count!! */
       mb_pop_tree_add(tree, unit->type, unit->birthdate, unit->count);
-      g_list_free_full(adj->units, (GDestroyNotify) mb_pop_unit_free);
-      adj->units = NULL;
+      adj->pop[unit->type] -= unit->count;
     }
+  g_list_free_full(adj->units, (GDestroyNotify) mb_pop_unit_free);
+  adj->units = NULL;
 }

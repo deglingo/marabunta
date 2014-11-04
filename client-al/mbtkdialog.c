@@ -118,7 +118,7 @@ static AltkWidget *_create_pop_table ( AltkWidget *dlg )
   _pop_label(table, "W", 2, 1, 3, 2);
   _pop_label(table, "S", 3, 1, 4, 2);
   _pop_label(table, "T", 4, 1, 5, 2);
-  priv->pop_eggs = _pop_value(table, 1, 0, 4, 2);
+  priv->pop_eggs = _pop_value(table, 1, 0, 4, 1);
   priv->pop_lq   = _pop_value(table, 1, 2, 2, 3);
   priv->pop_aq   = _pop_value(table, 1, 3, 2, 4);
   priv->pop_tq   = _pop_value(table, 1, 4, 2, 5);
@@ -209,9 +209,9 @@ static void set_pop_label ( AltkWidget *label,
   if (pop < 1000)
     sprintf(text, "%dU", (gint) pop);
   else if (pop < 1000000)
-    sprintf(text, "%.1fK", ((gdouble) pop) / 1000.0);
+    sprintf(text, "%.2fK", ((gdouble) pop) / 1000.0);
   else
-    sprintf(text, "%.1fM", ((gdouble) pop) / 1000000.0);    
+    sprintf(text, "%.2fM", ((gdouble) pop) / 1000000.0);    
   altk_label_set_text(ALTK_LABEL(label), text);
 }
 

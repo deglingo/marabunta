@@ -108,17 +108,17 @@ static void player_message_handler ( MbsPlayerID player,
                                      gpointer data )
 {
   MbcApp *app = data;
-  CL_DEBUG("message(player=%d, key=%d", player, message->key);
+  /* CL_DEBUG("message(player=%d, key=%d", player, message->key); */
   switch (message->key)
     {
     case MB_MESSAGE_KEY_GAME_SETUP:
-      CL_DEBUG("game_setup");
+      /* CL_DEBUG("game_setup"); */
       mbc_game_proxy_reset(app->game_proxy);
       _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
       mbc_game_proxy_started(app->game_proxy);
       break;
     case MB_MESSAGE_KEY_GAME_STATE:
-      CL_DEBUG("game_state");
+      /* CL_DEBUG("game_state"); */
       ASSERT(MB_IS_STATE(message->arg));
       _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
       break;

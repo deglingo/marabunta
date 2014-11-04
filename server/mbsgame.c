@@ -118,7 +118,7 @@ static void _send ( MbsGame *game,
                     Player *player,
                     MbMessage *message )
 {
-  CL_DEBUG("send(player=%d, key=%d)", player->id, message->key);
+  /* CL_DEBUG("send(player=%d, key=%d)", player->id, message->key); */
   player->message_handler(player->id, message, player->handler_data);
 }
 
@@ -133,6 +133,21 @@ static void _pop_unit_affect_task ( MbPopUnit *unit,
     mbs_task_adjust_workers(unit->task, -unit->count);
   if ((unit->task = task))
     mbs_task_adjust_workers(task, unit->count);
+}
+
+
+
+static void _pop_unit_update_egg ( MbsColony *colony,
+                                   MbPopUnit *unit )
+{
+  guint age;
+  /* _pop_unit_affect_task(unit, NULL); */
+  age = colony->sector->world->game->frame - unit->birthdate;
+  if (age > 10)
+    {
+      mbs_colony_adjust_pop(colony, MB_POP_EGG, unit->birthdate, -unit->count);
+      mbs_colony_adjust_pop(colony, MB_POP_LARVAE_WORKER, unit->birthdate, unit->count);
+    }
 }
 
 
@@ -156,10 +171,14 @@ static void _pop_unit_update ( MbPopUnit *unit,
   MbsColony *col = data;
   switch(unit->type)
     {
+    case MB_POP_EGG:
+      _pop_unit_update_egg(col, unit);
+      break;
     case MB_POP_ADULT_QUEEN:
       _pop_unit_update_aq(col, unit);
       break;
     default:
+      do {} while (0);
       CL_DEBUG("[TODO] pop type %d", unit->type);
     }
 }
@@ -177,6 +196,8 @@ static void _colony_update ( MbsGame *game,
   GList *l;
   /* update the pop tree */
   mb_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
+  /* adjust pop tree */
+  mbs_colony_update_pop_tree(colony);
   /* process all the tasks */
   for (l = colony->tasks; l; l = l->next)
     {
@@ -184,8 +205,6 @@ static void _colony_update ( MbsGame *game,
       if (task->workers)
         mbs_task_process(task);
     }
-  /* adjust pop tree */
-  mbs_colony_update_pop_tree(colony);
   /* send pop state */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
@@ -218,13 +237,13 @@ static void _game_update ( MbsGame *game )
   gint p;
   gint x, y;
   game->frame++;
-  CL_TRACE("%d", game->frame);
-  CL_TRACE("game=%p/%p, n_players=%d", game, priv, priv->n_players);
+  /* CL_TRACE("%d", game->frame); */
+  /* CL_TRACE("game=%p/%p, n_players=%d", game, priv, priv->n_players); */
   /* prepare the messages */
   for (p = 0; p < priv->n_players; p++)
     {
       Player *player = priv->players[p];
-      CL_TRACE("%d", p);
+      /* CL_TRACE("%d", p); */
       MbStateFrame *st_frame;
       player->state = mb_state_new();
       st_frame = (MbStateFrame *) mb_state_next(player->state, MB_STATE_FRAME);
@@ -327,11 +346,11 @@ void mbs_game_start ( MbsGame *game )
       _send_game_setup(game, priv->players[p]);
     }
   /* setup the game timer */
-  game->fps = 1.0;
+  game->fps = 10.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
-                     100,
+                     1,
                      (GSourceFunc) _on_game_timer,
                      game,
                      NULL);

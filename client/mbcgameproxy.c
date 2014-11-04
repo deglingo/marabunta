@@ -64,7 +64,7 @@ MbcGameProxy *mbc_game_proxy_new ( void )
  */
 void mbc_game_proxy_reset ( MbcGameProxy *proxy )
 {
-  CL_DEBUG("[TODO] reset");
+  /* CL_DEBUG("[TODO] reset"); */
   mbc_game_proxy_set_sim_time(proxy, 0);
 }
 

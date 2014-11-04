@@ -25,7 +25,7 @@ static gboolean t_spawn_check ( MbsTask *task,
  */
 static void t_spawn_process ( MbsTask *task )
 {
-  CL_DEBUG("process: t_spawn(%qd)", task->workers);
+  /* CL_DEBUG("process: t_spawn(%qd)", task->workers); */
   mbs_colony_adjust_pop(task->colony, MB_POP_EGG, task->colony->sector->world->game->frame, 10 * task->workers);
 }
 
