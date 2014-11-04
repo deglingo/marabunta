@@ -8,6 +8,7 @@ namespace Mbs
 
   class Object
   {
+    void init ();
   };
   
   class World

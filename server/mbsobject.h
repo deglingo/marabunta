@@ -11,11 +11,17 @@ G_BEGIN_DECLS
 
 
 
+typedef guint MbsObjectID;
+
+
+
 /* MbsObject:
  */
 struct _MbsObject
 {
   MBS_OBJECT_INSTANCE_HEADER;
+
+  MbsObjectID id;
 };
 
 
@@ -26,6 +32,10 @@ struct _MbsObjectClass
 {
   MBS_OBJECT_CLASS_HEADER;
 };
+
+
+
+#define MBS_OBJECT_ID(obj) (MBS_OBJECT(obj)->id)
 
 
 
