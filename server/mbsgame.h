@@ -4,7 +4,7 @@
 #ifndef _MBSGAME_H_
 #define _MBSGAME_H_
 
-#include "server/mbsbase.h"
+#include "server/mbsobject.h"
 #include "server/mbsworld.h"
 #include "server/mbsgame-def.h"
 
