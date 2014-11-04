@@ -21,4 +21,8 @@ namespace Mb
   class World
   {
   };
+
+  class Task
+  {
+  };
 }
