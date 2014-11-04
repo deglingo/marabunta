@@ -7,6 +7,7 @@ libmarabunta_server_la_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) -DCL_LOG_DOM
 libmarabunta_server_la_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@
 
 libmarabunta_server_la_SOURCES = \
+	mbsobject.c \
 	mbsserver.c \
 	mbsworld.c \
 	mbssector.c \
@@ -16,6 +17,7 @@ libmarabunta_server_la_SOURCES = \
 	mbsapp.c
 
 BUILT_SOURCES = \
+	mbsobject-def.h mbsobject.inl \
 	mbsworld-def.h mbsworld.inl \
 	mbssector-def.h mbssector.inl \
 	mbscolony-def.h mbscolony.inl \
@@ -23,6 +25,7 @@ BUILT_SOURCES = \
 	mbsgame-def.h mbsgame.inl \
 	mbsapp-def.h mbsapp.inl
 
+mbsobject-def.h mbsobject.inl \
 mbsworld-def.h mbsworld.inl \
 mbssector-def.h mbssector.inl \
 mbscolony-def.h mbscolony.inl \
