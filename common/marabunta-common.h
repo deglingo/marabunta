@@ -13,6 +13,8 @@
 
 #include "common/mbstate.h"
 
+#include "common/mbpriority.h"
+
 #include "common/mbmessagewriter.h"
 
 #include "common/mbmessagereader.h"

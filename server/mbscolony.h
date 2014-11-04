@@ -25,6 +25,13 @@ struct _MbsColony
   MbPopTree *pop_tree;
   MbPopTree *pop_adj;
   GList *tasks;
+  /* pop cast priorities */
+  MbPriority *prio_pop_queen;
+  MbPriority *prio_pop_worker;
+  MbPriority *prio_pop_soldier;
+  gint64 score_pop_queen;
+  gint64 score_pop_worker;
+  gint64 score_pop_soldier;
 };
 
 

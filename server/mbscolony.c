@@ -47,6 +47,9 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   col->pop_tree = mb_pop_tree_new();
   col->pop_adj = mb_pop_tree_new();
   col->tasks = g_list_append(col->tasks, mbs_task_new(col, &t_spawn_funcs));
+  col->prio_pop_queen = mb_priority_new(1);
+  col->prio_pop_worker = mb_priority_new(7);
+  col->prio_pop_soldier = mb_priority_new(3);
   return col;
 }
 

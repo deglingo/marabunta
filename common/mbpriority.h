@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbPriority
 {
   MB_PRIORITY_INSTANCE_HEADER;
+
+  gint level;
 };
 
 
@@ -26,6 +28,10 @@ struct _MbPriorityClass
 {
   MB_PRIORITY_CLASS_HEADER;
 };
+
+
+
+MbPriority *mb_priority_new ( gint level );
 
 
 
