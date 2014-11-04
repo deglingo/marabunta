@@ -166,7 +166,9 @@ static void _pop_unit_update_larvae ( MbsColony *colony,
       MbCast pcast = MB_POP_CAST(unit->type);
       MbPopType pop_type = mb_pop_type(pcast, MB_MATURITY_ADULT);
       mbs_colony_adjust_pop(colony, unit->type, unit->birthdate, -unit->count);
-      mbs_colony_adjust_pop(colony, pop_type, unit->birthdate, unit->count);
+      /* [fixme] just kill queens for now */
+      if (pop_type != MB_POP_ADULT_QUEEN)
+        mbs_colony_adjust_pop(colony, pop_type, unit->birthdate, unit->count);
     }
 }
 
