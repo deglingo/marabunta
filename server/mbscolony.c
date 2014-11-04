@@ -99,3 +99,46 @@ void mbs_colony_update_pop_tree ( MbsColony *colony )
 {
   mb_pop_tree_update(colony->pop_tree, colony->pop_adj);
 }
+
+
+
+/* mbs_colony_select_hatch_cast:
+ */
+MbPopType mbs_colony_select_hatch_cast ( MbsColony *colony )
+{
+  if (colony->score_pop_queen < colony->score_pop_worker)
+    {
+      if (colony->score_pop_queen < colony->score_pop_soldier)
+        return MB_POP_LARVAE_QUEEN;
+    }
+  else
+    {
+      if (colony->score_pop_worker < colony->score_pop_soldier)
+        return MB_POP_LARVAE_WORKER;
+    }
+  return MB_POP_LARVAE_SOLDIER;
+}
+
+
+
+/* mbs_colonyèadjust_hatch_score:
+ */
+void mbs_colony_adjust_hatch_score ( MbsColony *colony,
+                                     MbPopType pop_type,
+                                     gint64 score )
+{
+  switch (pop_type)
+    {
+    case MB_POP_LARVAE_QUEEN:
+      colony->score_pop_queen += score * (10 - colony->prio_pop_queen->level);
+      break;
+    case MB_POP_LARVAE_WORKER:
+      colony->score_pop_worker += score * (10 - colony->prio_pop_worker->level);
+      break;
+    case MB_POP_LARVAE_SOLDIER:
+      colony->score_pop_soldier += score * (10 - colony->prio_pop_soldier->level);
+      break;
+    default:
+      CL_ERROR("invalid pop_type: %d", pop_type);
+    }
+}

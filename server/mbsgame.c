@@ -145,8 +145,11 @@ static void _pop_unit_update_egg ( MbsColony *colony,
   age = colony->sector->world->game->frame - unit->birthdate;
   if (age > 10)
     {
+      MbPopType pop_type;
+      pop_type = mbs_colony_select_hatch_cast(colony);
       mbs_colony_adjust_pop(colony, MB_POP_EGG, unit->birthdate, -unit->count);
-      mbs_colony_adjust_pop(colony, MB_POP_LARVAE_WORKER, unit->birthdate, unit->count);
+      mbs_colony_adjust_pop(colony, pop_type, unit->birthdate, unit->count);
+      mbs_colony_adjust_hatch_score(colony, pop_type, unit->count);
     }
 }
 

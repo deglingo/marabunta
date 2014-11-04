@@ -54,6 +54,10 @@ void mbs_colony_adjust_pop ( MbsColony *colony,
                              guint birthdate,
                              gint64 count );
 void mbs_colony_update_pop_tree ( MbsColony *colony );
+MbPopType mbs_colony_select_hatch_cast ( MbsColony *colony );
+void mbs_colony_adjust_hatch_score ( MbsColony *colony,
+                                     MbPopType pop_type,
+                                     gint64 count );
 
 
 
