@@ -102,21 +102,39 @@ void mbs_colony_update_pop_tree ( MbsColony *colony )
 
 
 
+/* _get_best_score:
+ */
+MbPopType _get_best_score ( MbsColony *colony,
+                            gint64 *score )
+{
+  if (colony->score_pop_queen < colony->score_pop_worker)
+    {
+      if (colony->score_pop_queen < colony->score_pop_soldier) {
+        if (score)
+          *score = colony->score_pop_queen;
+        return MB_POP_LARVAE_QUEEN;
+      }
+    }
+  else
+    {
+      if (colony->score_pop_worker < colony->score_pop_soldier) {
+        if (score)
+          *score = colony->score_pop_worker;
+        return MB_POP_LARVAE_WORKER;
+      }
+    }
+  if (score)
+    *score = colony->score_pop_soldier;
+  return MB_POP_LARVAE_SOLDIER;
+}
+
+
+
 /* mbs_colony_select_hatch_cast:
  */
 MbPopType mbs_colony_select_hatch_cast ( MbsColony *colony )
 {
-  if (colony->score_pop_queen < colony->score_pop_worker)
-    {
-      if (colony->score_pop_queen < colony->score_pop_soldier)
-        return MB_POP_LARVAE_QUEEN;
-    }
-  else
-    {
-      if (colony->score_pop_worker < colony->score_pop_soldier)
-        return MB_POP_LARVAE_WORKER;
-    }
-  return MB_POP_LARVAE_SOLDIER;
+  return _get_best_score(colony, NULL);
 }
 
 
@@ -141,4 +159,18 @@ void mbs_colony_adjust_hatch_score ( MbsColony *colony,
     default:
       CL_ERROR("invalid pop_type: %d", pop_type);
     }
+}
+
+
+
+/* mbs_colony_adjust_hatch_scores:
+ */
+void mbs_colony_adjust_hatch_scores ( MbsColony *colony )
+{
+  gint64 score;
+  /* [FIXME] ignore those which reached a maximum ? */
+  _get_best_score(colony, &score);
+  colony->score_pop_queen -= score;  
+  colony->score_pop_worker -= score;  
+  colony->score_pop_soldier -= score;  
 }

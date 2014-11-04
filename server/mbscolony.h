@@ -58,6 +58,7 @@ MbPopType mbs_colony_select_hatch_cast ( MbsColony *colony );
 void mbs_colony_adjust_hatch_score ( MbsColony *colony,
                                      MbPopType pop_type,
                                      gint64 count );
+void mbs_colony_adjust_hatch_scores ( MbsColony *colony );
 
 
 
