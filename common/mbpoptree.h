@@ -95,6 +95,9 @@ struct _MbPopTree
 
 
 
+MbPopType mb_pop_type ( MbCast pop_cast,
+                        MbMaturity pop_maturity );
+
 MbPopTree *mb_pop_tree_new ( void );
 void mb_pop_tree_add ( MbPopTree *tree,
                        MbPopType type,

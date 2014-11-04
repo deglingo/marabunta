@@ -155,6 +155,23 @@ static void _pop_unit_update_egg ( MbsColony *colony,
 
 
 
+static void _pop_unit_update_larvae ( MbsColony *colony,
+                                      MbPopUnit *unit )
+{
+  guint age;
+  /* _pop_unit_affect_task(unit, NULL); */
+  age = colony->sector->world->game->frame - unit->birthdate;
+  if (age > 30)
+    {
+      MbCast pcast = MB_POP_CAST(unit->type);
+      MbPopType pop_type = mb_pop_type(pcast, MB_MATURITY_ADULT);
+      mbs_colony_adjust_pop(colony, unit->type, unit->birthdate, -unit->count);
+      mbs_colony_adjust_pop(colony, pop_type, unit->birthdate, unit->count);
+    }
+}
+
+
+
 static void _pop_unit_update_aq ( MbsColony *colony,
                                   MbPopUnit *unit )
 {
@@ -177,8 +194,18 @@ static void _pop_unit_update ( MbPopUnit *unit,
     case MB_POP_EGG:
       _pop_unit_update_egg(col, unit);
       break;
+    case MB_POP_LARVAE_QUEEN:
+    case MB_POP_LARVAE_WORKER:
+    case MB_POP_LARVAE_SOLDIER:
+      /* [TODO] */
+      _pop_unit_update_larvae(col, unit);
+      break;
     case MB_POP_ADULT_QUEEN:
       _pop_unit_update_aq(col, unit);
+      break;
+    case MB_POP_ADULT_WORKER:
+    case MB_POP_ADULT_SOLDIER:
+      /* [TODO] */
       break;
     default:
       do {} while (0);
