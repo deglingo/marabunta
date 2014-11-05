@@ -4,7 +4,7 @@
 #ifndef _MBCCOLONYPROXY_H_
 #define _MBCCOLONYPROXY_H_
 
-#include "client/mbcbase.h"
+#include "client/mbcproxy.h"
 #include "client/mbccolonyproxy-def.h"
 
 G_BEGIN_DECLS
@@ -32,7 +32,8 @@ struct _MbcColonyProxyClass
 
 
 
-MbcColonyProxy *mbc_colony_proxy_new ( gint owner );
+MbcColonyProxy *mbc_colony_proxy_new ( guint id,
+                                       gint owner );
 void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
                                 gint64 *pop );
 

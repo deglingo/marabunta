@@ -12,6 +12,8 @@
 
 #include "client/mbcclient.h"
 
+#include "client/mbcproxy.h"
+
 #include "client/mbcgameproxy.h"
 
 #include "client/mbcsectorproxy.h"

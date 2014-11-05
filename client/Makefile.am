@@ -8,6 +8,7 @@ libmarabunta_client_la_CFLAGS = @GLIB_CFLAGS@ @CLOG_CFLAGS@
 
 libmarabunta_client_la_SOURCES = \
 	mbcbase.c \
+	mbcproxy.c \
 	mbcgameproxy.c \
 	mbcworldproxy.c \
 	mbcsectorproxy.c \
@@ -16,12 +17,14 @@ libmarabunta_client_la_SOURCES = \
 	mbcclient.c
 
 BUILT_SOURCES = \
+	mbcproxy-def.h mbcproxy.inl \
 	mbcgameproxy-def.h mbcgameproxy.inl \
 	mbcworldproxy-def.h mbcworldproxy.inl \
 	mbcsectorproxy-def.h mbcsectorproxy.inl \
 	mbccolonyproxy-def.h mbccolonyproxy.inl \
 	mbcapp-def.h mbcapp.inl
 
+mbcproxy-def.h mbcproxy.inl \
 mbcgameproxy-def.h mbcgameproxy.inl \
 mbcworldproxy-def.h mbcworldproxy.inl \
 mbcsectorproxy-def.h mbcsectorproxy.inl \

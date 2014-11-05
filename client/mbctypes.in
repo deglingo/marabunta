@@ -7,6 +7,10 @@ namespace Mb
 
 namespace Mbc
 {
+  class Proxy
+  {
+  };
+  
   class GameProxy
   {
     void class_init ();
@@ -20,7 +24,7 @@ namespace Mbc
   {
   };
 
-  class ColonyProxy
+  class ColonyProxy : Proxy
   {
     void class_init ();
   };

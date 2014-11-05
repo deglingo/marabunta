@@ -4,7 +4,7 @@
 #ifndef _MBSCOLONY_H_
 #define _MBSCOLONY_H_
 
-#include "server/mbsbase.h"
+#include "server/mbsobject.h"
 #include "server/mbstask.h"
 #include "server/mbscolony-def.h"
 

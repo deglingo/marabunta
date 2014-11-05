@@ -31,10 +31,11 @@ static void mbc_colony_proxy_class_init ( LObjectClass *cls )
 
 /* mbc_colony_proxy_new:
  */
-MbcColonyProxy *mbc_colony_proxy_new ( gint owner )
+MbcColonyProxy *mbc_colony_proxy_new ( guint id,
+                                       gint owner )
 {
   MbcColonyProxy *cp;
-  cp = MBC_COLONY_PROXY(l_object_new(MBC_CLASS_COLONY_PROXY, NULL));
+  cp = MBC_COLONY_PROXY(mbc_proxy_new(MBC_CLASS_COLONY_PROXY, id));
   cp->owner = owner;
   return cp;
 }

@@ -19,8 +19,9 @@ MbcSectorProxy *mbc_sector_proxy_new ( void )
 /* mbc_sector_proxy_create_colony:
  */
 void mbc_sector_proxy_create_colony ( MbcSectorProxy *proxy,
+                                      guint id,
                                       MbsPlayerID owner )
 {
   ASSERT(!proxy->colony);
-  proxy->colony = mbc_colony_proxy_new(owner);
+  proxy->colony = mbc_colony_proxy_new(id, owner);
 }

@@ -71,6 +71,7 @@ struct _MbStateFrame
 struct _MbStateColony
 {
   MbStateBlock block;
+  guint id;
   guint x;
   guint y;
   gint owner;

@@ -350,6 +350,7 @@ static void _send_game_setup ( MbsGame *game,
               MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
               MbStatePop *st_pop = (MbStatePop *) mb_state_next(state, MB_STATE_POP);
               gint tp;
+              st_colony->id = MBS_OBJECT_ID(sector->colony);
               st_colony->x = st_pop->x = x;
               st_colony->y = st_pop->y = y;
               st_colony->owner = sector->colony->owner;

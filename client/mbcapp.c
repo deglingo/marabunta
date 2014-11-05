@@ -77,6 +77,7 @@ static void _process_game_state ( MbcApp *app,
           {
             MbStateColony *st_col = (MbStateColony *) block;
             mbc_sector_proxy_create_colony(app->game_proxy->world->sectors[st_col->y][st_col->x],
+                                           st_col->id,
                                            st_col->owner);
           }
           break;
