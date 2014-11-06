@@ -11,7 +11,7 @@ namespace Mbs
     void init ();
   };
   
-  class World
+  class World : Object
   {
   };
 

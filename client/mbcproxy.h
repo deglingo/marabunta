@@ -18,6 +18,8 @@ struct _MbcProxy
   MBC_PROXY_INSTANCE_HEADER;
 
   guint id;
+  /* set by MbcGameProxy */
+  MbcProxy *game;
 };
 
 

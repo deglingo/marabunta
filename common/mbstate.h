@@ -51,6 +51,7 @@ struct _MbStateReset
 {
   MbStateBlock block;
   guint game_id;
+  guint world_id;
   guint world_width;
   guint world_height;
 };

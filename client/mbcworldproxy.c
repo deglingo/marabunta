@@ -6,17 +6,6 @@
 
 
 
-/* mbc_world_proxy_new:
- */
-MbcWorldProxy *mbc_world_proxy_new ( void )
-{
-  MbcWorldProxy *wp;
-  wp = MBC_WORLD_PROXY(l_object_new(MBC_CLASS_WORLD_PROXY, NULL));
-  return wp;
-}
-
-
-
 /* mbc_world_proxy_set_size:
  */
 void mbc_world_proxy_set_size ( MbcWorldProxy *proxy,

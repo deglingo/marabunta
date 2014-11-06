@@ -36,6 +36,15 @@ struct _MbcGameProxyClass
 
 
 MbcGameProxy *mbc_game_proxy_new ( guint id );
+MbcProxy *mbc_game_proxy_create_object ( MbcGameProxy *game,
+                                         LObjectClass *cls,
+                                         guint id );
+MbcProxy *mbc_game_proxy_lookup_object ( MbcGameProxy *proxy,
+                                         guint id );
+void mbc_game_proxy_create_world ( MbcGameProxy *game,
+                                   guint id,
+                                   guint width,
+                                   guint height );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );

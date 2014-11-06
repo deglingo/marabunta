@@ -59,8 +59,49 @@ MbcGameProxy *mbc_game_proxy_new ( guint id )
   g_hash_table_insert(gp->proxy_map,
                       GUINT_TO_POINTER(id),
                       l_object_ref(gp)); /* [fixme] ref ? */
-  gp->world = mbc_world_proxy_new();
   return gp;
+}
+
+
+
+/* mbc_game_proxy_create_object:
+ */
+MbcProxy *mbc_game_proxy_create_object ( MbcGameProxy *game,
+                                         LObjectClass *cls,
+                                         guint id )
+{
+  MbcProxy *object = mbc_proxy_new(cls, id);
+  object->game = MBC_PROXY(game);
+  ASSERT(!mbc_game_proxy_lookup_object(game, object->id));
+  g_hash_table_insert(game->proxy_map,
+                      GUINT_TO_POINTER(object->id),
+                      object);
+  return object;
+}
+
+
+
+/* mbc_game_proxy_lookup_object:
+ */
+MbcProxy *mbc_game_proxy_lookup_object ( MbcGameProxy *proxy,
+                                         guint id )
+{
+  return g_hash_table_lookup(proxy->proxy_map,
+                             GUINT_TO_POINTER(id));
+}
+
+
+
+/* mbc_game_proxy_create_world:
+ */
+void mbc_game_proxy_create_world ( MbcGameProxy *game,
+                                   guint id,
+                                   guint width,
+                                   guint height )
+{
+  ASSERT(!game->world);
+  game->world = MBC_WORLD_PROXY(mbc_game_proxy_create_object(game, MBC_CLASS_WORLD_PROXY, id));
+  mbc_world_proxy_set_size(game->world, width, height);
 }
 
 

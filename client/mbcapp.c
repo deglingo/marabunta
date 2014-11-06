@@ -71,9 +71,10 @@ static void _process_game_state ( MbcApp *app,
             ASSERT(!app->game_proxy); /* [todo] delete */
             app->game_proxy = mbc_game_proxy_new(st_reset->game_id);
             mbc_game_proxy_reset(app->game_proxy);
-            mbc_world_proxy_set_size(app->game_proxy->world,
-                                     st_reset->world_width,
-                                     st_reset->world_height);
+            mbc_game_proxy_create_world(app->game_proxy,
+                                        st_reset->world_id,
+                                        st_reset->world_width,
+                                        st_reset->world_height);
           }
           break;
         case MB_STATE_COLONY:

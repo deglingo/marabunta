@@ -4,7 +4,7 @@
 #ifndef _MBSWORLD_H_
 #define _MBSWORLD_H_
 
-#include "server/mbsbase.h"
+#include "server/mbsobject.h"
 #include "server/mbssector.h"
 #include "server/mbsworld-def.h"
 
