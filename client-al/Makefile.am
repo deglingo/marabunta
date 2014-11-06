@@ -16,6 +16,7 @@ marabunta_al_SOURCES = \
 	mbtkdialog.c \
 	mbtkmapview.c \
 	mbtkpoptable.c \
+	mbtkcolonyview.c \
 	mbaldialog-main.c \
 	mbaldialog.c \
 	mbalapp.c \
@@ -24,6 +25,8 @@ marabunta_al_SOURCES = \
 BUILT_SOURCES = \
 	mbtkdialog-def.h mbtkdialog.inl \
 	mbtkmapview-def.h mbtkmapview.inl \
+	mbtkpoptable-def.h mbtkpoptable.inl \
+	mbtkcolonyview-def.h mbtkcolonyview.inl \
 	mbaldialog-main.c \
 	mbalapp-def.h mbalapp.inl
 
@@ -33,6 +36,7 @@ mbaldialog-main.c: mbaldialog-main.xml
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkmapview-def.h mbtkmapview.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
+mbtkcolonyview-def.h mbtkcolonyview.inl \
 mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h
 

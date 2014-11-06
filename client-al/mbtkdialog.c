@@ -5,6 +5,7 @@
 #include "client-al/mbtkdialog.h"
 #include "client-al/mbtkmapview.h"
 #include "client-al/mbtkpoptable.h"
+#include "client-al/mbtkcolonyview.h"
 #include "client-al/mbtkdialog.inl"
 
 
@@ -93,6 +94,9 @@ static AltkWidget *_create_body ( AltkWidget *dlg )
   box = altk_box_new(ALTK_HORIZONTAL);
   altk_box_pack_start(ALTK_BOX(box),
                       L_TRASH_OBJECT(_create_side_panel(dlg)),
+                      0);
+  altk_box_pack_start(ALTK_BOX(box),
+                      L_TRASH_OBJECT(mbtk_colony_view_new()),
                       0);
   return box;
 }
