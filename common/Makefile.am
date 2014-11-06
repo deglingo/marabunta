@@ -16,23 +16,20 @@ libmarabunta_common_la_SOURCES = \
 	mbmessagereader.c \
 	mbwatch.c \
 	mbworld.c \
-	mbpoptree.c \
-	mbtask.c
+	mbpoptree.c
 
 BUILT_SOURCES = \
 	mbapp-def.h mbapp.inl \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
 	mbpriority-def.h mbpriority.inl \
-	mbworld-def.h mbworld.inl \
-	mbtask-def.h mbtask.inl
+	mbworld-def.h mbworld.inl
 
 mbapp-def.h mbapp.inl \
 mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \
 mbworld-def.h mbworld.inl \
-mbtask-def.h mbtask.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in
