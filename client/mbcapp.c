@@ -114,6 +114,8 @@ static void player_message_handler ( MbsPlayerID player,
     {
     case MB_MESSAGE_KEY_GAME_SETUP:
       /* CL_DEBUG("game_setup"); */
+      ASSERT(!app->game_proxy); /* [todo] delete */
+      app->game_proxy = mbc_game_proxy_new();
       mbc_game_proxy_reset(app->game_proxy);
       _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
       mbc_app_setup_proxy(app);
@@ -136,7 +138,6 @@ void mbc_app_setup_solo_game ( MbcApp *app )
 {
   app->game = mbs_game_new();
   app->player = mbs_game_add_player(app->game, "Player1", player_message_handler, app, NULL);
-  app->game_proxy = mbc_game_proxy_new();
 }
 
 
