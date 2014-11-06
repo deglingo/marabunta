@@ -4,7 +4,7 @@
 #ifndef _MBCGAMEPROXY_H_
 #define _MBCGAMEPROXY_H_
 
-#include "client/mbcbase.h"
+#include "client/mbcproxy.h"
 #include "client/mbcworldproxy.h"
 #include "client/mbcgameproxy-def.h"
 
@@ -35,7 +35,7 @@ struct _MbcGameProxyClass
 
 
 
-MbcGameProxy *mbc_game_proxy_new ( void );
+MbcGameProxy *mbc_game_proxy_new ( guint id );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );

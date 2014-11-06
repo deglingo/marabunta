@@ -50,10 +50,10 @@ static void mbc_game_proxy_class_init ( LObjectClass *cls )
 
 /* mbc_game_proxy_new:
  */
-MbcGameProxy *mbc_game_proxy_new ( void )
+MbcGameProxy *mbc_game_proxy_new ( guint id )
 {
   MbcGameProxy *gp;
-  gp = MBC_GAME_PROXY(l_object_new(MBC_CLASS_GAME_PROXY, NULL));
+  gp = MBC_GAME_PROXY(mbc_proxy_new(MBC_CLASS_GAME_PROXY, id));
   gp->world = mbc_world_proxy_new();
   return gp;
 }

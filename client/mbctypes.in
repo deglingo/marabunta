@@ -11,7 +11,7 @@ namespace Mbc
   {
   };
   
-  class GameProxy
+  class GameProxy : Proxy
   {
     void class_init ();
   };

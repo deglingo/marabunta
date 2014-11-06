@@ -338,6 +338,7 @@ static void _send_game_setup ( MbsGame *game,
   MbStateReset *reset;
   guint x, y;
   reset = (MbStateReset *) mb_state_next(state, MB_STATE_RESET);
+  reset->game_id = MBS_OBJECT_ID(game);
   reset->world_width = game->world->width;
   reset->world_height = game->world->height;
   for (y = 0; y < game->world->height; y++)
