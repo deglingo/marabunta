@@ -15,6 +15,7 @@ marabunta_al_LDFLAGS = \
 marabunta_al_SOURCES = \
 	mbtkdialog.c \
 	mbtkmapview.c \
+	mbtkpoptable.c \
 	mbaldialog-main.c \
 	mbaldialog.c \
 	mbalapp.c \
@@ -31,6 +32,7 @@ mbaldialog-main.c: mbaldialog-main.xml
 
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkmapview-def.h mbtkmapview.inl \
+mbtkpoptable-def.h mbtkpoptable.inl \
 mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h
 

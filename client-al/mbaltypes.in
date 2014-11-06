@@ -4,6 +4,7 @@ namespace Altk
 {
   extern class Dialog;
   extern class Table;
+  extern class Frame;
 }
 
 namespace Mbc
@@ -27,5 +28,10 @@ namespace Mbtk
 
   class MapView : Altk::Table
   {
+  };
+
+  class PopTable : Altk::Frame
+  {
+    void init ();
   };
 }
