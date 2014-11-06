@@ -20,15 +20,15 @@ static LParamSpec *pspecs[PROP_COUNT] = { NULL, };
 
 
 
-/* Signals:
- */
-enum
-  {
-    SIG_STARTED,
-    SIG_COUNT,
-  };
+/* /\* Signals: */
+/*  *\/ */
+/* enum */
+/*   { */
+/*     SIG_STARTED, */
+/*     SIG_COUNT, */
+/*   }; */
 
-static LSignalID signals[SIG_COUNT] = { 0, };
+/* static LSignalID signals[SIG_COUNT] = { 0, }; */
 
 
 
@@ -41,9 +41,9 @@ static void mbc_game_proxy_class_init ( LObjectClass *cls )
 
   l_object_class_install_properties(cls, PROP_COUNT, pspecs);
 
-  signals[SIG_STARTED] =
-    l_signal_new(cls,
-                 "started");
+  /* signals[SIG_STARTED] = */
+  /*   l_signal_new(cls, */
+  /*                "started"); */
 }
 
 
@@ -81,9 +81,9 @@ void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
 
 
 
-/* mbc_game_proxy_started:
- */
-void mbc_game_proxy_started ( MbcGameProxy *proxy )
-{
-  l_signal_emit(L_OBJECT(proxy), signals[SIG_STARTED], 0);
-}
+/* /\* mbc_game_proxy_started: */
+/*  *\/ */
+/* void mbc_game_proxy_started ( MbcGameProxy *proxy ) */
+/* { */
+/*   l_signal_emit(L_OBJECT(proxy), signals[SIG_STARTED], 0); */
+/* } */

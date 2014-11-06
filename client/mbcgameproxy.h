@@ -39,7 +39,7 @@ MbcGameProxy *mbc_game_proxy_new ( void );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );
-void mbc_game_proxy_started ( MbcGameProxy *proxy );
+/* void mbc_game_proxy_started ( MbcGameProxy *proxy ); */
 
 
 

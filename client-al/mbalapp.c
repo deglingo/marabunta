@@ -12,6 +12,7 @@ extern const char DIALOG_MAIN[];
 
 static void _setup ( MbApp *app );
 static gint _run ( MbApp *app );
+static void setup_proxy ( MbcApp *app );
 
 
 
@@ -21,6 +22,7 @@ static void mbal_app_class_init ( LObjectClass *cls )
 {
   MB_APP_CLASS(cls)->setup = _setup;
   MB_APP_CLASS(cls)->run = _run;
+  MBC_APP_CLASS(cls)->setup_proxy = setup_proxy;
 }
 
 
@@ -43,13 +45,12 @@ static void _setup ( MbApp *app )
 
 
 
-/* _on_game_started:
+/* setup_proxy:
  */
-static void _on_game_started ( MbcGameProxy *proxy,
-                               MbalApp *app )
+static void setup_proxy ( MbcApp *app )
 {
   /* setup the dialog */
-  mbtk_dialog_setup(MBTK_DIALOG(app->dialog), proxy);
+  mbtk_dialog_setup(MBTK_DIALOG(MBAL_APP(app)->dialog), app->game_proxy);
 }
 
 
@@ -63,10 +64,11 @@ static gint _run ( MbApp *app )
   MBAL_APP(app)->dialog = mbtk_dialog_new(MBAL_APP(app)->display);
   /* setup the game */
   mbc_app_setup_solo_game(MBC_APP(app));
-  l_signal_connect(L_OBJECT(MBC_APP(app)->game_proxy),
-                   "started", 0,
-                   (LSignalHandler) _on_game_started,
-                   app, NULL);
+  
+  /* l_signal_connect(L_OBJECT(MBC_APP(app)->game_proxy), */
+  /*                  "started", 0, */
+  /*                  (LSignalHandler) _on_game_started, */
+  /*                  app, NULL); */
   /* [fixme] */
   mbs_game_start(MBC_APP(app)->game);
   /* open the display */

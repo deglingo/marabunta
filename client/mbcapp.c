@@ -116,7 +116,7 @@ static void player_message_handler ( MbsPlayerID player,
       /* CL_DEBUG("game_setup"); */
       mbc_game_proxy_reset(app->game_proxy);
       _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
-      mbc_game_proxy_started(app->game_proxy);
+      mbc_app_setup_proxy(app);
       break;
     case MB_MESSAGE_KEY_GAME_STATE:
       /* CL_DEBUG("game_state"); */
@@ -151,3 +151,12 @@ static gint run ( MbApp *app )
   return 0;
 }
 
+
+
+/* mbc_app_setup_proxy:
+ */
+void mbc_app_setup_proxy ( MbcApp *app )
+{
+  ASSERT(MBC_APP_GET_CLASS(app)->setup_proxy);
+  MBC_APP_GET_CLASS(app)->setup_proxy(app);
+}

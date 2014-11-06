@@ -36,11 +36,15 @@ struct _MbcApp
 struct _MbcAppClass
 {
   MBC_APP_CLASS_HEADER;
+
+  /* [fixme] */
+  void (* setup_proxy) ( MbcApp *app );
 };
 
 
 
 void mbc_app_setup_solo_game ( MbcApp *app );
+void mbc_app_setup_proxy ( MbcApp *app );
 
 
 
