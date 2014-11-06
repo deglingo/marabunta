@@ -11,6 +11,22 @@
 
 
 
+/* t_top_check:
+ */
+static gboolean t_top_check ( MbsTask *task,
+                              MbPopType pop_type )
+{
+  GList *l;
+  for (l = task->children; l; l = l->next)
+    {
+      if (mbs_task_check(l->data, pop_type))
+        return TRUE;
+    }
+  return FALSE;
+}
+
+
+
 /* t_spawn_check:
  */
 static gboolean t_spawn_check ( MbsTask *task,
@@ -36,6 +52,11 @@ static void t_spawn_process ( MbsTask *task )
 MbsColony *mbs_colony_new ( MbsSector *sector,
                             guint owner )
 {
+  MbsTaskFuncs t_top_funcs =
+    {
+      t_top_check,
+      NULL,
+    };
   MbsTaskFuncs t_spawn_funcs =
     {
       t_spawn_check,
@@ -46,14 +67,8 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   col->owner = owner;
   col->pop_tree = mb_pop_tree_new();
   col->pop_adj = mb_pop_tree_new();
-  col->tasks = g_list_append(col->tasks, mbs_task_new(col, &t_spawn_funcs));
-  {
-    MbTask *farm_task;
-    col->top_task = mb_task_new(NULL, "top");
-    mb_task_new(col->top_task, "spawning");
-    farm_task = mb_task_new(col->top_task, "farming");
-    mb_task_new(farm_task, "food-farming");
-  }
+  col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
+  l_object_unref(mbs_task_new(col, col->top_task, "spawn", &t_spawn_funcs));
   col->prio_pop_queen = mb_priority_new(1);
   col->prio_pop_worker = mb_priority_new(7);
   col->prio_pop_soldier = mb_priority_new(3);
@@ -62,15 +77,14 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
 
 
 
-/* mbs_colony_select_task:
- */
-MbsTask *mbs_colony_select_task ( MbsColony *colony,
-                                  MbPopType pop_type )
+static MbsTask *_select_task ( MbsColony *colony,
+                               MbPopType pop_type,
+                               MbsTask *group )
 {
   GList *l;
   MbsTask *found = NULL;
   gint64 found_score;
-  for (l = colony->tasks; l; l = l->next)
+  for (l = group->children; l; l = l->next)
     {
       MbsTask *task = l->data;
       if (mbs_task_check(task, pop_type))
@@ -84,6 +98,22 @@ MbsTask *mbs_colony_select_task ( MbsColony *colony,
         }
     }
   return found;
+}
+
+
+
+/* mbs_colony_select_task:
+ */
+MbsTask *mbs_colony_select_task ( MbsColony *colony,
+                                  MbPopType pop_type )
+{
+  MbsTask *task = colony->top_task;
+  while (task->isgroup)
+    {
+      if (!(task = _select_task(colony, pop_type, task)))
+        return NULL;
+    }
+  return task;
 }
 
 

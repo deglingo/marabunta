@@ -24,8 +24,7 @@ struct _MbsColony
   guint owner;
   MbPopTree *pop_tree;
   MbPopTree *pop_adj;
-  GList *tasks;
-  MbTask *top_task;
+  MbsTask *top_task;
   /* pop cast priorities */
   MbPriority *prio_pop_queen;
   MbPriority *prio_pop_worker;

@@ -225,7 +225,6 @@ static void _colony_update ( MbsGame *game,
   Private *priv = PRIVATE(game);
   MbStatePop *st_pop;
   gint tp;
-  GList *l;
   /* update the pop tree */
   mb_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
   /* adjust pop tree */
@@ -233,12 +232,7 @@ static void _colony_update ( MbsGame *game,
   /* adjust the hatch scores */
   mbs_colony_adjust_hatch_scores(colony);
   /* process all the tasks */
-  for (l = colony->tasks; l; l = l->next)
-    {
-      MbsTask *task = l->data;
-      if (task->workers)
-        mbs_task_process(task);
-    }
+  mbs_task_process(colony->top_task);
   /* send pop state */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
