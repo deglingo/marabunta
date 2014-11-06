@@ -3,6 +3,8 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcgameproxy.h"
+#include "client/mbcworldproxy.h"
+#include "client/mbccolonyproxy.h"
 #include "client/mbcgameproxy.inl"
 
 
@@ -70,7 +72,10 @@ MbcProxy *mbc_game_proxy_create_object ( MbcGameProxy *game,
                                          LObjectClass *cls,
                                          guint id )
 {
-  MbcProxy *object = mbc_proxy_new(cls, id);
+  MbcProxy *object;
+  /* [TODO] ASSERT(MBC_IS_PROXY_CLASS(cls)); */
+  ASSERT(id > 0);
+  object = mbc_proxy_new(cls, id);
   object->game = MBC_PROXY(game);
   ASSERT(!mbc_game_proxy_lookup_object(game, object->id));
   g_hash_table_insert(game->proxy_map,
@@ -100,8 +105,40 @@ void mbc_game_proxy_create_world ( MbcGameProxy *game,
                                    guint height )
 {
   ASSERT(!game->world);
-  game->world = MBC_WORLD_PROXY(mbc_game_proxy_create_object(game, MBC_CLASS_WORLD_PROXY, id));
-  mbc_world_proxy_set_size(game->world, width, height);
+  game->world = mbc_game_proxy_create_object(game, MBC_CLASS_WORLD_PROXY, id);
+  mbc_world_proxy_set_size(MBC_WORLD_PROXY(game->world), width, height);
+}
+
+
+
+/* mbc_game_proxy_create_sector:
+ */
+void mbc_game_proxy_create_sector ( MbcGameProxy *game,
+                                    guint id,
+                                    guint x,
+                                    guint y )
+{
+  MbcProxy *sector;
+  ASSERT(game->world);
+  sector = mbc_sector_proxy_new(MBC_PROXY(game), id, x, y);
+  mbc_world_proxy_add_sector(MBC_WORLD_PROXY(game->world), sector);
+}
+
+
+
+/* mbc_game_proxy_create_colony:
+ */
+void mbc_game_proxy_create_colony ( MbcGameProxy *game,
+                                    guint id,
+                                    guint sector_id,
+                                    guint owner )
+{
+  MbcProxy *sector, *colony;
+  sector = mbc_game_proxy_lookup_object(game, sector_id);
+  ASSERT(sector);
+  ASSERT(MBC_IS_SECTOR_PROXY(sector));
+  colony = mbc_colony_proxy_new(MBC_PROXY(game), id, owner);
+  mbc_sector_proxy_add_colony(MBC_SECTOR_PROXY(sector), colony);
 }
 
 

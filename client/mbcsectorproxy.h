@@ -4,8 +4,7 @@
 #ifndef _MBCSECTORPROXY_H_
 #define _MBCSECTORPROXY_H_
 
-#include "client/mbcbase.h"
-#include "client/mbccolonyproxy.h"
+#include "client/mbcproxy.h"
 #include "client/mbcsectorproxy-def.h"
 
 G_BEGIN_DECLS
@@ -18,7 +17,10 @@ struct _MbcSectorProxy
 {
   MBC_SECTOR_PROXY_INSTANCE_HEADER;
 
-  MbcColonyProxy *colony;
+  MbcProxy *world;
+  guint x;
+  guint y;
+  MbcProxy *colony;
 };
 
 
@@ -32,10 +34,12 @@ struct _MbcSectorProxyClass
 
 
 
-MbcSectorProxy *mbc_sector_proxy_new ( void );
-void mbc_sector_proxy_create_colony ( MbcSectorProxy *proxy,
-                                      guint id,
-                                      MbsPlayerID owner );
+MbcProxy *mbc_sector_proxy_new ( MbcProxy *game,
+                                 guint id,
+                                 guint x,
+                                 guint y );
+void mbc_sector_proxy_add_colony ( MbcSectorProxy *sector,
+                                   MbcProxy *colony );
 
 
 

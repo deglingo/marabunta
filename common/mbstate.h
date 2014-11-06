@@ -18,6 +18,7 @@ typedef enum _MbStateType MbStateType;
 typedef struct _MbStateBlock MbStateBlock;
 typedef struct _MbStateReset MbStateReset;
 typedef struct _MbStateFrame MbStateFrame;
+typedef struct _MbStateSector MbStateSector;
 typedef struct _MbStateColony MbStateColony;
 typedef struct _MbStatePop MbStatePop;
 
@@ -29,6 +30,7 @@ enum _MbStateType
   {
     MB_STATE_RESET,
     MB_STATE_FRAME,
+    MB_STATE_SECTOR,
     MB_STATE_COLONY,
     MB_STATE_POP,
     MB_STATE_COUNT,
@@ -68,14 +70,25 @@ struct _MbStateFrame
 
 
 
+/* MbStateSector:
+ */
+struct _MbStateSector
+{
+  MbStateBlock block;
+  guint sector_id;
+  guint x;
+  guint y;
+};
+
+
+
 /* MbStateColony:
  */
 struct _MbStateColony
 {
   MbStateBlock block;
-  guint id;
-  guint x;
-  guint y;
+  guint colony_id;
+  guint sector_id;
   gint owner;
 };
 
@@ -86,8 +99,7 @@ struct _MbStateColony
 struct _MbStatePop
 {
   MbStateBlock block;
-  guint x;
-  guint y;
+  guint colony_id;
   gint64 pop[MB_POP_TYPE_COUNT];
 };
 

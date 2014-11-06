@@ -16,11 +16,11 @@ namespace Mbc
     void class_init ();
   };
 
-  class WorldProxy
+  class WorldProxy : Proxy
   {
   };
 
-  class SectorProxy
+  class SectorProxy : Proxy
   {
   };
 

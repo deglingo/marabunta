@@ -15,7 +15,7 @@ namespace Mbs
   {
   };
 
-  class Sector
+  class Sector : Object
   {
   };
 

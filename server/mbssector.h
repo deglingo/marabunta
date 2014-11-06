@@ -4,7 +4,7 @@
 #ifndef _MBSSECTOR_H_
 #define _MBSSECTOR_H_
 
-#include "server/mbsbase.h"
+#include "server/mbsobject.h"
 #include "server/mbscolony.h"
 #include "server/mbssector-def.h"
 

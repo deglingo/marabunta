@@ -3,6 +3,7 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcapp.h"
+#include "client/mbccolonyproxy.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -77,12 +78,22 @@ static void _process_game_state ( MbcApp *app,
                                         st_reset->world_height);
           }
           break;
+        case MB_STATE_SECTOR:
+          {
+            MbStateSector *st_sector = (MbStateSector *) block;
+            mbc_game_proxy_create_sector(app->game_proxy,
+                                         st_sector->sector_id,
+                                         st_sector->x,
+                                         st_sector->y);
+          }
+          break;
         case MB_STATE_COLONY:
           {
             MbStateColony *st_col = (MbStateColony *) block;
-            mbc_sector_proxy_create_colony(app->game_proxy->world->sectors[st_col->y][st_col->x],
-                                           st_col->id,
-                                           st_col->owner);
+            mbc_game_proxy_create_colony(app->game_proxy,
+                                         st_col->colony_id,
+                                         st_col->sector_id,
+                                         st_col->owner);
           }
           break;
         case MB_STATE_FRAME:
@@ -94,8 +105,10 @@ static void _process_game_state ( MbcApp *app,
         case MB_STATE_POP:
           {
             MbStatePop *st_pop = (MbStatePop *) block;
-            MbcColonyProxy *col = app->game_proxy->world->sectors[st_pop->y][st_pop->x]->colony;
-            mbc_colony_proxy_set_pop(col, st_pop->pop);
+            MbcProxy *col = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy), st_pop->colony_id);
+            ASSERT(col);
+            ASSERT(MBC_IS_COLONY_PROXY(col));
+            mbc_colony_proxy_set_pop(MBC_COLONY_PROXY(col), st_pop->pop);
           }
           break;
         default:

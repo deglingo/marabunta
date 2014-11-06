@@ -5,7 +5,6 @@
 #define _MBCGAMEPROXY_H_
 
 #include "client/mbcproxy.h"
-#include "client/mbcworldproxy.h"
 #include "client/mbcgameproxy-def.h"
 
 G_BEGIN_DECLS
@@ -21,7 +20,7 @@ struct _MbcGameProxy
   guint sim_time;
   GHashTable *proxy_map;
   /* world proxy */
-  MbcWorldProxy *world;
+  MbcProxy *world;
 };
 
 
@@ -45,6 +44,14 @@ void mbc_game_proxy_create_world ( MbcGameProxy *game,
                                    guint id,
                                    guint width,
                                    guint height );
+void mbc_game_proxy_create_sector ( MbcGameProxy *game,
+                                    guint id,
+                                    guint x,
+                                    guint y );
+void mbc_game_proxy_create_colony ( MbcGameProxy *game,
+                                    guint id,
+                                    guint sector_id,
+                                    guint owner );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );

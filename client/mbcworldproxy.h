@@ -20,7 +20,7 @@ struct _MbcWorldProxy
 
   guint width;
   guint height;
-  MbcSectorProxy ***sectors;
+  MbcProxy ***sectors;
 };
 
 
@@ -37,6 +37,8 @@ struct _MbcWorldProxyClass
 void mbc_world_proxy_set_size ( MbcWorldProxy *proxy,
                                 guint width,
                                 guint height );
+void mbc_world_proxy_add_sector ( MbcWorldProxy *proxy,
+                                  MbcProxy *sector );
 
 
 

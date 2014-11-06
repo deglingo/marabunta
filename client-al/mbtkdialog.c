@@ -248,8 +248,8 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
                    NULL);
   /* pop table */
   {
-    MbcSectorProxy *sector = game_proxy->world->sectors[0][0];
-    MbcColonyProxy *colony = sector->colony;
+    MbcProxy *sector = MBC_WORLD_PROXY(game_proxy->world)->sectors[0][0];
+    MbcProxy *colony = MBC_SECTOR_PROXY(sector)->colony;
     l_signal_connect(L_OBJECT(colony),
                      "pop_notify",
                      0,

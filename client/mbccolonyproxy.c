@@ -1,7 +1,9 @@
 /* mbccolonyproxy.c -
  */
 
+#include "client/cliprivate.h"
 #include "client/mbccolonyproxy.h"
+#include "client/mbcgameproxy.h"
 #include "client/mbccolonyproxy.inl"
 
 
@@ -31,13 +33,17 @@ static void mbc_colony_proxy_class_init ( LObjectClass *cls )
 
 /* mbc_colony_proxy_new:
  */
-MbcColonyProxy *mbc_colony_proxy_new ( guint id,
-                                       gint owner )
+MbcProxy *mbc_colony_proxy_new ( MbcProxy *game,
+                                 guint id,
+                                 gint owner )
 {
   MbcColonyProxy *cp;
-  cp = MBC_COLONY_PROXY(mbc_proxy_new(MBC_CLASS_COLONY_PROXY, id));
+  ASSERT(MBC_IS_GAME_PROXY(game));
+  cp = MBC_COLONY_PROXY(mbc_game_proxy_create_object(MBC_GAME_PROXY(game),
+                                                     MBC_CLASS_COLONY_PROXY,
+                                                     id));
   cp->owner = owner;
-  return cp;
+  return MBC_PROXY(cp);
 }
 
 

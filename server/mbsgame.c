@@ -242,8 +242,7 @@ static void _colony_update ( MbsGame *game,
   /* send pop state */
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
-  st_pop->x = colony->sector->x;
-  st_pop->y = colony->sector->y;
+  st_pop->colony_id = MBS_OBJECT_ID(colony);
   for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
     {
       st_pop->pop[tp] = colony->pop_tree->pop[tp];
@@ -347,15 +346,19 @@ static void _send_game_setup ( MbsGame *game,
       for (x = 0; x < game->world->width; x++)
         {
           MbsSector *sector = game->world->sectors[y][x];
+          MbStateSector *st_sector = (MbStateSector *) mb_state_next(state, MB_STATE_SECTOR);
+          st_sector->sector_id = MBS_OBJECT_ID(sector);
+          st_sector->x = x;
+          st_sector->y = y;
           if (sector->colony)
             {
               MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
               MbStatePop *st_pop = (MbStatePop *) mb_state_next(state, MB_STATE_POP);
               gint tp;
-              st_colony->id = MBS_OBJECT_ID(sector->colony);
-              st_colony->x = st_pop->x = x;
-              st_colony->y = st_pop->y = y;
+              st_colony->colony_id = MBS_OBJECT_ID(sector->colony);
+              st_colony->sector_id = MBS_OBJECT_ID(sector);
               st_colony->owner = sector->colony->owner;
+              st_pop->colony_id = MBS_OBJECT_ID(sector->colony);
               for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
                 st_pop->pop[tp] = sector->colony->pop_tree->pop[tp];
             }

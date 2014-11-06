@@ -24,9 +24,9 @@ void mbtk_map_view_setup ( MbtkMapView *view,
 {
   gint x, y;
   /* [fixme] remove old ones */
-  for (y = 0; y < game->world->height; y++)
+  for (y = 0; y < MBC_WORLD_PROXY(game->world)->height; y++)
     {
-      for (x = 0; x < game->world->width; x++)
+      for (x = 0; x < MBC_WORLD_PROXY(game->world)->width; x++)
         {
           AltkWidget *cell = altk_button_new_with_label("X");
           altk_table_attach(ALTK_TABLE(view), cell,

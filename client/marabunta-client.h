@@ -16,6 +16,8 @@
 
 #include "client/mbcgameproxy.h"
 
+#include "client/mbcworldproxy.h"
+
 #include "client/mbcsectorproxy.h"
 
 #include "client/mbccolonyproxy.h"
