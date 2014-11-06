@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkColonyView
 {
   MBTK_COLONY_VIEW_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
@@ -30,6 +32,8 @@ struct _MbtkColonyViewClass
 
 
 AltkWidget *mbtk_colony_view_new ( void );
+void mbtk_colony_view_set_colony ( MbtkColonyView *view,
+                                   MbcProxy *colony );
 
 
 

@@ -20,6 +20,7 @@ typedef struct _Private
   AltkWidget *sim_time_label;
   AltkWidget *map_view;
   AltkWidget *pop_table;
+  AltkWidget *colony_view;
 }
   Private;
 
@@ -86,6 +87,17 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
 
 
 
+/* _create_colony_view:
+ */
+static AltkWidget *_create_colony_view ( AltkWidget *dlg )
+{
+  Private *priv = PRIVATE(dlg);
+  priv->colony_view = mbtk_colony_view_new();
+  return priv->colony_view;
+}
+
+
+
 /* _create_body:
  */
 static AltkWidget *_create_body ( AltkWidget *dlg )
@@ -96,7 +108,7 @@ static AltkWidget *_create_body ( AltkWidget *dlg )
                       L_TRASH_OBJECT(_create_side_panel(dlg)),
                       0);
   altk_box_pack_start(ALTK_BOX(box),
-                      L_TRASH_OBJECT(mbtk_colony_view_new()),
+                      L_TRASH_OBJECT(_create_colony_view(dlg)),
                       0);
   return box;
 }
@@ -151,8 +163,13 @@ static void _set_sector ( MbtkDialog *dialog,
   Private *priv = PRIVATE(dialog);
   ASSERT(!priv->sector);
   priv->sector = l_object_ref(sector);
-  mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
-                            MBC_SECTOR_PROXY(sector)->colony);
+  if (MBC_SECTOR_PROXY(sector)->colony)
+    {
+      mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                                MBC_SECTOR_PROXY(sector)->colony);
+      mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
+                                  MBC_SECTOR_PROXY(sector)->colony);
+    }
 }
 
 
