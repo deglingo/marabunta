@@ -19,7 +19,7 @@ struct _MbcGameProxy
   MBC_GAME_PROXY_INSTANCE_HEADER;
 
   guint sim_time;
-
+  GHashTable *proxy_map;
   /* world proxy */
   MbcWorldProxy *world;
 };

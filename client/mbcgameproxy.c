@@ -54,6 +54,11 @@ MbcGameProxy *mbc_game_proxy_new ( guint id )
 {
   MbcGameProxy *gp;
   gp = MBC_GAME_PROXY(mbc_proxy_new(MBC_CLASS_GAME_PROXY, id));
+  gp->proxy_map = g_hash_table_new_full(NULL, NULL, NULL,
+                                        (GDestroyNotify) l_object_unref);
+  g_hash_table_insert(gp->proxy_map,
+                      GUINT_TO_POINTER(id),
+                      l_object_ref(gp)); /* [fixme] ref ? */
   gp->world = mbc_world_proxy_new();
   return gp;
 }
