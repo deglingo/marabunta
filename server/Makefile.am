@@ -13,6 +13,7 @@ libmarabunta_server_la_SOURCES = \
 	mbssector.c \
 	mbscolony.c \
 	mbspoptree.c \
+	mbscontrol.c \
 	mbspriority.c \
 	mbstask.c \
 	mbsgame.c \
@@ -23,6 +24,7 @@ BUILT_SOURCES = \
 	mbsworld-def.h mbsworld.inl \
 	mbssector-def.h mbssector.inl \
 	mbscolony-def.h mbscolony.inl \
+	mbscontrol-def.h mbscontrol.inl \
 	mbspriority-def.h mbspriority.inl \
 	mbstask-def.h mbstask.inl \
 	mbsgame-def.h mbsgame.inl \
@@ -32,6 +34,7 @@ mbsobject-def.h mbsobject.inl \
 mbsworld-def.h mbsworld.inl \
 mbssector-def.h mbssector.inl \
 mbscolony-def.h mbscolony.inl \
+mbscontrol-def.h mbscontrol.inl \
 mbspriority-def.h mbspriority.inl \
 mbstask-def.h mbstask.inl \
 mbsgame-def.h mbsgame.inl \

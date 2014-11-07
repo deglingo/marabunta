@@ -4,7 +4,7 @@
 #ifndef _MBSPRIORITY_H_
 #define _MBSPRIORITY_H_
 
-#include "server/mbsobject.h"
+#include "server/mbscontrol.h"
 #include "server/mbspriority-def.h"
 
 G_BEGIN_DECLS

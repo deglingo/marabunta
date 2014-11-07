@@ -23,7 +23,11 @@ namespace Mbs
   {
   };
 
-  class Priority : Object
+  class Control : Object
+  {
+  };
+  
+  class Priority : Control
   {
   };
   
