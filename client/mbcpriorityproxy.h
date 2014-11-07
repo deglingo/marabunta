@@ -34,6 +34,10 @@ struct _MbcPriorityProxyClass
 MbcProxy *mbc_priority_proxy_new ( MbcProxy *game,
                                    guint id,
                                    MbPriorityValue value );
+void mbc_priority_proxy_request_set_value ( MbcPriorityProxy *proxy,
+                                            MbPriorityValue value );
+void mbc_priority_proxy_request_inc_value ( MbcPriorityProxy *proxy );
+void mbc_priority_proxy_request_dec_value ( MbcPriorityProxy *proxy );
 
 
 

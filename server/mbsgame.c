@@ -448,3 +448,13 @@ void mbs_game_start ( MbsGame *game )
                      game,
                      NULL);
 }
+
+
+
+/* mbs_game_handle_message:
+ */
+void mbs_game_handle_message ( MbsGame *game,
+                               MbMessage *msg )
+{
+  CL_DEBUG("[TODO] handle message: %s", L_OBJECT_REPR(msg));
+}

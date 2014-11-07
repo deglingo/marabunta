@@ -9,6 +9,8 @@
 
 G_BEGIN_DECLS
 
+struct _MbcApp;
+
 
 
 /* MbcGameProxy:
@@ -17,6 +19,7 @@ struct _MbcGameProxy
 {
   MBC_GAME_PROXY_INSTANCE_HEADER;
 
+  struct _MbcApp *app;
   guint sim_time;
   GHashTable *proxy_map;
   /* world proxy */
@@ -34,7 +37,8 @@ struct _MbcGameProxyClass
 
 
 
-MbcGameProxy *mbc_game_proxy_new ( guint id );
+MbcGameProxy *mbc_game_proxy_new ( struct _MbcApp *app,
+                                   guint id );
 MbcProxy *mbc_game_proxy_create_object ( MbcGameProxy *game,
                                          LObjectClass *cls,
                                          guint id );
@@ -67,6 +71,10 @@ void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );
 /* void mbc_game_proxy_started ( MbcGameProxy *proxy ); */
+
+void mbc_game_proxy_request_priority_value ( MbcGameProxy *proxy,
+                                             MbcProxy *priority,
+                                             MbPriorityValue value );
 
 
 

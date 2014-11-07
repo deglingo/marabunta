@@ -6,6 +6,24 @@
 
 
 
+static void _on_inc_clicked ( AltkWidget *button,
+                              AltkWidget *prio )
+{
+  mbc_priority_proxy_request_inc_value
+    (MBC_PRIORITY_PROXY(MBTK_PRIORITY(prio)->proxy));
+}
+
+
+
+static void _on_dec_clicked ( AltkWidget *button,
+                              AltkWidget *prio )
+{
+  mbc_priority_proxy_request_dec_value
+    (MBC_PRIORITY_PROXY(MBTK_PRIORITY(prio)->proxy));
+}
+
+
+
 /* mbtk_priority_new:
  */
 AltkWidget *mbtk_priority_new ( MbcProxy *proxy )
@@ -26,9 +44,15 @@ AltkWidget *mbtk_priority_new ( MbcProxy *proxy )
   inc = L_TRASH_OBJECT
     (altk_button_new_with_label("+"));
   altk_box_pack_start(ALTK_BOX(box), inc, 0);
+  l_signal_connect(L_OBJECT(inc), "clicked", 0,
+                   (LSignalHandler) _on_inc_clicked,
+                   prio, NULL);
   dec = L_TRASH_OBJECT
     (altk_button_new_with_label("-"));
   altk_box_pack_start(ALTK_BOX(box), dec, 0);
+  l_signal_connect(L_OBJECT(dec), "clicked", 0,
+                   (LSignalHandler) _on_dec_clicked,
+                   prio, NULL);
   l_trash_pop();
   return ALTK_WIDGET(prio);
 }

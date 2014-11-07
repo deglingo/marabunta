@@ -7,6 +7,7 @@
 #include "client/mbccolonyproxy.h"
 #include "client/mbcpriorityproxy.h"
 #include "client/mbctaskproxy.h"
+#include "client/mbcapp.h"
 #include "client/mbcgameproxy.inl"
 
 
@@ -54,10 +55,12 @@ static void mbc_game_proxy_class_init ( LObjectClass *cls )
 
 /* mbc_game_proxy_new:
  */
-MbcGameProxy *mbc_game_proxy_new ( guint id )
+MbcGameProxy *mbc_game_proxy_new ( MbcApp *app,
+                                   guint id )
 {
   MbcGameProxy *gp;
   gp = MBC_GAME_PROXY(mbc_proxy_new(MBC_CLASS_GAME_PROXY, id));
+  gp->app = app; /* [fixme] ref ? */
   gp->proxy_map = g_hash_table_new_full(NULL, NULL, NULL,
                                         (GDestroyNotify) l_object_unref);
   g_hash_table_insert(gp->proxy_map,
@@ -216,3 +219,24 @@ void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
 /* { */
 /*   l_signal_emit(L_OBJECT(proxy), signals[SIG_STARTED], 0); */
 /* } */
+
+
+
+/* mbc_game_proxy_request_priority_value:
+ */
+void mbc_game_proxy_request_priority_value ( MbcGameProxy *proxy,
+                                             MbcProxy *priority,
+                                             MbPriorityValue value )
+{
+  MbMessage *msg;
+  LTuple *arg;
+  ASSERT(MBC_IS_PRIORITY_PROXY(priority));
+  arg = l_tuple_newl_give(2,
+                          l_int_new(priority->id),
+                          l_int_new(value),
+                          NULL);
+  msg = mb_message_new(MB_MESSAGE_KEY_REQUEST_PRIORITY, L_OBJECT(arg));
+  mbc_app_send_message(proxy->app, msg);
+  l_object_unref(msg);
+  l_object_unref(arg);
+}

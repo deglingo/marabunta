@@ -22,3 +22,33 @@ MbcProxy *mbc_priority_proxy_new ( MbcProxy *game,
   prio->value = value;
   return MBC_PROXY(prio);
 }
+
+
+
+/* mbc_priority_proxy_request_set_value:
+ */
+void mbc_priority_proxy_request_set_value ( MbcPriorityProxy *proxy,
+                                            MbPriorityValue value )
+{
+  mbc_game_proxy_request_priority_value(MBC_GAME_PROXY(MBC_PROXY(proxy)->game),
+                                        MBC_PROXY(proxy),
+                                        value);
+}
+
+
+
+/* mbc_priority_proxy_request_inc_value:
+ */
+void mbc_priority_proxy_request_inc_value ( MbcPriorityProxy *proxy )
+{
+  mbc_priority_proxy_request_set_value(proxy, proxy->value + 1);
+}
+
+
+
+/* mbc_priority_proxy_request_dec_value:
+ */
+void mbc_priority_proxy_request_dec_value ( MbcPriorityProxy *proxy )
+{
+  mbc_priority_proxy_request_set_value(proxy, proxy->value - 1);
+}

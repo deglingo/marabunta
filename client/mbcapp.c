@@ -71,7 +71,7 @@ static void _process_game_state ( MbcApp *app,
           {
             MbStateReset *st_reset = (MbStateReset *) block;
             ASSERT(!app->game_proxy); /* [todo] delete */
-            app->game_proxy = mbc_game_proxy_new(st_reset->game_id);
+            app->game_proxy = mbc_game_proxy_new(app, st_reset->game_id);
             mbc_game_proxy_reset(app->game_proxy);
             mbc_game_proxy_create_world(app->game_proxy,
                                         st_reset->world_id,
@@ -206,4 +206,15 @@ void mbc_app_setup_proxy ( MbcApp *app )
 {
   ASSERT(MBC_APP_GET_CLASS(app)->setup_proxy);
   MBC_APP_GET_CLASS(app)->setup_proxy(app);
+}
+
+
+
+/* mbc_app_send_message:
+ */
+void mbc_app_send_message ( MbcApp *app,
+                            MbMessage *msg )
+{
+  ASSERT(app->game);
+  mbs_game_handle_message(app->game, msg);
 }
