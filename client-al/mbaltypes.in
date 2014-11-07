@@ -26,6 +26,10 @@ namespace Mbtk
   {
   };
 
+  class Priority : Altk::Frame
+  {
+  };
+  
   class MapView : Altk::Table
   {
   };

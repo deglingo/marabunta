@@ -14,6 +14,7 @@ marabunta_al_LDFLAGS = \
 
 marabunta_al_SOURCES = \
 	mbtkdialog.c \
+	mbtkpriority.c \
 	mbtkmapview.c \
 	mbtkpoptable.c \
 	mbtkcolonyview.c \
@@ -24,6 +25,7 @@ marabunta_al_SOURCES = \
 
 BUILT_SOURCES = \
 	mbtkdialog-def.h mbtkdialog.inl \
+	mbtkpriority-def.h mbtkpriority.inl \
 	mbtkmapview-def.h mbtkmapview.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl \
 	mbtkcolonyview-def.h mbtkcolonyview.inl \
@@ -34,6 +36,7 @@ mbaldialog-main.c: mbaldialog-main.xml
 	$(ALTK_XML2C) -n DIALOG_MAIN -o mbaldialog-main $<
 
 mbtkdialog-def.h mbtkdialog.inl \
+mbtkpriority-def.h mbtkpriority.inl \
 mbtkmapview-def.h mbtkmapview.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
 mbtkcolonyview-def.h mbtkcolonyview.inl \

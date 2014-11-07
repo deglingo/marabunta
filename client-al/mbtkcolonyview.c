@@ -3,6 +3,7 @@
 
 #include "client-al/alprivate.h"
 #include "client-al/mbtkcolonyview.h"
+#include "client-al/mbtkpriority.h"
 #include "client-al/mbtkcolonyview.inl"
 
 
@@ -70,7 +71,7 @@ static void _create_task ( MbtkColonyView *view,
                            MbcProxy *task )
 {
   Private *priv = PRIVATE(view);
-  AltkWidget *box, *label, *workers;
+  AltkWidget *box, *label, *prio, *workers;
   gchar *value;
   GList *l;
   box = L_TRASH_OBJECT
@@ -79,6 +80,9 @@ static void _create_task ( MbtkColonyView *view,
   label = L_TRASH_OBJECT
     (altk_label_new(MBC_TASK_PROXY(task)->name));
   altk_box_pack_start(ALTK_BOX(box), label, 0);
+  prio = L_TRASH_OBJECT
+    (mbtk_priority_new(MBC_TASK_PROXY(task)->priority));
+  altk_box_pack_start(ALTK_BOX(box), prio, 0);
   value = g_strdup_printf("%" G_GINT64_FORMAT, MBC_TASK_PROXY(task)->workers);
   workers = L_TRASH_OBJECT
     (altk_label_new(value));

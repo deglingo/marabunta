@@ -22,6 +22,8 @@
 
 #include "client/mbccolonyproxy.h"
 
+#include "client/mbcpriorityproxy.h"
+
 #include "client/mbctaskproxy.h"
 
 
