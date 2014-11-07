@@ -103,6 +103,14 @@ static void _process_game_state ( MbcApp *app,
             mbc_game_proxy_set_sim_time(app->game_proxy, st_frame->sim_time);
           }
           break;
+        case MB_STATE_NEW_PRIORITY:
+          {
+            MbStateNewPriority *st_prio = (MbStateNewPriority *) block;
+            mbc_game_proxy_create_priority(app->game_proxy,
+                                           st_prio->priority_id,
+                                           st_prio->value);
+          }
+          break;
         case MB_STATE_NEW_TASK:
           {
             MbStateNewTask *st_task = (MbStateNewTask *) block;
@@ -110,6 +118,7 @@ static void _process_game_state ( MbcApp *app,
                                        st_task->task_id,
                                        st_task->colony_id,
                                        st_task->parent_id,
+                                       st_task->priority_id,
                                        st_task->isgroup,
                                        st_task->name,
                                        st_task->workers);

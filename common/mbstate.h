@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 
 
-#define MB_STATE_BLOCKS_SIZE 512
+#define MB_STATE_BLOCKS_SIZE 1024
 
 typedef enum _MbStateType MbStateType;
 typedef struct _MbStateBlock MbStateBlock;
@@ -20,6 +20,7 @@ typedef struct _MbStateReset MbStateReset;
 typedef struct _MbStateFrame MbStateFrame;
 typedef struct _MbStateSector MbStateSector;
 typedef struct _MbStateColony MbStateColony;
+typedef struct _MbStateNewPriority MbStateNewPriority;
 typedef struct _MbStateNewTask MbStateNewTask;
 typedef struct _MbStatePop MbStatePop;
 typedef struct _MbStateTask MbStateTask;
@@ -36,6 +37,7 @@ enum _MbStateType
     MB_STATE_COLONY,
     MB_STATE_NEW_TASK,
     MB_STATE_POP,
+    MB_STATE_NEW_PRIORITY,
     MB_STATE_TASK,
     MB_STATE_COUNT,
   };
@@ -98,6 +100,17 @@ struct _MbStateColony
 
 
 
+/* MbStateNewPriority:
+ */
+struct _MbStateNewPriority
+{
+  MbStateBlock block;
+  guint priority_id;
+  MbPriorityValue value;
+};
+
+
+
 /* MbStateNewTask:
  */
 struct _MbStateNewTask
@@ -108,6 +121,7 @@ struct _MbStateNewTask
   guint parent_id;
   gboolean isgroup;
   gchar name[MBS_TASK_MAX_NAME+1];
+  guint priority_id;
   gint64 workers;
 };
 

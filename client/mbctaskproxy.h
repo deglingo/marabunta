@@ -19,6 +19,7 @@ struct _MbcTaskProxy
 
   MbcProxy *colony;
   MbcProxy *parent;
+  MbcProxy *priority;
   gchar *name;
   gboolean isgroup;
   GList *children;
@@ -38,6 +39,7 @@ struct _MbcTaskProxyClass
 
 MbcProxy *mbc_task_proxy_new ( MbcProxy *game,
                                guint id,
+                               MbcProxy *priority,
                                gboolean group,
                                const gchar *name,
                                gint64 workers );

@@ -15,6 +15,7 @@ static const guint MB_STATE_BLOCK_TYPE_SIZE[MB_STATE_COUNT] =
     [MB_STATE_FRAME] = sizeof(MbStateFrame),
     [MB_STATE_SECTOR] = sizeof(MbStateSector),
     [MB_STATE_COLONY] = sizeof(MbStateColony),
+    [MB_STATE_NEW_PRIORITY] = sizeof(MbStateNewPriority),
     [MB_STATE_NEW_TASK] = sizeof(MbStateNewTask),
     [MB_STATE_POP] = sizeof(MbStatePop),
     [MB_STATE_TASK] = sizeof(MbStateTask),

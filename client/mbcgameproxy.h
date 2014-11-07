@@ -52,10 +52,14 @@ void mbc_game_proxy_create_colony ( MbcGameProxy *game,
                                     guint id,
                                     guint sector_id,
                                     guint owner );
+void mbc_game_proxy_create_priority ( MbcGameProxy *game,
+                                      guint id,
+                                      MbPriorityValue value );
 void mbc_game_proxy_create_task ( MbcGameProxy *game,
                                   guint task_id,
                                   guint colony_id,
                                   guint parent_id,
+                                  guint priority_id,
                                   gboolean group,
                                   const gchar *name,
                                   gint64 workers );

@@ -5,6 +5,7 @@
 #include "client/mbcgameproxy.h"
 #include "client/mbcworldproxy.h"
 #include "client/mbccolonyproxy.h"
+#include "client/mbcpriorityproxy.h"
 #include "client/mbctaskproxy.h"
 #include "client/mbcgameproxy.inl"
 
@@ -144,21 +145,36 @@ void mbc_game_proxy_create_colony ( MbcGameProxy *game,
 
 
 
+/* mbc_game_proxy_create_priority:
+ */
+void mbc_game_proxy_create_priority ( MbcGameProxy *game,
+                                      guint id,
+                                      MbPriorityValue value )
+{
+  mbc_priority_proxy_new(MBC_PROXY(game), id, value);
+}
+
+
+
 /* mbc_game_proxy_create_task:
  */
 void mbc_game_proxy_create_task ( MbcGameProxy *game,
                                   guint task_id,
                                   guint colony_id,
                                   guint parent_id,
+                                  guint priority_id,
                                   gboolean group,
                                   const gchar *name,
                                   gint64 workers )
 {
-  MbcProxy *colony, *task, *parent;
+  MbcProxy *colony, *task, *parent, *prio;
   colony = mbc_game_proxy_lookup_object(game, colony_id);
   ASSERT(colony);
   ASSERT(MBC_IS_COLONY_PROXY(colony));
-  task = mbc_task_proxy_new(MBC_PROXY(game), task_id, group, name, workers);
+  prio = mbc_game_proxy_lookup_object(game, priority_id);
+  ASSERT(prio);
+  ASSERT(MBC_IS_PRIORITY_PROXY(prio));
+  task = mbc_task_proxy_new(MBC_PROXY(game), task_id, prio, group, name, workers);
   if (parent_id == 0) {
     mbc_colony_proxy_set_top_task(MBC_COLONY_PROXY(colony), task);
   } else {

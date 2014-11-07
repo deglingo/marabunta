@@ -4,6 +4,7 @@
 #include "client/cliprivate.h"
 #include "client/mbctaskproxy.h"
 #include "client/mbcgameproxy.h"
+#include "client/mbcpriorityproxy.h"
 #include "client/mbctaskproxy.inl"
 
 
@@ -37,6 +38,7 @@ static void mbc_task_proxy_class_init ( LObjectClass *cls )
  */
 MbcProxy *mbc_task_proxy_new ( MbcProxy *game,
                                guint id,
+                               MbcProxy *priority,
                                gboolean group,
                                const gchar *name,
                                gint64 workers )
@@ -44,9 +46,12 @@ MbcProxy *mbc_task_proxy_new ( MbcProxy *game,
   MbcTaskProxy *task;
   ASSERT(game);
   ASSERT(MBC_IS_GAME_PROXY(game));
+  ASSERT(priority);
+  ASSERT(MBC_IS_PRIORITY_PROXY(priority));
   task = MBC_TASK_PROXY(mbc_game_proxy_create_object(MBC_GAME_PROXY(game),
                                                      MBC_CLASS_TASK_PROXY,
                                                      id));
+  task->priority = priority;
   task->isgroup = group;
   task->name = g_strdup(name);
   task->workers = workers;

@@ -351,11 +351,15 @@ static void _send_task_setup ( MbsGame *game,
                                MbsTask *task )
 {
   GList *l;
+  MbStateNewPriority *st_prio = mb_state_next(state, MB_STATE_NEW_PRIORITY);
   MbStateNewTask *st_task = mb_state_next(state, MB_STATE_NEW_TASK);
+  st_prio->priority_id = MBS_OBJECT_ID(task->priority);
+  st_prio->value = task->priority->value;
   st_task->colony_id = MBS_OBJECT_ID(colony);
   st_task->task_id = MBS_OBJECT_ID(task);
   st_task->parent_id = task->parent ? MBS_OBJECT_ID(task->parent) : 0;
   st_task->isgroup = task->isgroup;
+  st_task->priority_id = MBS_OBJECT_ID(task->priority);
   ASSERT(strlen(task->name) <= MBS_TASK_MAX_NAME);
   sprintf(st_task->name, task->name);
   st_task->workers = task->workers;
