@@ -12,6 +12,8 @@
 typedef struct _Private
 {
   AltkWidget *title;
+  AltkWidget *task_table;
+  GList *tasks;
   MbcProxy *colony;
 }
   Private;
@@ -44,8 +46,37 @@ AltkWidget *mbtk_colony_view_new ( void )
   priv->title = L_TRASH_OBJECT
     (altk_label_new("TITLE"));
   altk_box_pack_start(ALTK_BOX(box), priv->title, 0);
+  priv->task_table = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  altk_box_pack_start(ALTK_BOX(box), priv->task_table, 0);  
   l_trash_pop();
   return view;
+}
+
+
+
+static void _create_task ( MbtkColonyView *view,
+                           MbcProxy *task )
+{
+  Private *priv = PRIVATE(view);
+  AltkWidget *box, *label, *workers;
+  gchar *value;
+  GList *l;
+  box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_HORIZONTAL));
+  altk_box_pack_start(ALTK_BOX(priv->task_table), box, 0);
+  label = L_TRASH_OBJECT
+    (altk_label_new(MBC_TASK_PROXY(task)->name));
+  altk_box_pack_start(ALTK_BOX(box), label, 0);
+  value = g_strdup_printf("%" G_GINT64_FORMAT, MBC_TASK_PROXY(task)->workers);
+  workers = L_TRASH_OBJECT
+    (altk_label_new(value));
+  g_free(value);
+  altk_box_pack_start(ALTK_BOX(box), workers, 0);
+  for (l = MBC_TASK_PROXY(task)->children; l; l = l->next)
+    {
+      _create_task(view, l->data);
+    }
 }
 
 
@@ -59,8 +90,13 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
   gchar *title;
   ASSERT(MBC_IS_COLONY_PROXY(colony));
   ASSERT(!priv->colony); /* [todo] */
+  l_trash_push();
   priv->colony = l_object_ref(colony);
+  /* set title */
   title = l_object_to_string(L_OBJECT(colony));
   altk_label_set_text(ALTK_LABEL(priv->title), title);
   g_free(title);
+  /* task list */
+  _create_task(view, MBC_COLONY_PROXY(colony)->top_task);
+  l_trash_pop();
 }
