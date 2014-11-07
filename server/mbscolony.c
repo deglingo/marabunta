@@ -166,7 +166,7 @@ static MbsTask *_select_task ( MbsColony *colony,
       MbsTask *task = l->data;
       if (mbs_task_check(task, pop_type))
         {
-          gint64 score = mbs_task_get_score(task);
+          gint64 score = mbs_task_get_next_score(task);
           if ((!found) || score < found_score)
             {
               found = task;

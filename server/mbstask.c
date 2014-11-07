@@ -103,6 +103,16 @@ gint64 mbs_task_get_score ( MbsTask *task )
 
 
 
+/* mbs_task_get_next_score:
+ */
+gint64 mbs_task_get_next_score ( MbsTask *task )
+{
+  /* [FIXME] * prio !! */
+  return task->score + task->workers;
+}
+
+
+
 /* mbs_task_adjust_workers:
  */
 void mbs_task_adjust_workers ( MbsTask *task,
