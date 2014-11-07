@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 
 
-#define MB_STATE_BLOCKS_SIZE 256
+#define MB_STATE_BLOCKS_SIZE 512
 
 typedef enum _MbStateType MbStateType;
 typedef struct _MbStateBlock MbStateBlock;

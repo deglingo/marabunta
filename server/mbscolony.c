@@ -47,6 +47,52 @@ static void t_spawn_process ( MbsTask *task )
 
 
 
+static gboolean t_work_check ( MbsTask *task,
+                               MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static gboolean t_mine_check ( MbsTask *task,
+                               MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static gboolean t_mine1_check ( MbsTask *task,
+                                MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static gboolean t_mine2_check ( MbsTask *task,
+                                MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static void t_mine1_process ( MbsTask *task )
+{
+  CL_DEBUG("[TODO] mine1");
+}
+
+
+
+static void t_mine2_process ( MbsTask *task )
+{
+  CL_DEBUG("[TODO] mine2");
+}
+
+
+
 /* mbs_colony_new:
  */
 MbsColony *mbs_colony_new ( MbsSector *sector,
@@ -62,13 +108,44 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
       t_spawn_check,
       t_spawn_process,
     };
+  MbsTaskFuncs t_work_funcs =
+    {
+      t_work_check,
+      NULL,
+    };
+  MbsTaskFuncs t_mine_funcs =
+    {
+      t_mine_check,
+      NULL,
+    };
+  MbsTaskFuncs t_mine1_funcs =
+    {
+      t_mine1_check,
+      t_mine1_process,
+    };
+  MbsTaskFuncs t_mine2_funcs =
+    {
+      t_mine2_check,
+      t_mine2_process,
+    };
   MbsColony *col = MBS_COLONY_NEW(NULL);
   col->sector = sector;
   col->owner = owner;
   col->pop_tree = mb_pop_tree_new();
   col->pop_adj = mb_pop_tree_new();
-  col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
-  l_object_unref(mbs_task_new(col, col->top_task, "spawn", &t_spawn_funcs));
+  { /* setup tasks */
+    MbsTask *t_work, *t_mine, *t_mine1, *t_mine2;
+    col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
+    l_object_unref(mbs_task_new(col, col->top_task, "spawn", &t_spawn_funcs));
+    t_work = mbs_task_new_group(col, col->top_task, "work", &t_work_funcs);
+    l_object_unref(t_work);
+    t_mine = mbs_task_new_group(col, t_work, "mine", &t_mine_funcs);
+    l_object_unref(t_mine);
+    t_mine1 = mbs_task_new(col, t_mine, "mine1", &t_mine1_funcs);
+    l_object_unref(t_mine1);
+    t_mine2 = mbs_task_new(col, t_mine, "mine2", &t_mine2_funcs);
+    l_object_unref(t_mine2);
+  }
   col->prio_pop_queen = mb_priority_new(1);
   col->prio_pop_worker = mb_priority_new(7);
   col->prio_pop_soldier = mb_priority_new(3);
