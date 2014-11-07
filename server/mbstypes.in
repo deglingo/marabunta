@@ -23,6 +23,10 @@ namespace Mbs
   {
   };
 
+  class Priority : Object
+  {
+  };
+  
   class Task : Object
   {
   };
