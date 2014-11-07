@@ -64,18 +64,23 @@ gboolean mbs_task_check ( MbsTask *task,
 
 
 
-static void _process ( MbsTask *task )
+static gint64 _process ( MbsTask *task )
 {
+  gint64 score;
   if (task->isgroup)
     {
       GList *l;
+      score = 0;
       for (l = task->children; l; l = l->next)
-        _process(l->data);
+        score += task->score += _process(l->data);
     }
   else
     {
       task->funcs.process(task);
+      score = task->workers; /* [FIXME] * prio !! */
     }
+  task->score += score;
+  return score;
 }
 
 
