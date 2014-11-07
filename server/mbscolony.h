@@ -5,6 +5,7 @@
 #define _MBSCOLONY_H_
 
 #include "server/mbsobject.h"
+#include "server/mbspoptree.h"
 #include "server/mbstask.h"
 #include "server/mbscolony-def.h"
 
@@ -22,8 +23,8 @@ struct _MbsColony
 
   struct _MbsSector *sector;
   guint owner;
-  MbPopTree *pop_tree;
-  MbPopTree *pop_adj;
+  MbsPopTree *pop_tree;
+  MbsPopTree *pop_adj;
   MbsTask *top_task;
   /* pop cast priorities */
   MbPriority *prio_pop_queen;

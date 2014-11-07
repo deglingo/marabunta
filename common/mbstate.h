@@ -5,7 +5,7 @@
 #define _MBSTATE_H_
 
 #include "common/mbbase.h"
-#include "common/mbpoptree.h"
+#include "common/mbpoptype.h"
 #include "common/mbstate-def.h"
 
 G_BEGIN_DECLS

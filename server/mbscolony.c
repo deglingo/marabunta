@@ -131,8 +131,8 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   MbsColony *col = MBS_COLONY_NEW(NULL);
   col->sector = sector;
   col->owner = owner;
-  col->pop_tree = mb_pop_tree_new();
-  col->pop_adj = mb_pop_tree_new();
+  col->pop_tree = mbs_pop_tree_new();
+  col->pop_adj = mbs_pop_tree_new();
   { /* setup tasks */
     MbsTask *t_work, *t_mine, *t_mine1, *t_mine2;
     col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
@@ -202,7 +202,7 @@ void mbs_colony_adjust_pop ( MbsColony *colony,
                              guint birthdate,
                              gint64 count )
 {
-  mb_pop_tree_add(colony->pop_adj, type, birthdate, count);
+  mbs_pop_tree_add(colony->pop_adj, type, birthdate, count);
 }
 
 
@@ -211,7 +211,7 @@ void mbs_colony_adjust_pop ( MbsColony *colony,
  */
 void mbs_colony_update_pop_tree ( MbsColony *colony )
 {
-  mb_pop_tree_update(colony->pop_tree, colony->pop_adj);
+  mbs_pop_tree_update(colony->pop_tree, colony->pop_adj);
 }
 
 

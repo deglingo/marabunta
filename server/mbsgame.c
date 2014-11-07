@@ -124,7 +124,7 @@ static void _send ( MbsGame *game,
 
 
 
-static void _pop_unit_affect_task ( MbPopUnit *unit,
+static void _pop_unit_affect_task ( MbsPopUnit *unit,
                                     MbsTask *task )
 {
   if (unit->task == task)
@@ -138,7 +138,7 @@ static void _pop_unit_affect_task ( MbPopUnit *unit,
 
 
 static void _pop_unit_update_egg ( MbsColony *colony,
-                                   MbPopUnit *unit )
+                                   MbsPopUnit *unit )
 {
   guint age;
   /* _pop_unit_affect_task(unit, NULL); */
@@ -156,7 +156,7 @@ static void _pop_unit_update_egg ( MbsColony *colony,
 
 
 static void _pop_unit_update_larvae ( MbsColony *colony,
-                                      MbPopUnit *unit )
+                                      MbsPopUnit *unit )
 {
   guint age;
   /* _pop_unit_affect_task(unit, NULL); */
@@ -175,7 +175,7 @@ static void _pop_unit_update_larvae ( MbsColony *colony,
 
 
 static void _pop_unit_update_aq ( MbsColony *colony,
-                                  MbPopUnit *unit )
+                                  MbsPopUnit *unit )
 {
   MbsTask *task;
   _pop_unit_affect_task(unit, NULL);
@@ -188,7 +188,7 @@ static void _pop_unit_update_aq ( MbsColony *colony,
 
 
 static void _pop_unit_update_aw ( MbsColony *colony,
-                                  MbPopUnit *unit )
+                                  MbsPopUnit *unit )
 {
   MbsTask *task;
   _pop_unit_affect_task(unit, NULL);
@@ -200,7 +200,7 @@ static void _pop_unit_update_aw ( MbsColony *colony,
 
 
 
-static void _pop_unit_update ( MbPopUnit *unit,
+static void _pop_unit_update ( MbsPopUnit *unit,
                                gpointer data )
 {
   MbsColony *col = data;
@@ -260,7 +260,7 @@ static void _colony_update ( MbsGame *game,
   MbStatePop *st_pop;
   gint tp;
   /* update the pop tree */
-  mb_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
+  mbs_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
   /* adjust pop tree */
   mbs_colony_update_pop_tree(colony);
   /* adjust the hatch scores */
@@ -351,7 +351,7 @@ static void _setup ( MbsGame *game )
 {
   game->world = mbs_world_new(game, 1, 2);
   mbs_sector_create_colony(game->world->sectors[0][0], 0);
-  mb_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
+  mbs_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
                   MB_POP_ADULT_QUEEN, 0, 1);
 }
 
