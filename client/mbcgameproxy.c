@@ -5,6 +5,7 @@
 #include "client/mbcgameproxy.h"
 #include "client/mbcworldproxy.h"
 #include "client/mbccolonyproxy.h"
+#include "client/mbctaskproxy.h"
 #include "client/mbcgameproxy.inl"
 
 
@@ -139,6 +140,35 @@ void mbc_game_proxy_create_colony ( MbcGameProxy *game,
   ASSERT(MBC_IS_SECTOR_PROXY(sector));
   colony = mbc_colony_proxy_new(MBC_PROXY(game), id, owner);
   mbc_sector_proxy_add_colony(MBC_SECTOR_PROXY(sector), colony);
+}
+
+
+
+/* mbc_game_proxy_create_task:
+ */
+void mbc_game_proxy_create_task ( MbcGameProxy *game,
+                                  guint task_id,
+                                  guint colony_id,
+                                  guint parent_id,
+                                  gboolean group,
+                                  const gchar *name,
+                                  gint64 workers )
+{
+  MbcProxy *colony, *task, *parent;
+  colony = mbc_game_proxy_lookup_object(game, colony_id);
+  ASSERT(colony);
+  ASSERT(MBC_IS_COLONY_PROXY(colony));
+  task = mbc_task_proxy_new(MBC_PROXY(game), task_id, group, name, workers);
+  if (parent_id == 0) {
+    mbc_colony_proxy_set_top_task(MBC_COLONY_PROXY(colony), task);
+  } else {
+    parent = mbc_game_proxy_lookup_object(game, parent_id);
+    ASSERT(parent);
+    ASSERT(MBC_IS_TASK_PROXY(parent));
+    ASSERT(MBC_TASK_PROXY(parent)->isgroup);
+    ASSERT(MBC_TASK_PROXY(parent)->colony == colony);
+    mbc_task_proxy_add_child(MBC_TASK_PROXY(parent), task);
+  }
 }
 
 

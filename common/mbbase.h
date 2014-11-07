@@ -8,4 +8,9 @@
 
 
 
+/* [fixme] */
+#define MBS_TASK_MAX_NAME 16
+
+
+
 #endif

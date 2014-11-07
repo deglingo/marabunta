@@ -20,6 +20,7 @@ typedef struct _MbStateReset MbStateReset;
 typedef struct _MbStateFrame MbStateFrame;
 typedef struct _MbStateSector MbStateSector;
 typedef struct _MbStateColony MbStateColony;
+typedef struct _MbStateNewTask MbStateNewTask;
 typedef struct _MbStatePop MbStatePop;
 
 
@@ -32,6 +33,7 @@ enum _MbStateType
     MB_STATE_FRAME,
     MB_STATE_SECTOR,
     MB_STATE_COLONY,
+    MB_STATE_NEW_TASK,
     MB_STATE_POP,
     MB_STATE_COUNT,
   };
@@ -94,6 +96,21 @@ struct _MbStateColony
 
 
 
+/* MbStateNewTask:
+ */
+struct _MbStateNewTask
+{
+  MbStateBlock block;
+  guint task_id;
+  guint colony_id;
+  guint parent_id;
+  gboolean isgroup;
+  gchar name[MBS_TASK_MAX_NAME+1];
+  gint64 workers;
+};
+
+
+
 /* MbStatePop:
  */
 struct _MbStatePop
@@ -127,7 +144,7 @@ struct _MbStateClass
 
 
 MbState *mb_state_new ( void );
-MbStateBlock *mb_state_next ( MbState *state,
+gpointer mb_state_next ( MbState *state,
                               MbStateType type );
 MbStateBlock *mb_state_read ( MbState *state,
                               guint *offset );

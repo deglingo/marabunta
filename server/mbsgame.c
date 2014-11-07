@@ -321,6 +321,48 @@ static void _setup ( MbsGame *game )
 
 
 
+static void _send_task_setup ( MbsGame *game,
+                               Player *player,
+                               MbState *state,
+                               MbsColony *colony,
+                               MbsTask *task )
+{
+  GList *l;
+  MbStateNewTask *st_task = mb_state_next(state, MB_STATE_NEW_TASK);
+  st_task->colony_id = MBS_OBJECT_ID(colony);
+  st_task->task_id = MBS_OBJECT_ID(task);
+  st_task->parent_id = task->parent ? MBS_OBJECT_ID(task->parent) : 0;
+  st_task->isgroup = task->isgroup;
+  ASSERT(strlen(task->name) <= MBS_TASK_MAX_NAME);
+  sprintf(st_task->name, task->name);
+  st_task->workers = task->workers;
+  for (l = task->children; l; l = l->next)
+    _send_task_setup(game, player, state, colony, l->data);
+}
+
+
+
+/* _send_colony_setup:
+ */
+static void _send_colony_setup ( MbsGame *game,
+                                 Player *player,
+                                 MbState *state,
+                                 MbsColony *colony )
+{
+  MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
+  MbStatePop *st_pop = (MbStatePop *) mb_state_next(state, MB_STATE_POP);
+  gint tp;
+  st_colony->colony_id = MBS_OBJECT_ID(colony);
+  st_colony->sector_id = MBS_OBJECT_ID(colony->sector);
+  st_colony->owner = colony->owner;
+  st_pop->colony_id = MBS_OBJECT_ID(colony);
+  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+    st_pop->pop[tp] = colony->pop_tree->pop[tp];
+  _send_task_setup(game, player, state, colony, colony->top_task);
+}
+
+
+
 /* _send_game_setup:
  */
 static void _send_game_setup ( MbsGame *game,
@@ -345,17 +387,7 @@ static void _send_game_setup ( MbsGame *game,
           st_sector->x = x;
           st_sector->y = y;
           if (sector->colony)
-            {
-              MbStateColony *st_colony = (MbStateColony *) mb_state_next(state, MB_STATE_COLONY);
-              MbStatePop *st_pop = (MbStatePop *) mb_state_next(state, MB_STATE_POP);
-              gint tp;
-              st_colony->colony_id = MBS_OBJECT_ID(sector->colony);
-              st_colony->sector_id = MBS_OBJECT_ID(sector);
-              st_colony->owner = sector->colony->owner;
-              st_pop->colony_id = MBS_OBJECT_ID(sector->colony);
-              for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
-                st_pop->pop[tp] = sector->colony->pop_tree->pop[tp];
-            }
+            _send_colony_setup(game, player, state, sector->colony);
         }
     }
   _send(game, player, msg);

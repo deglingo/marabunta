@@ -4,6 +4,7 @@
 #include "client/cliprivate.h"
 #include "client/mbccolonyproxy.h"
 #include "client/mbcgameproxy.h"
+#include "client/mbctaskproxy.h"
 #include "client/mbccolonyproxy.inl"
 
 
@@ -59,4 +60,20 @@ void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
       proxy->pop[tp] = pop[tp];
     }
   l_signal_emit(L_OBJECT(proxy), signals[SIG_POP_NOTIFY], 0);
+}
+
+
+
+/* mbc_colony_proxy_set_top_task:
+ */
+void mbc_colony_proxy_set_top_task ( MbcColonyProxy *colony,
+                                     MbcProxy *task )
+{
+  ASSERT(!colony->top_task);
+  ASSERT(task);
+  ASSERT(MBC_IS_TASK_PROXY(task));
+  ASSERT(!MBC_TASK_PROXY(task)->colony);
+  ASSERT(!MBC_TASK_PROXY(task)->parent);
+  colony->top_task = task;
+  MBC_TASK_PROXY(task)->colony = MBC_PROXY(colony);
 }

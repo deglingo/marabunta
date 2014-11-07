@@ -20,6 +20,7 @@ struct _MbcColonyProxy
   MbcProxy *sector;
   gint owner;
   gint64 pop[MB_POP_TYPE_COUNT];
+  MbcProxy *top_task;
 };
 
 
@@ -38,6 +39,8 @@ MbcProxy *mbc_colony_proxy_new ( MbcProxy *game,
                                  gint owner );
 void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
                                 gint64 *pop );
+void mbc_colony_proxy_set_top_task ( MbcColonyProxy *colony,
+                                     MbcProxy *task );
 
 
 

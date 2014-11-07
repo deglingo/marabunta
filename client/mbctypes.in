@@ -28,6 +28,10 @@ namespace Mbc
   {
     void class_init ();
   };
+
+  class TaskProxy : Proxy
+  {
+  };
   
   class App : Mb::App
   {

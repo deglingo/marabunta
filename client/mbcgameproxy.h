@@ -52,6 +52,13 @@ void mbc_game_proxy_create_colony ( MbcGameProxy *game,
                                     guint id,
                                     guint sector_id,
                                     guint owner );
+void mbc_game_proxy_create_task ( MbcGameProxy *game,
+                                  guint task_id,
+                                  guint colony_id,
+                                  guint parent_id,
+                                  gboolean group,
+                                  const gchar *name,
+                                  gint64 workers );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );
