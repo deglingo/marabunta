@@ -22,6 +22,7 @@ typedef struct _MbStateSector MbStateSector;
 typedef struct _MbStateColony MbStateColony;
 typedef struct _MbStateNewTask MbStateNewTask;
 typedef struct _MbStatePop MbStatePop;
+typedef struct _MbStateTask MbStateTask;
 
 
 
@@ -35,6 +36,7 @@ enum _MbStateType
     MB_STATE_COLONY,
     MB_STATE_NEW_TASK,
     MB_STATE_POP,
+    MB_STATE_TASK,
     MB_STATE_COUNT,
   };
 
@@ -118,6 +120,17 @@ struct _MbStatePop
   MbStateBlock block;
   guint colony_id;
   gint64 pop[MB_POP_TYPE_COUNT];
+};
+
+
+
+/* MbStateTask:
+ */
+struct _MbStateTask
+{
+  MbStateBlock block;
+  guint task_id;
+  gint64 workers;
 };
 
 

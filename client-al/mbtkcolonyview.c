@@ -55,6 +55,17 @@ AltkWidget *mbtk_colony_view_new ( void )
 
 
 
+static void _on_task_workers_notify ( MbcProxy *task,
+                                      AltkWidget *label )
+{
+  /* [fixme] ?? */
+  gchar text[32];
+  sprintf(text, "%" G_GINT64_FORMAT, MBC_TASK_PROXY(task)->workers);
+  altk_label_set_text(ALTK_LABEL(label), text);
+}
+
+
+
 static void _create_task ( MbtkColonyView *view,
                            MbcProxy *task )
 {
@@ -73,6 +84,11 @@ static void _create_task ( MbtkColonyView *view,
     (altk_label_new(value));
   g_free(value);
   altk_box_pack_start(ALTK_BOX(box), workers, 0);
+  l_signal_connect(L_OBJECT(task),
+                   "notify", g_quark_from_string("workers"),
+                   (LSignalHandler) _on_task_workers_notify,
+                   workers,
+                   NULL);
   for (l = MBC_TASK_PROXY(task)->children; l; l = l->next)
     {
       _create_task(view, l->data);

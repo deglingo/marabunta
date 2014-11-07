@@ -4,6 +4,7 @@
 #include "client/cliprivate.h"
 #include "client/mbcapp.h"
 #include "client/mbccolonyproxy.h"
+#include "client/mbctaskproxy.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -121,6 +122,16 @@ static void _process_game_state ( MbcApp *app,
             ASSERT(col);
             ASSERT(MBC_IS_COLONY_PROXY(col));
             mbc_colony_proxy_set_pop(MBC_COLONY_PROXY(col), st_pop->pop);
+          }
+          break;
+        case MB_STATE_TASK:
+          {
+            MbStateTask *st_task = (MbStateTask *) block;
+            MbcProxy *task = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy),
+                                                          st_task->task_id);
+            ASSERT(task);
+            ASSERT(MBC_IS_TASK_PROXY(task));
+            mbc_task_proxy_set_workers(MBC_TASK_PROXY(task), st_task->workers);
           }
           break;
         default:

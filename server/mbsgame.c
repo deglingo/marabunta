@@ -217,6 +217,25 @@ static void _pop_unit_update ( MbPopUnit *unit,
 
 
 
+/* _send_task_state:
+ */
+static void _send_task_state ( MbsGame *game,
+                               MbsColony *colony,
+                               MbsTask *task )
+{
+  Private *priv = PRIVATE(game);
+  MbStateTask *st_task;
+  GList *l;
+  st_task = mb_state_next(priv->players[colony->owner]->state,
+                          MB_STATE_TASK);
+  st_task->task_id = MBS_OBJECT_ID(task);
+  st_task->workers = task->workers;
+  for (l = task->children; l; l = l->next)
+    _send_task_state(game, colony, l->data);
+}
+
+
+
 /* _colony_update:
  */
 static void _colony_update ( MbsGame *game,
@@ -241,6 +260,8 @@ static void _colony_update ( MbsGame *game,
     {
       st_pop->pop[tp] = colony->pop_tree->pop[tp];
     }
+  /* send tasks state */
+  _send_task_state(game, colony, colony->top_task);
 }
 
 
