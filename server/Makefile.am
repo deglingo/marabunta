@@ -12,6 +12,7 @@ libmarabunta_server_la_SOURCES = \
 	mbsworld.c \
 	mbssector.c \
 	mbscolony.c \
+	mbspoptree.c \
 	mbstask.c \
 	mbsgame.c \
 	mbsapp.c
