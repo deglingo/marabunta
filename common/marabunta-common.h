@@ -23,6 +23,8 @@
 
 #include "common/mbworld.h"
 
+#include "common/mbpoptype.h"
+
 #include "common/mbpoptree.h"
 
 

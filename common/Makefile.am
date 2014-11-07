@@ -16,6 +16,7 @@ libmarabunta_common_la_SOURCES = \
 	mbmessagereader.c \
 	mbwatch.c \
 	mbworld.c \
+	mbpoptype.c \
 	mbpoptree.c
 
 BUILT_SOURCES = \
