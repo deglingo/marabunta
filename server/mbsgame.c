@@ -187,6 +187,19 @@ static void _pop_unit_update_aq ( MbsColony *colony,
 
 
 
+static void _pop_unit_update_aw ( MbsColony *colony,
+                                  MbPopUnit *unit )
+{
+  MbsTask *task;
+  _pop_unit_affect_task(unit, NULL);
+  if ((task = mbs_colony_select_task(colony, MB_POP_ADULT_WORKER)))
+    {
+      _pop_unit_affect_task(unit, task);
+    }  
+}
+
+
+
 static void _pop_unit_update ( MbPopUnit *unit,
                                gpointer data )
 {
@@ -206,6 +219,8 @@ static void _pop_unit_update ( MbPopUnit *unit,
       _pop_unit_update_aq(col, unit);
       break;
     case MB_POP_ADULT_WORKER:
+      _pop_unit_update_aw(col, unit);
+      break;
     case MB_POP_ADULT_SOLDIER:
       /* [TODO] */
       break;
