@@ -124,19 +124,6 @@ static void _send ( MbsGame *game,
 
 
 
-static void _pop_unit_affect_task ( MbsPopUnit *unit,
-                                    MbsTask *task )
-{
-  if (unit->task == task)
-    return;
-  if (unit->task)
-    mbs_task_adjust_workers(unit->task, -unit->count);
-  if ((unit->task = task))
-    mbs_task_adjust_workers(task, unit->count);
-}
-
-
-
 static void _pop_unit_update_egg ( MbsColony *colony,
                                    MbsPopUnit *unit )
 {
@@ -178,10 +165,10 @@ static void _pop_unit_update_aq ( MbsColony *colony,
                                   MbsPopUnit *unit )
 {
   MbsTask *task;
-  _pop_unit_affect_task(unit, NULL);
+  mbs_pop_unit_affect_task(unit, NULL);
   if ((task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN)))
     {
-      _pop_unit_affect_task(unit, task);
+      mbs_pop_unit_affect_task(unit, task);
     }
 }
 
@@ -191,10 +178,10 @@ static void _pop_unit_update_aw ( MbsColony *colony,
                                   MbsPopUnit *unit )
 {
   MbsTask *task;
-  _pop_unit_affect_task(unit, NULL);
+  mbs_pop_unit_affect_task(unit, NULL);
   if ((task = mbs_colony_select_task(colony, MB_POP_ADULT_WORKER)))
     {
-      _pop_unit_affect_task(unit, task);
+      mbs_pop_unit_affect_task(unit, task);
     }  
 }
 

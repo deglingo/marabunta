@@ -5,9 +5,7 @@
 #define _MBSPOPTREE_H_
 
 #include "server/mbsbase.h"
-
-/* [FIXME] */
-struct _MbsTask;
+#include "server/mbstask.h"
 
 
 
@@ -26,8 +24,7 @@ struct _MbsPopUnit
   MbPopType type;
   guint birthdate;
   gint64 count;
-  /* [FIXME] */
-  struct _MbsTask *task;
+  MbsTask *task;
 };
 
 
@@ -54,6 +51,9 @@ void mbs_pop_tree_traverse ( MbsPopTree *tree,
                              gpointer data );
 void mbs_pop_tree_update ( MbsPopTree *tree,
                            MbsPopTree *adj );
+
+void mbs_pop_unit_affect_task ( MbsPopUnit *unit,
+                                MbsTask *task );
 
 
 

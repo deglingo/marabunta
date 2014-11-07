@@ -118,6 +118,11 @@ gint64 mbs_task_get_next_score ( MbsTask *task )
 void mbs_task_adjust_workers ( MbsTask *task,
                                gint64 count )
 {
-  task->workers += count;
-  ASSERT(task->workers >= 0);
+  ASSERT(!task->isgroup);
+  while (task)
+    {
+      task->workers += count;
+      ASSERT(task->workers >= 0);
+      task = task->parent;
+    }
 }

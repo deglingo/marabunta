@@ -84,6 +84,9 @@ void mbs_pop_tree_add ( MbsPopTree *tree,
       insert_unit(tree, unit);
     }
   tree->pop[type] += count;
+  /* [fixme] ?? */
+  if (unit->task)
+    mbs_task_adjust_workers(unit->task, count);
 }
 
 
@@ -112,10 +115,25 @@ void mbs_pop_tree_update ( MbsPopTree *tree,
   for (l = adj->units; l; l = l->next)
     {
       MbsPopUnit *unit = l->data;
-      /* [FIXME] should adjust task workers count!! */
+      ASSERT(!unit->task);
       mbs_pop_tree_add(tree, unit->type, unit->birthdate, unit->count);
       adj->pop[unit->type] -= unit->count;
     }
   g_list_free_full(adj->units, (GDestroyNotify) mbs_pop_unit_free);
   adj->units = NULL;
+}
+
+
+
+/* mbs_pop_unit_affect_task:
+ */
+void mbs_pop_unit_affect_task ( MbsPopUnit *unit,
+                                MbsTask *task )
+{
+  if (unit->task == task)
+    return;
+  if (unit->task)
+    mbs_task_adjust_workers(unit->task, -unit->count);
+  if ((unit->task = task))
+    mbs_task_adjust_workers(task, unit->count);
 }
