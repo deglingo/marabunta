@@ -5,6 +5,7 @@
 #define _MBSTASK_H_
 
 #include "server/mbsobject.h"
+#include "server/mbspriority.h"
 #include "server/mbstask-def.h"
 
 G_BEGIN_DECLS
@@ -38,6 +39,7 @@ struct _MbsTask
   gchar *name;
   MbsTaskFuncs funcs;
   gboolean isgroup;
+  MbsPriority *priority;
   gint64 score;
   gint64 workers;
 };

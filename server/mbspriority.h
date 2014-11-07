@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbsPriority
 {
   MBS_PRIORITY_INSTANCE_HEADER;
+
+  MbPriorityValue value;
 };
 
 
@@ -26,6 +28,10 @@ struct _MbsPriorityClass
 {
   MBS_PRIORITY_CLASS_HEADER;
 };
+
+
+
+MbsPriority *mbs_priority_new ( MbPriorityValue value );
 
 
 

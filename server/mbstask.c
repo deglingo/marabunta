@@ -25,6 +25,7 @@ static MbsTask *_task_new ( struct _MbsColony *colony,
     }
   task->funcs = *funcs;
   task->isgroup = isgroup;
+  task->priority = mbs_priority_new(5);
   return task;
 }
 
