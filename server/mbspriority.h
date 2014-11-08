@@ -38,6 +38,7 @@ MbsPriority *mbs_priority_new ( struct _MbsGame *game,
                                 MbPriorityValue value );
 void mbs_priority_set_value ( MbsPriority *priority,
                               MbPriorityValue value );
+gint64 mbs_priority_get_score_factor ( MbsPriority *priority );
 
 
 

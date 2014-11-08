@@ -81,7 +81,7 @@ static gint64 _process ( MbsTask *task )
   else
     {
       task->funcs.process(task);
-      score = task->workers; /* [FIXME] * prio !! */
+      score = task->workers * mbs_priority_get_score_factor(task->priority);
     }
   task->score += score;
   return score;
@@ -112,7 +112,7 @@ gint64 mbs_task_get_score ( MbsTask *task )
 gint64 mbs_task_get_next_score ( MbsTask *task )
 {
   /* [FIXME] * prio !! */
-  return task->score + task->workers;
+  return task->score + task->workers * mbs_priority_get_score_factor(task->priority);
 }
 
 

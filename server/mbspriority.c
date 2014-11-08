@@ -53,3 +53,12 @@ void mbs_priority_set_value ( MbsPriority *priority,
   priority->value = value;
   l_object_notify(L_OBJECT(priority), pspecs[PROP_VALUE]);
 }
+
+
+
+/* mbs_priority_get_score_factor:
+ */
+gint64 mbs_priority_get_score_factor ( MbsPriority *priority )
+{
+  return 10 - priority->value;
+}
