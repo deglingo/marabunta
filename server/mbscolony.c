@@ -81,14 +81,14 @@ static gboolean t_mine2_check ( MbsTask *task,
 
 static void t_mine1_process ( MbsTask *task )
 {
-  CL_DEBUG("[TODO] mine1");
+  /* CL_DEBUG("[TODO] mine1"); */
 }
 
 
 
 static void t_mine2_process ( MbsTask *task )
 {
-  CL_DEBUG("[TODO] mine2");
+  /* CL_DEBUG("[TODO] mine2"); */
 }
 
 
@@ -287,4 +287,15 @@ void mbs_colony_adjust_hatch_scores ( MbsColony *colony )
   colony->score_pop_queen -= score;  
   colony->score_pop_worker -= score;  
   colony->score_pop_soldier -= score;  
+}
+
+
+
+/* mbs_colony_create_room:
+ */
+void mbs_colony_create_room ( MbsColony *colony,
+                              MbRoomType type )
+{
+  ASSERT(!colony->rooms[type]);
+  colony->rooms[type] = mbs_room_new(type);
 }

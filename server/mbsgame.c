@@ -399,6 +399,8 @@ static void _setup ( MbsGame *game )
   mbs_sector_create_colony(game->world->sectors[0][0], 0);
   mbs_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
                   MB_POP_ADULT_QUEEN, 0, 1);
+  mbs_colony_create_room(game->world->sectors[0][0]->colony,
+                         MB_ROOM_TYPE_ROYAL_CHAMBER);
 }
 
 

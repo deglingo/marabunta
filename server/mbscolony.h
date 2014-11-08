@@ -7,6 +7,7 @@
 #include "server/mbsobject.h"
 #include "server/mbspoptree.h"
 #include "server/mbstask.h"
+#include "server/mbsroom.h"
 #include "server/mbscolony-def.h"
 
 G_BEGIN_DECLS
@@ -33,6 +34,8 @@ struct _MbsColony
   gint64 score_pop_queen;
   gint64 score_pop_worker;
   gint64 score_pop_soldier;
+  /* rooms list */
+  MbsRoom *rooms[MB_ROOM_TYPE_COUNT];
 };
 
 
@@ -60,6 +63,8 @@ void mbs_colony_adjust_hatch_score ( MbsColony *colony,
                                      MbPopType pop_type,
                                      gint64 count );
 void mbs_colony_adjust_hatch_scores ( MbsColony *colony );
+void mbs_colony_create_room ( MbsColony *colony,
+                              MbRoomType type );
 
 
 

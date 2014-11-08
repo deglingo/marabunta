@@ -25,5 +25,7 @@
 
 #include "common/mbpoptype.h"
 
+#include "common/mbroom.h"
+
 
 #endif

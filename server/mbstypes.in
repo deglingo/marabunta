@@ -36,6 +36,10 @@ namespace Mbs
   {
   };
 
+  class Room : Object
+  {
+  };
+
   class Game : Object
   {
     void class_init ();
