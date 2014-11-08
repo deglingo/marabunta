@@ -1,7 +1,7 @@
 AC_INIT([marabunta], [0.0.0])
 AM_INIT_AUTOMAKE
 
-: ${CFLAGS:=-g -Wall}
+: ${CFLAGS:=-g -Wall -Werror}
 
 AC_PROG_CC
 AM_PROG_CC_C_O
