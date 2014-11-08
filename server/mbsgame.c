@@ -5,6 +5,7 @@
 #include "server/mbsgame.h"
 #include "server/mbsapp.h"
 #include "server/mbstask.h"
+#include "server/mbscontrol.h"
 #include "server/mbsgame.inl"
 
 
@@ -35,10 +36,17 @@ typedef struct _Private
 {
   Player *players[MAX_PLAYERS];
   gint n_players;
+  GHashTable *control_map;
 }
   Private;
 
 #define PRIVATE(game) ((Private *)(MBS_GAME(game)->private))
+
+
+
+static void _send ( MbsGame *game,
+                    Player *player,
+                    MbMessage *message );
 
 
 
@@ -77,6 +85,7 @@ static void mbs_game_class_init ( LObjectClass *cls )
 static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->control_map = g_hash_table_new(NULL, NULL);
 }
 
 
@@ -86,6 +95,56 @@ static void mbs_game_init ( LObject *obj )
 MbsGame *mbs_game_new ( void )
 {
   return MBS_GAME_NEW(NULL);
+}
+
+
+
+static void _on_control_notify ( MbsControl *control,
+                                 MbsGame *game )
+{
+  MbMessage *msg;
+  MbState *state;
+  MbStatePriority *st_prio;
+  ASSERT(MBS_IS_PRIORITY(control));
+  state = mb_state_new();
+  st_prio = mb_state_next(state, MB_STATE_PRIORITY);
+  st_prio->priority_id = MBS_OBJECT_ID(control);
+  st_prio->value = MBS_PRIORITY(control)->value;
+  msg = mb_message_new(MB_MESSAGE_KEY_GAME_STATE, L_OBJECT(state));
+  _send(game, PRIVATE(game)->players[0], msg);
+  l_object_unref(msg);
+  l_object_unref(state);
+}
+
+
+
+/* mbs_game_register_control:
+ */
+void mbs_game_register_control ( MbsGame *game,
+                                 MbsObject *control )
+{
+  ASSERT(MBS_IS_CONTROL(control));
+  ASSERT(!mbs_game_lookup_control(game, MBS_OBJECT_ID(control)));
+  /* [FIXME] weakref */
+  g_hash_table_insert(PRIVATE(game)->control_map,
+                      GUINT_TO_POINTER(MBS_OBJECT_ID(control)),
+                      control);
+  l_signal_connect(L_OBJECT(control),
+                   "notify", g_quark_from_string("value"),
+                   (LSignalHandler) _on_control_notify,
+                   game,
+                   NULL);
+}
+
+
+
+/* mbs_game_lookup_control:
+ */
+MbsObject *mbs_game_lookup_control ( MbsGame *game,
+                                     MbsObjectID id )
+{
+  return g_hash_table_lookup(PRIVATE(game)->control_map,
+                             GUINT_TO_POINTER(id));
 }
 
 
@@ -456,5 +515,26 @@ void mbs_game_start ( MbsGame *game )
 void mbs_game_handle_message ( MbsGame *game,
                                MbMessage *msg )
 {
-  CL_DEBUG("[TODO] handle message: %s", L_OBJECT_REPR(msg));
+  switch (msg->key)
+    {
+    case MB_MESSAGE_KEY_REQUEST_PRIORITY:
+      {
+        guint priority_id;
+        gint value;
+        MbsObject *priority;
+        ASSERT(L_IS_TUPLE(msg->arg));
+        ASSERT(L_TUPLE_SIZE(msg->arg) == 2);
+        ASSERT(L_IS_INT(L_TUPLE_ITEM(msg->arg, 0)));
+        ASSERT(L_IS_INT(L_TUPLE_ITEM(msg->arg, 1)));
+        priority_id = L_INT_VALUE(L_TUPLE_ITEM(msg->arg, 0));
+        value = L_INT_VALUE(L_TUPLE_ITEM(msg->arg, 1));
+        priority = mbs_game_lookup_control(game, priority_id);
+        ASSERT(priority);
+        ASSERT(MBS_IS_PRIORITY(priority));
+        mbs_priority_set_value(MBS_PRIORITY(priority), value);
+      }
+      break;
+    default:
+      CL_DEBUG("[TODO] handle message: %d", msg->key);
+    }
 }

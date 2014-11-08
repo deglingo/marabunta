@@ -19,6 +19,7 @@ static const guint MB_STATE_BLOCK_TYPE_SIZE[MB_STATE_COUNT] =
     [MB_STATE_NEW_TASK] = sizeof(MbStateNewTask),
     [MB_STATE_POP] = sizeof(MbStatePop),
     [MB_STATE_TASK] = sizeof(MbStateTask),
+    [MB_STATE_PRIORITY] = sizeof(MbStatePriority),
   };
 
 

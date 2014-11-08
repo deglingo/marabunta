@@ -3,6 +3,9 @@
 
 #include "server/srvprivate.h"
 #include "server/mbstask.h"
+#include "server/mbscolony.h"
+#include "server/mbssector.h"
+#include "server/mbsworld.h"
 #include "server/mbstask.inl"
 
 
@@ -25,7 +28,7 @@ static MbsTask *_task_new ( struct _MbsColony *colony,
     }
   task->funcs = *funcs;
   task->isgroup = isgroup;
-  task->priority = mbs_priority_new(5);
+  task->priority = mbs_priority_new(colony->sector->world->game, 5);
   return task;
 }
 

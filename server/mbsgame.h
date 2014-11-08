@@ -52,6 +52,10 @@ MbsPlayerID mbs_game_add_player ( MbsGame *game,
                                   MbsMessageHandler message_handler,
                                   gpointer message_data,
                                   GDestroyNotify destroy_data );
+void mbs_game_register_control ( MbsGame *game,
+                                 MbsObject *control );
+MbsObject *mbs_game_lookup_control ( MbsGame *game,
+                                     MbsObjectID id );
 void mbs_game_start ( MbsGame *game );
 void mbs_game_handle_message ( MbsGame *game,
                                MbMessage *msg );

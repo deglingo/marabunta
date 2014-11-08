@@ -31,6 +31,7 @@ namespace Mbc
 
   class PriorityProxy : Proxy
   {
+    void class_init ();
   };
   
   class TaskProxy : Proxy

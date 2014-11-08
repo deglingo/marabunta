@@ -24,6 +24,7 @@ typedef struct _MbStateNewPriority MbStateNewPriority;
 typedef struct _MbStateNewTask MbStateNewTask;
 typedef struct _MbStatePop MbStatePop;
 typedef struct _MbStateTask MbStateTask;
+typedef struct _MbStatePriority MbStatePriority;
 
 
 
@@ -39,6 +40,7 @@ enum _MbStateType
     MB_STATE_POP,
     MB_STATE_NEW_PRIORITY,
     MB_STATE_TASK,
+    MB_STATE_PRIORITY,
     MB_STATE_COUNT,
   };
 
@@ -145,6 +147,17 @@ struct _MbStateTask
   MbStateBlock block;
   guint task_id;
   gint64 workers;
+};
+
+
+
+/* MbStatePriority:
+ */
+struct _MbStatePriority
+{
+  MbStateBlock block;
+  guint priority_id;
+  MbPriorityValue value;
 };
 
 

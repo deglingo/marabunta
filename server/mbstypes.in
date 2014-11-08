@@ -29,6 +29,7 @@ namespace Mbs
   
   class Priority : Control
   {
+    void class_init ();
   };
   
   class Task : Object

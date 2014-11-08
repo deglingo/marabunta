@@ -9,6 +9,8 @@
 
 G_BEGIN_DECLS
 
+struct _MbsGame;
+
 
 
 /* MbsPriority:
@@ -17,6 +19,7 @@ struct _MbsPriority
 {
   MBS_PRIORITY_INSTANCE_HEADER;
 
+  struct _MbsGame *game;
   MbPriorityValue value;
 };
 
@@ -31,7 +34,10 @@ struct _MbsPriorityClass
 
 
 
-MbsPriority *mbs_priority_new ( MbPriorityValue value );
+MbsPriority *mbs_priority_new ( struct _MbsGame *game,
+                                MbPriorityValue value );
+void mbs_priority_set_value ( MbsPriority *priority,
+                              MbPriorityValue value );
 
 
 

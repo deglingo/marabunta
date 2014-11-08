@@ -5,6 +5,7 @@
 #include "client/mbcapp.h"
 #include "client/mbccolonyproxy.h"
 #include "client/mbctaskproxy.h"
+#include "client/mbcpriorityproxy.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -141,6 +142,16 @@ static void _process_game_state ( MbcApp *app,
             ASSERT(task);
             ASSERT(MBC_IS_TASK_PROXY(task));
             mbc_task_proxy_set_workers(MBC_TASK_PROXY(task), st_task->workers);
+          }
+          break;
+        case MB_STATE_PRIORITY:
+          {
+            MbStatePriority *st_prio = (MbStatePriority *) block;
+            MbcProxy *prio = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy),
+                                                          st_prio->priority_id);
+            ASSERT(prio);
+            ASSERT(MBC_IS_PRIORITY_PROXY(prio));
+            mbc_priority_proxy_set_value(MBC_PRIORITY_PROXY(prio), st_prio->value);
           }
           break;
         default:

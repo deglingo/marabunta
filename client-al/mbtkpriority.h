@@ -18,6 +18,7 @@ struct _MbtkPriority
   MBTK_PRIORITY_INSTANCE_HEADER;
 
   MbcProxy *proxy;
+  AltkWidget *label;
 };
 
 
