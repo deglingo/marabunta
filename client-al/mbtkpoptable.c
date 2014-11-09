@@ -68,6 +68,7 @@ static AltkWidget *_pop_value ( AltkWidget *table,
                                 gint right )
 {
   AltkWidget *label = L_TRASH_OBJECT(altk_label_new("0"));
+  altk_label_set_min_chars(ALTK_LABEL(label), 6);
   altk_table_attach(ALTK_TABLE(table), label,
                     top, left,
                     bottom, right,
