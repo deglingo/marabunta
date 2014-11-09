@@ -67,6 +67,10 @@ void mbc_game_proxy_create_task ( MbcGameProxy *game,
                                   gboolean group,
                                   const gchar *name,
                                   gint64 workers );
+void mbc_game_proxy_create_room ( MbcGameProxy *game,
+                                  guint room_id,
+                                  MbRoomType type,
+                                  guint colony_id );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );

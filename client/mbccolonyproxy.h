@@ -21,6 +21,7 @@ struct _MbcColonyProxy
   gint owner;
   gint64 pop[MB_POP_TYPE_COUNT];
   MbcProxy *top_task;
+  MbcProxy *rooms[MB_ROOM_TYPE_COUNT];
 };
 
 
@@ -41,6 +42,8 @@ void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
                                 gint64 *pop );
 void mbc_colony_proxy_set_top_task ( MbcColonyProxy *colony,
                                      MbcProxy *task );
+void mbc_colony_proxy_add_room ( MbcColonyProxy *colony,
+                                 MbcProxy *room );
 
 
 

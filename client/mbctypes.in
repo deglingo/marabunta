@@ -38,6 +38,10 @@ namespace Mbc
   {
     void class_init ();
   };
+
+  class RoomProxy : Proxy
+  {
+  };
   
   class App : Mb::App
   {

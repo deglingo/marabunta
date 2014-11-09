@@ -125,6 +125,15 @@ static void _process_game_state ( MbcApp *app,
                                        st_task->workers);
           }
           break;
+        case MB_STATE_NEW_ROOM:
+          {
+            MbStateNewRoom *st_room = (MbStateNewRoom *) block;
+            mbc_game_proxy_create_room(app->game_proxy,
+                                       st_room->room_id,
+                                       st_room->type,
+                                       st_room->colony_id);
+          }
+          break;
         case MB_STATE_POP:
           {
             MbStatePop *st_pop = (MbStatePop *) block;

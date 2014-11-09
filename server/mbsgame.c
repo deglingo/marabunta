@@ -446,6 +446,15 @@ static void _send_colony_setup ( MbsGame *game,
   st_pop->colony_id = MBS_OBJECT_ID(colony);
   for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
     st_pop->pop[tp] = colony->pop_tree->pop[tp];
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      if (!colony->rooms[tp])
+        continue;
+      MbStateNewRoom *st_room = mb_state_next(state, MB_STATE_NEW_ROOM);
+      st_room->room_id = MBS_OBJECT_ID(colony->rooms[tp]);
+      st_room->type = tp;
+      st_room->colony_id = MBS_OBJECT_ID(colony);
+    }
   _send_task_setup(game, player, state, colony, colony->top_task);
 }
 

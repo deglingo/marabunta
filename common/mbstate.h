@@ -6,6 +6,7 @@
 
 #include "common/mbbase.h"
 #include "common/mbpoptype.h"
+#include "common/mbroom.h"
 #include "common/mbstate-def.h"
 
 G_BEGIN_DECLS
@@ -22,6 +23,7 @@ typedef struct _MbStateSector MbStateSector;
 typedef struct _MbStateColony MbStateColony;
 typedef struct _MbStateNewPriority MbStateNewPriority;
 typedef struct _MbStateNewTask MbStateNewTask;
+typedef struct _MbStateNewRoom MbStateNewRoom;
 typedef struct _MbStatePop MbStatePop;
 typedef struct _MbStateTask MbStateTask;
 typedef struct _MbStatePriority MbStatePriority;
@@ -37,6 +39,7 @@ enum _MbStateType
     MB_STATE_SECTOR,
     MB_STATE_COLONY,
     MB_STATE_NEW_TASK,
+    MB_STATE_NEW_ROOM,
     MB_STATE_POP,
     MB_STATE_NEW_PRIORITY,
     MB_STATE_TASK,
@@ -125,6 +128,18 @@ struct _MbStateNewTask
   gchar name[MBS_TASK_MAX_NAME+1];
   guint priority_id;
   gint64 workers;
+};
+
+
+
+/* MbStateNewRoom:
+ */
+struct _MbStateNewRoom
+{
+  MbStateBlock block;
+  guint room_id;
+  MbRoomType type;
+  guint colony_id;
 };
 
 

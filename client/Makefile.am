@@ -15,6 +15,7 @@ libmarabunta_client_la_SOURCES = \
 	mbccolonyproxy.c \
 	mbcpriorityproxy.c \
 	mbctaskproxy.c \
+	mbcroomproxy.c \
 	mbcapp.c \
 	mbcclient.c
 
@@ -26,6 +27,7 @@ BUILT_SOURCES = \
 	mbccolonyproxy-def.h mbccolonyproxy.inl \
 	mbcpriorityproxy-def.h mbcpriorityproxy.inl \
 	mbctaskproxy-def.h mbctaskproxy.inl \
+	mbcroomproxy-def.h mbcroomproxy.inl \
 	mbcapp-def.h mbcapp.inl
 
 mbcproxy-def.h mbcproxy.inl \
@@ -35,6 +37,7 @@ mbcsectorproxy-def.h mbcsectorproxy.inl \
 mbccolonyproxy-def.h mbccolonyproxy.inl \
 mbcpriorityproxy-def.h mbcpriorityproxy.inl \
 mbctaskproxy-def.h mbctaskproxy.inl \
+mbcroomproxy-def.h mbcroomproxy.inl \
 mbcapp-def.h mbcapp.inl \
 : mbctypes.stamp-h
 

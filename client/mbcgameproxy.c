@@ -7,6 +7,7 @@
 #include "client/mbccolonyproxy.h"
 #include "client/mbcpriorityproxy.h"
 #include "client/mbctaskproxy.h"
+#include "client/mbcroomproxy.h"
 #include "client/mbcapp.h"
 #include "client/mbcgameproxy.inl"
 
@@ -188,6 +189,23 @@ void mbc_game_proxy_create_task ( MbcGameProxy *game,
     ASSERT(MBC_TASK_PROXY(parent)->colony == colony);
     mbc_task_proxy_add_child(MBC_TASK_PROXY(parent), task);
   }
+}
+
+
+
+/* mbc_game_proxy_create_room:
+ */
+void mbc_game_proxy_create_room ( MbcGameProxy *game,
+                                  guint room_id,
+                                  MbRoomType type,
+                                  guint colony_id )
+{
+  MbcProxy *colony, *room;
+  colony = mbc_game_proxy_lookup_object(game, colony_id);
+  ASSERT(colony);
+  ASSERT(MBC_IS_COLONY_PROXY(colony));
+  room = mbc_room_proxy_new(MBC_PROXY(game), room_id, type);
+  mbc_colony_proxy_add_room(MBC_COLONY_PROXY(colony), room);
 }
 
 
