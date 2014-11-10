@@ -8,6 +8,15 @@
 
 #define TREE_CHECK(tree) mbs_pop_tree_check(tree)
 
+#define TREE_ASSERT(tree, expr, args...) do {       \
+    if (!(expr)) {                                  \
+      CL_DEBUG("TREE ASSERT FAILED: `" #expr "'");  \
+      CL_DEBUG(args);                               \
+      mbs_pop_tree_dump(tree);                      \
+      abort();                                      \
+    }                                               \
+  } while (0)
+
 
 
 /* mbs_pop_unit_new:
@@ -22,6 +31,36 @@ static MbsPopUnit *mbs_pop_unit_new ( MbPopType type,
   unit->birthdate = birthdate;
   unit->count = count;
   return unit;
+}
+
+
+
+struct dump_data
+{
+  int dummy;
+};
+
+
+
+static void _dump ( MbsPopUnit *unit,
+                    gpointer data_ )
+{
+  /* struct dump_data *data = data_; */
+  CL_DEBUG(" - tp=%d, birthdate=%8d, count=%16" G_GINT64_FORMAT,
+           unit->type, unit->birthdate, unit->count);
+}
+
+
+
+/* mbs_pop_tree_dump:
+ */
+void mbs_pop_tree_dump ( MbsPopTree *tree )
+{
+  struct dump_data data;
+  memset(&data, 0, sizeof(struct dump_data));
+  CL_DEBUG("****  TREE DUMP  ****");
+  mbs_pop_tree_traverse(tree, _dump, &data);
+  CL_DEBUG("*********************");
 }
 
 
@@ -69,6 +108,7 @@ MbsPopTree *mbs_pop_tree_new ( void )
 struct check_data
 {
   MbsPopTree *tree;
+  gint64 pop[MB_POP_TYPE_COUNT];
 };
 
 
@@ -91,6 +131,8 @@ static void _check ( MbsPopUnit *unit,
         ASSERT(mbs_pop_unit_check(unit, unit->left->type, unit->left->birthdate) < 0);
       if (unit->right->type != MB_POP_NONE)
         ASSERT(mbs_pop_unit_check(unit, unit->right->type, unit->right->birthdate) > 0);
+      ASSERT(unit->type >= 0 && unit->type < MB_POP_TYPE_COUNT);
+      data->pop[unit->type] += unit->count;
       _check(unit->left, data);
       _check(unit->right, data);
     }
@@ -101,11 +143,18 @@ static void _check ( MbsPopUnit *unit,
 static void mbs_pop_tree_check ( MbsPopTree *tree )
 {
   struct check_data data;
+  gint tp;
   if (!tree->root)
     return;
+  memset(&data, 0, sizeof(struct check_data));
   data.tree = tree;
   ASSERT(!tree->root->parent);
   _check(tree->root, &data);
+  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+    TREE_ASSERT(tree,
+                tree->pop[tp] == data.pop[tp],
+                "tp=%d, tree_pop=%" G_GINT64_FORMAT ", data_pop=%" G_GINT64_FORMAT,
+                tp, tree->pop[tp], data.pop[tp]);
 }
 
 
@@ -225,18 +274,30 @@ static inline void rotate_left ( MbsPopTree *tree,
                                  MbsPopUnit *root )
 {
   MbsPopUnit *pivot;
+  /* CL_TRACE("tree=%p, root=%p", tree, root); */
+  /* TREE_CHECK(tree); */
   ASSERT(root);
   ASSERT(root->type != MB_POP_NONE);
   pivot = root->right;
   ASSERT(pivot);
   /* ASSERT(pivot->type != MB_POP_NONE); */
-  if (tree->root == root)
+  if (tree->root == root) {
     tree->root = pivot;
+  } else {
+    ASSERT(root->parent);
+    if (root == root->parent->left) {
+      root->parent->left = pivot;
+    } else {
+      ASSERT(root == root->parent->right);
+      root->parent->right = pivot;
+    }
+  }
   pivot->parent = root->parent;
   if ((root->right = pivot->left))
     root->right->parent = root;
-  if ((pivot->left = root))
-    pivot->left->parent = pivot;
+  pivot->left = root;
+  root->parent = pivot;
+  /* TREE_CHECK(tree); */
   /* root->parent = pivot; */
 }
 
@@ -254,18 +315,30 @@ static inline void rotate_right ( MbsPopTree *tree,
                                   MbsPopUnit *root )
 {
   MbsPopUnit *pivot;
+  /* CL_TRACE("tree=%p, root=%p", tree, root); */
+  /* TREE_CHECK(tree); */
   ASSERT(root);
   ASSERT(root->type != MB_POP_NONE);
   pivot = root->left;
   ASSERT(pivot);
   /* ASSERT(pivot->type != MB_POP_NONE); */
-  if (tree->root == root)
+  if (tree->root == root) {
     tree->root = pivot;
+  } else {
+    ASSERT(root->parent);
+    if (root == root->parent->left) {
+      root->parent->left = pivot;
+    } else {
+      ASSERT(root == root->parent->right);
+      root->parent->right = pivot;
+    }
+  }
   pivot->parent = root->parent;
   if ((root->left = pivot->right))
     root->left->parent = root;
-  if ((pivot->right = root))
-    pivot->right->parent = pivot;
+  pivot->right = root;
+  root->parent = pivot;
+  /* TREE_CHECK(tree); */
   /* root->parent = pivot; */
 }
 
@@ -274,6 +347,8 @@ static inline void rotate_right ( MbsPopTree *tree,
 static void insert_case_1 ( MbsPopTree *tree,
                             MbsPopUnit *unit )
 {
+  /* CL_TRACE("tree=%p, unit=%p", tree, unit); */
+  /* TREE_CHECK(tree); */
   if (!unit->parent)
     unit->red = 0;
   else
@@ -285,6 +360,8 @@ static void insert_case_1 ( MbsPopTree *tree,
 static void insert_case_2 ( MbsPopTree *tree,
                             MbsPopUnit *unit )
 {
+  /* CL_TRACE("tree=%p, unit=%p", tree, unit); */
+  /* TREE_CHECK(tree); */
   if (!unit->parent->red)
     return;
   else
@@ -302,6 +379,8 @@ static void insert_case_3 ( MbsPopTree *tree,
                             MbsPopUnit *unit )
 {
   MbsPopUnit *uncle = unit_uncle(unit);
+  /* CL_TRACE("tree=%p, unit=%p", tree, unit); */
+  /* TREE_CHECK(tree); */
   if (uncle && uncle->red)
     {
       MbsPopUnit *gp;
@@ -323,6 +402,8 @@ static void insert_case_4 ( MbsPopTree *tree,
                             MbsPopUnit *unit )
 {
   MbsPopUnit *gp = unit_grandparent(unit);
+  /* CL_TRACE("tree=%p, unit=%p", tree, unit); */
+  /* TREE_CHECK(tree); */
   if (unit == unit->parent->right && unit->parent == gp->left)
     {
       rotate_left(tree, unit->parent);
@@ -342,6 +423,8 @@ static void insert_case_5 ( MbsPopTree *tree,
                             MbsPopUnit *unit )
 {
   MbsPopUnit *gp = unit_grandparent(unit);
+  /* CL_TRACE("tree=%p, unit=%p", tree, unit); */
+  /* TREE_CHECK(tree); */
   unit->parent->red = 0;
   gp->red = 1;
   if (unit == unit->parent->left)
@@ -378,7 +461,7 @@ static void insert_at ( MbsPopTree *tree,
   unit->right = mbs_pop_unit_new(MB_POP_NONE, 0, 0);
   unit->right->parent = unit;
   unit->red = 1;
-  TREE_CHECK(tree);
+  /* TREE_CHECK(tree); */
   insert_case_1(tree, unit);
   TREE_CHECK(tree);
 }
@@ -393,16 +476,21 @@ void mbs_pop_tree_add ( MbsPopTree *tree,
                         gint64 count )
 {
   MbsPopUnit *unit;
+  tree->pop[type] += count;
   if ((unit = lookup_unit(tree, type, birthdate)))
     {
       if (unit->type == MB_POP_NONE)
         {
           MbsPopUnit *new_unit = mbs_pop_unit_new(type, birthdate, count);
           insert_at(tree, unit, new_unit);
+          /* unit = new_unit; */
         }
       else
         {
           unit->count += count;
+          /* [fixme] ?? */
+          if (unit->task)
+            mbs_task_adjust_workers(unit->task, count);
         }
     }
   else
@@ -410,12 +498,11 @@ void mbs_pop_tree_add ( MbsPopTree *tree,
       unit = mbs_pop_unit_new(type, birthdate, count);
       insert_root(tree, unit);
     }
-  tree->pop[type] += count;
-  /* [fixme] ?? */
-  if (unit->task)
-    mbs_task_adjust_workers(unit->task, count);
   /* if (unit->count == 0) */
   /*   CL_DEBUG("[TODO] remove unit"); */
+  /* CL_DEBUG("tree_add(%p, %d, %d, %" G_GINT64_FORMAT ")", */
+  /*          tree, type, birthdate, count); */
+  /* TREE_CHECK(tree); */
 }
 
 
