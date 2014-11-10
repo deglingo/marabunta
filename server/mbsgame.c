@@ -381,14 +381,10 @@ static void _game_update ( MbsGame *game )
 static gboolean _on_game_timer ( MbsGame *game )
 {
   gdouble elapsed = g_timer_elapsed(game->timer, NULL);
-  if (elapsed >= game->next_frame)
+  while (elapsed >= game->next_frame)
     {
       _game_update(game);
       game->next_frame = ((gdouble) game->frame) / game->fps;
-    }
-  else
-    {
-      g_usleep(1000);
     }
   return G_SOURCE_CONTINUE;
 }
@@ -516,15 +512,15 @@ void mbs_game_start ( MbsGame *game )
   game->fps = 5.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
-  /* g_timeout_add_full(MBS_PRIORITY_GAME_TIMER, */
-  /*                    1, */
-  /*                    (GSourceFunc) _on_game_timer, */
-  /*                    game, */
-  /*                    NULL); */
-  g_idle_add_full(MBS_PRIORITY_GAME_TIMER,
-                  (GSourceFunc) _on_game_timer,
-                  game,
-                  NULL);
+  g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
+                     10,
+                     (GSourceFunc) _on_game_timer,
+                     game,
+                     NULL);
+  /* g_idle_add_full(MBS_PRIORITY_GAME_TIMER, */
+  /*                 (GSourceFunc) _on_game_timer, */
+  /*                 game, */
+  /*                 NULL); */
 }
 
 
