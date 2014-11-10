@@ -509,7 +509,7 @@ void mbs_game_start ( MbsGame *game )
       _send_game_setup(game, priv->players[p]);
     }
   /* setup the game timer */
-  game->fps = 5.0;
+  game->fps = 10.0;
   game->next_frame = 0.0;
   game->timer = g_timer_new();
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,

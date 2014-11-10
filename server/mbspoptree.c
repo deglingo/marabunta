@@ -6,7 +6,8 @@
 
 
 
-#define TREE_CHECK(tree) mbs_pop_tree_check(tree)
+/* #define TREE_CHECK(tree) mbs_pop_tree_check(tree) */
+#define TREE_CHECK(tree)
 
 #define TREE_ASSERT(tree, expr, args...) do {       \
     if (!(expr)) {                                  \
@@ -140,7 +141,9 @@ static void _check ( MbsPopUnit *unit,
 
 
 
-static void mbs_pop_tree_check ( MbsPopTree *tree )
+/* mbs_pop_tree_check:
+ */
+void mbs_pop_tree_check ( MbsPopTree *tree )
 {
   struct check_data data;
   gint tp;

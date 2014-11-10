@@ -47,6 +47,7 @@ struct _MbsPopTree
 
 
 MbsPopTree *mbs_pop_tree_new ( void );
+void mbs_pop_tree_check ( MbsPopTree *tree );
 void mbs_pop_tree_dump ( MbsPopTree *tree );
 void mbs_pop_tree_clear ( MbsPopTree *tree );
 void mbs_pop_tree_add ( MbsPopTree *tree,
