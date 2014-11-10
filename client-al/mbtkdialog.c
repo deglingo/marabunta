@@ -127,6 +127,7 @@ AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
   /* [fixme] instance init */
   MBTK_DIALOG(dlg)->private = priv = g_new0(Private, 1);
   altk_dialog_set_display(ALTK_DIALOG(dlg), display);
+  altk_dialog_set_size_hints(ALTK_DIALOG(dlg), ALTK_SIZE_HINT_MAXIMIZED);
   l_trash_push();
   priv->top_box = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
