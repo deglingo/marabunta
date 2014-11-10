@@ -185,11 +185,16 @@ static void insert_root ( MbsPopTree *tree,
 
 
 
-static void insert_case_1 ( MbsPopUnit *unit );
-static void insert_case_2 ( MbsPopUnit *unit );
-static void insert_case_3 ( MbsPopUnit *unit );
-static void insert_case_4 ( MbsPopUnit *unit );
-static void insert_case_5 ( MbsPopUnit *unit );
+static void insert_case_1 ( MbsPopTree *tree,
+                            MbsPopUnit *unit );
+static void insert_case_2 ( MbsPopTree *tree,
+                            MbsPopUnit *unit );
+static void insert_case_3 ( MbsPopTree *tree,
+                            MbsPopUnit *unit );
+static void insert_case_4 ( MbsPopTree *tree,
+                            MbsPopUnit *unit );
+static void insert_case_5 ( MbsPopTree *tree,
+                            MbsPopUnit *unit );
 
 
 
@@ -216,36 +221,40 @@ static inline MbsPopUnit *unit_uncle ( MbsPopUnit *unit )
 
 
 
-static inline void rotate_left ( MbsPopUnit *unit )
+static inline void rotate_left ( MbsPopTree *tree,
+                                 MbsPopUnit *unit )
 {
   CL_ERROR("[TODO]");
 }
 
 
 
-static inline void rotate_right ( MbsPopUnit *unit )
+static inline void rotate_right ( MbsPopTree *tree,
+                                  MbsPopUnit *pivot )
 {
   CL_ERROR("[TODO]");
 }
 
 
 
-static void insert_case_1 ( MbsPopUnit *unit )
+static void insert_case_1 ( MbsPopTree *tree,
+                            MbsPopUnit *unit )
 {
   if (!unit->parent)
     unit->red = 0;
   else
-    insert_case_2(unit);
+    insert_case_2(tree, unit);
 }
 
 
 
-static void insert_case_2 ( MbsPopUnit *unit )
+static void insert_case_2 ( MbsPopTree *tree,
+                            MbsPopUnit *unit )
 {
   if (!unit->parent->red)
     return;
   else
-    insert_case_3(unit);
+    insert_case_3(tree, unit);
 }
 
 
@@ -255,7 +264,8 @@ static void insert_case_2 ( MbsPopUnit *unit )
  * root, it would be black. Thus, N also has an uncle node U, although
  * it may be a leaf in cases 4 and 5.
  */
-static void insert_case_3 ( MbsPopUnit *unit )
+static void insert_case_3 ( MbsPopTree *tree,
+                            MbsPopUnit *unit )
 {
   MbsPopUnit *uncle = unit_uncle(unit);
   if (uncle && uncle->red)
@@ -265,43 +275,45 @@ static void insert_case_3 ( MbsPopUnit *unit )
       uncle->red = 0;
       gp = unit_grandparent(unit);
       gp->red = 1;
-      insert_case_1(gp);
+      insert_case_1(tree, gp);
     }
   else
     {
-      insert_case_4(unit);
+      insert_case_4(tree, unit);
     }
 }
 
 
 
-static void insert_case_4 ( MbsPopUnit *unit )
+static void insert_case_4 ( MbsPopTree *tree,
+                            MbsPopUnit *unit )
 {
   MbsPopUnit *gp = unit_grandparent(unit);
   if (unit == unit->parent->right && unit->parent == gp->left)
     {
-      rotate_left(unit->parent);
+      rotate_left(tree, unit->parent);
       unit = unit->left;
     }
   else if (unit == unit->parent->left && unit->parent == gp->right)
     {
-      rotate_right(unit->parent);
+      rotate_right(tree, unit->parent);
       unit = unit->right;
     }
-  insert_case_5(unit);
+  insert_case_5(tree, unit);
 }
 
 
 
-static void insert_case_5 ( MbsPopUnit *unit )
+static void insert_case_5 ( MbsPopTree *tree,
+                            MbsPopUnit *unit )
 {
   MbsPopUnit *gp = unit_grandparent(unit);
   unit->parent->red = 0;
   gp->red = 1;
   if (unit == unit->parent->left)
-    rotate_right(gp);
+    rotate_right(tree, gp);
   else
-    rotate_left(gp);
+    rotate_left(tree, gp);
 }
 
 
@@ -333,7 +345,7 @@ static void insert_at ( MbsPopTree *tree,
   unit->right->parent = unit;
   unit->red = 1;
   TREE_CHECK(tree);
-  insert_case_1(unit);
+  insert_case_1(tree, unit);
   TREE_CHECK(tree);
 }
 
