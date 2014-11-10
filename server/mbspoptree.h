@@ -21,10 +21,17 @@ typedef void (* MbsPopTreeTraverseFunc) ( MbsPopUnit *unit,
  */
 struct _MbsPopUnit
 {
+  /* key */
   MbPopType type;
   guint birthdate;
+  /* value */
   gint64 count;
   MbsTask *task;
+  /* tree data */
+  MbsPopUnit *parent;
+  MbsPopUnit *left;
+  MbsPopUnit *right;
+  guint red : 1;
 };
 
 
