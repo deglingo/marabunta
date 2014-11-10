@@ -78,10 +78,13 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
   box = altk_box_new(ALTK_VERTICAL);
   altk_box_pack_start(ALTK_BOX(box),
                       L_TRASH_OBJECT(_create_map_view(dlg)),
-                      0);
+                      ALTK_PACK_ANCHOR_LEFT);
   altk_box_pack_start(ALTK_BOX(box),
                       L_TRASH_OBJECT(_create_pop_table(dlg)),
-                      0);
+                      ALTK_PACK_ANCHOR_LEFT);
+  altk_box_pack_start(ALTK_BOX(box),
+                      L_TRASH_OBJECT(altk_frame_new("")),
+                      ALTK_PACK_EXPAND_FILL);
   return box;
 }
 
@@ -106,10 +109,10 @@ static AltkWidget *_create_body ( AltkWidget *dlg )
   box = altk_box_new(ALTK_HORIZONTAL);
   altk_box_pack_start(ALTK_BOX(box),
                       L_TRASH_OBJECT(_create_side_panel(dlg)),
-                      0);
+                      ALTK_PACK_FILL);
   altk_box_pack_start(ALTK_BOX(box),
                       L_TRASH_OBJECT(_create_colony_view(dlg)),
-                      0);
+                      ALTK_PACK_EXPAND_FILL);
   return box;
 }
 
@@ -133,7 +136,7 @@ AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
                       0);
   altk_box_pack_start(ALTK_BOX(priv->top_box),
                       L_TRASH_OBJECT(_create_body(dlg)),
-                      0);
+                      ALTK_PACK_EXPAND_FILL);
   l_trash_pop();
   return dlg;
 }
