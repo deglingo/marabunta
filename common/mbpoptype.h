@@ -18,6 +18,7 @@ typedef enum _MbCast MbCast;
  */
 enum _MbPopType
   {
+    MB_POP_NONE = -1, /* used for null nodes in the RB tree */
     MB_POP_EGG = 0,
     MB_POP_LARVAE_QUEEN,
     MB_POP_LARVAE_WORKER,

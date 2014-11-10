@@ -28,7 +28,6 @@ struct _MbsPopUnit
   gint64 count;
   MbsTask *task;
   /* tree data */
-  MbsPopUnit *parent;
   MbsPopUnit *left;
   MbsPopUnit *right;
   guint red : 1;
@@ -41,9 +40,7 @@ struct _MbsPopUnit
 struct _MbsPopTree
 {
   gint64 pop[MB_POP_TYPE_COUNT];
-  /* [fixme] */
-  /* MbsPopUnit *root; */
-  GList *units;
+  MbsPopUnit *root;
 };
 
 

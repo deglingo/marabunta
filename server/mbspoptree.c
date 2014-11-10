@@ -31,6 +31,26 @@ static void mbs_pop_unit_free ( MbsPopUnit *unit )
 
 
 
+/* mbs_pop_unit_check:
+ */
+static inline gint mbs_pop_unit_check ( MbsPopUnit *unit,
+                                        MbPopType type,
+                                        guint birthdate )
+{
+  if (unit->type < type)
+    return -1;
+  else if (unit->type > type)
+    return 1;
+  else if (unit->birthdate < birthdate)
+    return -1;
+  else if (unit->birthdate > birthdate)
+    return 1;
+  else
+    return 0;
+}
+
+
+
 /* mbs_pop_tree_new:
  */
 MbsPopTree *mbs_pop_tree_new ( void )
@@ -42,16 +62,23 @@ MbsPopTree *mbs_pop_tree_new ( void )
 
 
 
-static MbsPopUnit *lookup_unit ( MbsPopTree *tree,
-                                 MbPopType type,
-                                 guint birthdate )
+static inline MbsPopUnit *lookup_unit ( MbsPopTree *tree,
+                                        MbPopType type,
+                                        guint birthdate )
 {
-  GList *l;
-  for (l = tree->units; l; l = l->next)
+  MbsPopUnit *unit;
+  if (!tree->root)
+    return NULL;
+  unit = tree->root;
+  while (unit->type != MB_POP_NONE)
     {
-      MbsPopUnit *u = l->data;
-      if (u->type == type && u->birthdate == birthdate)
-        return u;
+      gint d = mbs_pop_unit_check(unit, type, birthdate);
+      if (d < 0)
+        unit = unit->left;
+      else if (d > 0)
+        unit = unit->right;
+      else
+        return unit;
     }
   return NULL;
 }
