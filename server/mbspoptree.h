@@ -28,6 +28,7 @@ struct _MbsPopUnit
   gint64 count;
   MbsTask *task;
   /* tree data */
+  MbsPopUnit *parent;
   MbsPopUnit *left;
   MbsPopUnit *right;
   guint red : 1;
@@ -46,6 +47,7 @@ struct _MbsPopTree
 
 
 MbsPopTree *mbs_pop_tree_new ( void );
+void mbs_pop_tree_clear ( MbsPopTree *tree );
 void mbs_pop_tree_add ( MbsPopTree *tree,
                         MbPopType type,
                         guint birthdate,
