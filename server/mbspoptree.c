@@ -222,17 +222,51 @@ static inline MbsPopUnit *unit_uncle ( MbsPopUnit *unit )
 
 
 static inline void rotate_left ( MbsPopTree *tree,
-                                 MbsPopUnit *unit )
+                                 MbsPopUnit *root )
 {
-  CL_ERROR("[TODO]");
+  MbsPopUnit *pivot;
+  ASSERT(root);
+  ASSERT(root->type != MB_POP_NONE);
+  pivot = root->right;
+  ASSERT(pivot);
+  /* ASSERT(pivot->type != MB_POP_NONE); */
+  if (tree->root == root)
+    tree->root = pivot;
+  pivot->parent = root->parent;
+  if ((root->right = pivot->left))
+    root->right->parent = root;
+  if ((pivot->left = root))
+    pivot->left->parent = pivot;
+  /* root->parent = pivot; */
 }
 
 
 
+/* rotate_right:
+ *
+ * Pivot = Root.OS
+ * Root.OS = Pivot.RS
+ * Pivot.RS = Root
+ * Root = Pivot
+ *
+ */
 static inline void rotate_right ( MbsPopTree *tree,
-                                  MbsPopUnit *pivot )
+                                  MbsPopUnit *root )
 {
-  CL_ERROR("[TODO]");
+  MbsPopUnit *pivot;
+  ASSERT(root);
+  ASSERT(root->type != MB_POP_NONE);
+  pivot = root->left;
+  ASSERT(pivot);
+  /* ASSERT(pivot->type != MB_POP_NONE); */
+  if (tree->root == root)
+    tree->root = pivot;
+  pivot->parent = root->parent;
+  if ((root->left = pivot->right))
+    root->left->parent = root;
+  if ((pivot->right = root))
+    pivot->right->parent = pivot;
+  /* root->parent = pivot; */
 }
 
 
@@ -380,8 +414,8 @@ void mbs_pop_tree_add ( MbsPopTree *tree,
   /* [fixme] ?? */
   if (unit->task)
     mbs_task_adjust_workers(unit->task, count);
-  if (unit->count == 0)
-    CL_DEBUG("[TODO] remove unit");
+  /* if (unit->count == 0) */
+  /*   CL_DEBUG("[TODO] remove unit"); */
 }
 
 
