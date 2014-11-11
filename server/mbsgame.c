@@ -304,7 +304,6 @@ static void _colony_update ( MbsGame *game,
 {
   Private *priv = PRIVATE(game);
   MbStatePop *st_pop;
-  gint tp;
   /* update the pop tree */
   mbs_pop_tree_traverse(colony->pop_tree, _pop_unit_update, colony);
   /* adjust pop tree */
@@ -317,10 +316,7 @@ static void _colony_update ( MbsGame *game,
   st_pop = (MbStatePop *) mb_state_next(priv->players[colony->owner]->state,
                                         MB_STATE_POP);
   st_pop->colony_id = MBS_OBJECT_ID(colony);
-  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
-    {
-      st_pop->pop[tp] = colony->pop_tree->pop[tp];
-    }
+  mbs_pop_tree_get_pop(colony->pop_tree, st_pop->pop);
   /* send tasks state */
   _send_task_state(game, colony, colony->top_task);
 }
@@ -448,8 +444,7 @@ static void _send_colony_setup ( MbsGame *game,
   st_colony->sector_id = MBS_OBJECT_ID(colony->sector);
   st_colony->owner = colony->owner;
   st_pop->colony_id = MBS_OBJECT_ID(colony);
-  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
-    st_pop->pop[tp] = colony->pop_tree->pop[tp];
+  mbs_pop_tree_get_pop(colony->pop_tree, st_pop->pop);
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       if (!colony->rooms[tp])
