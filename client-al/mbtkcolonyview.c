@@ -28,6 +28,8 @@ static void size_request ( AltkWidget *widget,
 static void foreach ( AltkWidget *widget,
                       AltkForeachFunc func,
                       gpointer data );
+static void expose_event ( AltkWidget *widget,
+                           AltkEvent *event );
 
 
 
@@ -37,6 +39,7 @@ static void mbtk_colony_view_class_init ( LObjectClass *cls )
 {
   ALTK_WIDGET_CLASS(cls)->size_request = size_request;
   ALTK_WIDGET_CLASS(cls)->foreach = foreach;
+  ALTK_WIDGET_CLASS(cls)->expose_event = expose_event;
 }
 
 
@@ -47,7 +50,7 @@ static void mbtk_colony_view_init ( LObject *obj )
 {
   MBTK_COLONY_VIEW(obj)->private = g_new0(Private, 1);
   ALTK_WIDGET(obj)->flags = ALTK_WIDGET_FLAG_NOWINDOW;
-  /* altk_widget_set_event_mask( */
+  altk_widget_set_event_mask(ALTK_WIDGET(obj), ALTK_EVENT_MASK_EXPOSE);
 }
 
 
@@ -157,4 +160,19 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
   /* /\* task list *\/ */
   /* _create_task(view, MBC_COLONY_PROXY(colony)->top_task); */
   l_trash_pop();
+}
+
+
+
+/* expose_event:
+ */
+static void expose_event ( AltkWidget *widget,
+                           AltkEvent *event )
+{
+  altk_style_context_draw_frame(widget->style_context,
+                                event->expose.gc,
+                                widget->x,
+                                widget->y,
+                                widget->width,
+                                widget->height);
 }
