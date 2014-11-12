@@ -36,20 +36,18 @@ static void mbtk_colony_view_init ( LObject *obj )
  */
 AltkWidget *mbtk_colony_view_new ( void )
 {
-  AltkWidget *view, *box;
+  AltkWidget *view;
   Private *priv;
   l_trash_push();
   view = ALTK_WIDGET(MBTK_COLONY_VIEW_NEW(NULL));
   priv = PRIVATE(view);
-  box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_VERTICAL));
-  ALTK_CONTAINER_ADD(view, box);
+  altk_box_set_orientation(ALTK_BOX(view), ALTK_VERTICAL);
   priv->title = L_TRASH_OBJECT
     (altk_label_new("TITLE"));
-  altk_box_pack_start(ALTK_BOX(box), priv->title, 0);
+  altk_box_pack_start(ALTK_BOX(view), priv->title, 0);
   priv->task_table = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
-  altk_box_pack_start(ALTK_BOX(box), priv->task_table, 0);  
+  altk_box_pack_start(ALTK_BOX(view), priv->task_table, 0);  
   l_trash_pop();
   return view;
 }

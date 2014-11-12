@@ -95,8 +95,11 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
 static AltkWidget *_create_colony_view ( AltkWidget *dlg )
 {
   Private *priv = PRIVATE(dlg);
-  priv->colony_view = mbtk_colony_view_new();
-  return priv->colony_view;
+  AltkWidget *frame = altk_frame_new("colony");
+  priv->colony_view = L_TRASH_OBJECT
+    (mbtk_colony_view_new());
+  ALTK_CONTAINER_ADD(frame, priv->colony_view);
+  return frame;
 }
 
 
