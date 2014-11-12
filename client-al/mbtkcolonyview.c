@@ -16,6 +16,8 @@ typedef struct _Private
   /* AltkWidget *task_table; */
   GList *tasks;
   MbcProxy *colony;
+  AltkBitmap *backbuf;
+  AltkGC *gc_backbuf;
 }
   Private;
 
@@ -60,10 +62,11 @@ static void mbtk_colony_view_init ( LObject *obj )
 AltkWidget *mbtk_colony_view_new ( void )
 {
   AltkWidget *view;
-  /* Private *priv; */
+  Private *priv;
   l_trash_push();
   view = ALTK_WIDGET(MBTK_COLONY_VIEW_NEW(NULL));
-  /* priv = PRIVATE(view); */
+  priv = PRIVATE(view);
+  priv->gc_backbuf = altk_gc_new(NULL);
   /* priv->title = L_TRASH_OBJECT */
   /*   (altk_label_new("TITLE")); */
   /* altk_box_pack_start(ALTK_BOX(view), priv->title, 0); */
@@ -164,15 +167,79 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
 
 
 
+/* resize_backbuf:
+ */
+static void resize_backbuf ( MbtkColonyView *view )
+{
+  Private *priv = PRIVATE(view);
+  gint w, h;
+  if (!ALTK_WIDGET_REALIZED(view))
+    return;
+  if (priv->backbuf)
+    {
+      altk_drawable_get_size(ALTK_DRAWABLE(priv->backbuf), &w, &h);
+      if (w < ALTK_WIDGET(view)->width ||
+          h < ALTK_WIDGET(view)->height)
+        {
+          L_OBJECT_CLEAR(priv->backbuf);
+          w = MAX(w, ALTK_WIDGET(view)->width);
+          h = MAX(h, ALTK_WIDGET(view)->height);
+        }
+    }
+  else
+    {
+      w = ALTK_WIDGET(view)->width;
+      h = ALTK_WIDGET(view)->height;
+    }
+  if (!priv->backbuf)
+    {
+      priv->backbuf = ALTK_BITMAP
+        (altk_bitmap_new
+         (altk_widget_get_display(ALTK_WIDGET(view)),
+          w, h));
+      altk_gc_set_surface(priv->gc_backbuf,
+                          ALTK_DRAWABLE(priv->backbuf));
+    }
+}
+
+
+
+/* update_backbuf:
+ */
+static void update_backbuf ( MbtkColonyView *view )
+{
+  Private *priv = PRIVATE(view);
+  altk_gc_set_color_hrgb(priv->gc_backbuf, 0x00FF00);
+  altk_gc_draw_rectangle(priv->gc_backbuf,
+                         TRUE,
+                         0,
+                         0,
+                         ALTK_WIDGET(view)->width,
+                         ALTK_WIDGET(view)->height);
+  altk_style_context_draw_frame(ALTK_WIDGET(view)->style_context,
+                                priv->gc_backbuf,
+                                0,
+                                0,
+                                ALTK_WIDGET(view)->width,
+                                ALTK_WIDGET(view)->height);
+}
+
+
+
 /* expose_event:
  */
 static void expose_event ( AltkWidget *widget,
                            AltkEvent *event )
 {
-  altk_style_context_draw_frame(widget->style_context,
-                                event->expose.gc,
-                                widget->x,
-                                widget->y,
-                                widget->width,
-                                widget->height);
+  Private *priv = PRIVATE(widget);
+  resize_backbuf(MBTK_COLONY_VIEW(widget));
+  update_backbuf(MBTK_COLONY_VIEW(widget));
+  altk_gc_draw_bitmap_region(event->expose.gc,
+                             priv->backbuf,
+                             event->expose.area,
+                             0,
+                             0);
+  /* altk_gc_set_color_hrgb(event->expose.gc, 0x0000FF); */
+  /* altk_gc_clear_region(event->expose.gc, */
+  /*                      event->expose.area); */
 }
