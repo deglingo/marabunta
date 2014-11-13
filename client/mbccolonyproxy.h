@@ -42,6 +42,8 @@ void mbc_colony_proxy_set_pop ( MbcColonyProxy *proxy,
                                 gint64 *pop );
 void mbc_colony_proxy_set_top_task ( MbcColonyProxy *colony,
                                      MbcProxy *task );
+MbcProxy *mbc_colony_proxy_find_task ( MbcColonyProxy *colony,
+                                       const gchar *name );
 void mbc_colony_proxy_add_room ( MbcColonyProxy *colony,
                                  MbcProxy *room );
 

@@ -4,6 +4,7 @@
 #include "client-al/alprivate.h"
 #include "client-al/mbtkcolonyview.h"
 #include "client-al/mbtkpriority.h"
+#include "client-al/mbtktaskview.h"
 #include "client-al/mbtkcolonyview.inl"
 
 
@@ -13,15 +14,33 @@
 typedef struct _RoomInfo
 {
   gchar *name; /* [fixme] should ot be here */
+  gchar *task_name;
   gfloat x;
   gfloat y;
+  gfloat width;
+  gfloat height;
 }
   RoomInfo;
 
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
-    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", 0.5, 0.5 },
+    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn", 0.5, 0.5, 0.1, 0.1 },
   };
+
+
+
+/* RoomData:
+ */
+typedef struct _RoomData
+{
+  MbcProxy *room;
+  MbcProxy *task;
+  gint cx, cy; /* center */
+  gint width, height;
+  gint bx, by; /* building top-left */
+  AltkWidget *task_view;
+}
+  RoomData;
 
 
 
@@ -35,6 +54,7 @@ typedef struct _Private
   MbcProxy *colony;
   AltkBitmap *backbuf;
   AltkGC *gc_backbuf;
+  RoomData room_data[MB_ROOM_TYPE_COUNT];
 }
   Private;
 
@@ -44,7 +64,9 @@ typedef struct _Private
 
 static void size_request ( AltkWidget *widget,
                            AltkRequisition *req );
-static void foreach ( AltkWidget *widget,
+static void size_allocate ( AltkWidget *widget,
+                            AltkAllocation *alloc );
+static void forall ( AltkWidget *widget,
                       AltkForeachFunc func,
                       gpointer data );
 static void expose_event ( AltkWidget *widget,
@@ -57,7 +79,8 @@ static void expose_event ( AltkWidget *widget,
 static void mbtk_colony_view_class_init ( LObjectClass *cls )
 {
   ALTK_WIDGET_CLASS(cls)->size_request = size_request;
-  ALTK_WIDGET_CLASS(cls)->foreach = foreach;
+  ALTK_WIDGET_CLASS(cls)->size_allocate = size_allocate;
+  ALTK_WIDGET_CLASS(cls)->forall = forall;
   ALTK_WIDGET_CLASS(cls)->expose_event = expose_event;
 }
 
@@ -96,23 +119,71 @@ AltkWidget *mbtk_colony_view_new ( void )
 
 
 
+/* forall:
+ */
+static void forall ( AltkWidget *widget,
+                      AltkForeachFunc func,
+                      gpointer data )
+{
+  Private *priv = PRIVATE(widget);
+  gint tp;
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      RoomData *room_data = &priv->room_data[tp];
+      if (!room_data->room)
+        continue;
+      if (func(room_data->task_view, data) == ALTK_FOREACH_STOP)
+        return;
+    }
+}
+
+
+
 /* size_request:
  */
 static void size_request ( AltkWidget *widget,
                            AltkRequisition *req )
 {
+  Private *priv = PRIVATE(widget);
+  gint tp;
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      RoomData *room_data = &priv->room_data[tp];
+      AltkRequisition child_req;
+      if (!room_data->room)
+        continue;
+      altk_widget_size_request(room_data->task_view, &child_req);
+    }
   req->width = req->height = 8;
 }
 
 
 
-/* foreach:
- */
-static void foreach ( AltkWidget *widget,
-                      AltkForeachFunc func,
-                      gpointer data )
+static void size_allocate ( AltkWidget *widget,
+                            AltkAllocation *alloc )
 {
-  /* CL_DEBUG("[TODO]"); */
+  Private *priv = PRIVATE(widget);
+  gint tp;
+  ALTK_WIDGET_CLASS(parent_class)->size_allocate(widget, alloc);
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      RoomData *room_data = &priv->room_data[tp];
+      const RoomInfo *info = &ROOM_INFO[tp];
+      AltkAllocation child_alloc;
+      if (!room_data->room)
+        continue;
+      room_data->cx = alloc->width * info->x;
+      room_data->cy = alloc->height * info->y;
+      room_data->width = alloc->width * info->width;
+      room_data->height = alloc->height * info->height;
+      room_data->bx = room_data->cx - room_data->width / 2;
+      room_data->by = room_data->cy - room_data->height / 2;
+      child_alloc.x = alloc->x + (room_data->cx - room_data->task_view->size_request.width / 2);
+      child_alloc.y = alloc->y + (room_data->cy + room_data->height / 2 + 4);
+      child_alloc.width = room_data->task_view->size_request.width;
+      child_alloc.height = room_data->task_view->size_request.height;
+      altk_widget_size_allocate(room_data->task_view, &child_alloc);
+    }
 }
 
 
@@ -165,13 +236,17 @@ static void foreach ( AltkWidget *widget,
 static void _add_building ( MbtkColonyView *view,
                             MbcProxy *room )
 {
-  /* Private *priv = PRIVATE(view); */
-  /* RoomInfo *info = ROOM_INFO[MBC_ROOM_PROXY(room)->type]; */
-  /* MbcProxy *task; */
-  /* task = mbc_colony_proxy_find_task(MBC_COLONY_PROXY(priv->colony), */
-  /*                                   info->task_name); */
-  /* task_view = mbtk_task_view_new(task); */
-  /* ALTK_CONTAINER_ADD(view, task_view); */
+  Private *priv = PRIVATE(view);
+  const RoomInfo *info = &ROOM_INFO[MBC_ROOM_PROXY(room)->type];
+  RoomData *data = &priv->room_data[MBC_ROOM_PROXY(room)->type];
+  data->room = l_object_ref(room);
+  data->task = mbc_colony_proxy_find_task(MBC_COLONY_PROXY(priv->colony),
+                                          info->task_name);
+  ASSERT(data->task);
+  l_object_ref(data->task);
+  data->task_view = mbtk_task_view_new(data->task);
+  /* [FIXME] altk_container_add() ? */
+  _altk_widget_set_parent(data->task_view, ALTK_WIDGET(view));
 }
 
 
@@ -265,21 +340,17 @@ static void update_backbuf ( MbtkColonyView *view )
                                 ALTK_WIDGET(view)->height);
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
-      MbcProxy *room  = MBC_COLONY_PROXY(priv->colony)->rooms[tp];
-      if (room)
+      RoomData *room_data = &priv->room_data[tp];
+      if (room_data->room)
         {
-          const RoomInfo *info = &ROOM_INFO[tp];
-          gint x = (gint) (ALTK_WIDGET(view)->width * info->x);
-          gint y = (gint) (ALTK_WIDGET(view)->height * info->y);
-          gint w = ALTK_WIDGET(view)->width * 0.1;
-          gint h = ALTK_WIDGET(view)->height * 0.1;
+          /* const RoomInfo *info = &ROOM_INFO[tp]; */
           altk_gc_set_color_hrgb(priv->gc_backbuf, 0x0);
           altk_gc_draw_rectangle(priv->gc_backbuf,
                                  FALSE,
-                                 x - w/2,
-                                 y - h/2,
-                                 w,
-                                 h);
+                                 room_data->bx,
+                                 room_data->by,
+                                 room_data->width,
+                                 room_data->height);
         }
     }
 }

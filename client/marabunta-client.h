@@ -26,6 +26,8 @@
 
 #include "client/mbctaskproxy.h"
 
+#include "client/mbcroomproxy.h"
+
 
 
 #endif

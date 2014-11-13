@@ -2,6 +2,7 @@
 
 namespace Altk
 {
+  extern class Widget;
   extern class Container;
   extern class Dialog;
   extern class Box;
@@ -41,9 +42,13 @@ namespace Mbtk
     void init ();
   };
 
-  class ColonyView : Altk::Container
+  class ColonyView : Altk::Widget
   {
     void class_init ();
     void init ();
+  };
+
+  class TaskView : Altk::Frame
+  {
   };
 }

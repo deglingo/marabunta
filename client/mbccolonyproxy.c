@@ -81,6 +81,36 @@ void mbc_colony_proxy_set_top_task ( MbcColonyProxy *colony,
 
 
 
+/* _find_task:
+ */
+static MbcProxy *_find_task ( MbcColonyProxy *colony,
+                              const gchar *name,
+                              MbcProxy *task )
+{
+  GList *l;
+  if (!strcmp(name, MBC_TASK_PROXY(task)->name))
+    return task;
+  for (l = MBC_TASK_PROXY(task)->children; l; l = l->next)
+    {
+      MbcProxy *found;
+      if ((found = _find_task(colony, name, l->data)))
+        return found;
+    }
+  return NULL;
+}
+
+
+
+/* mbc_colony_proxy_find_task:
+ */
+MbcProxy *mbc_colony_proxy_find_task ( MbcColonyProxy *colony,
+                                       const gchar *name )
+{
+  return _find_task(colony, name, colony->top_task);
+}
+
+
+
 /* mbc_colony_proxy_add_room:
  */
 void mbc_colony_proxy_add_room ( MbcColonyProxy *colony,
