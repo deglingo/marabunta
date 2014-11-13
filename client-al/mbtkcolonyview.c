@@ -8,6 +8,23 @@
 
 
 
+/* RoomInfo:
+ */
+typedef struct _RoomInfo
+{
+  gchar *name; /* [fixme] should ot be here */
+  gfloat x;
+  gfloat y;
+}
+  RoomInfo;
+
+static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
+  {
+    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", 0.5, 0.5 },
+  };
+
+
+
 /* Private:
  */
 typedef struct _Private
@@ -95,7 +112,7 @@ static void foreach ( AltkWidget *widget,
                       AltkForeachFunc func,
                       gpointer data )
 {
-  CL_DEBUG("[TODO]");
+  /* CL_DEBUG("[TODO]"); */
 }
 
 
@@ -145,17 +162,40 @@ static void foreach ( AltkWidget *widget,
 
 
 
+static void _add_building ( MbtkColonyView *view,
+                            MbcProxy *room )
+{
+  /* Private *priv = PRIVATE(view); */
+  /* RoomInfo *info = ROOM_INFO[MBC_ROOM_PROXY(room)->type]; */
+  /* MbcProxy *task; */
+  /* task = mbc_colony_proxy_find_task(MBC_COLONY_PROXY(priv->colony), */
+  /*                                   info->task_name); */
+  /* task_view = mbtk_task_view_new(task); */
+  /* ALTK_CONTAINER_ADD(view, task_view); */
+}
+
+
+
 /* mbtk_colony_view_set_colony:
  */
 void mbtk_colony_view_set_colony ( MbtkColonyView *view,
                                    MbcProxy *colony )
 {
   Private *priv = PRIVATE(view);
+  gint tp;
   /* gchar *title; */
   ASSERT(MBC_IS_COLONY_PROXY(colony));
   ASSERT(!priv->colony); /* [todo] */
   l_trash_push();
   priv->colony = l_object_ref(colony);
+  /* add the buildings */
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      if (MBC_COLONY_PROXY(colony)->rooms[tp])
+        {
+          _add_building(view, MBC_COLONY_PROXY(colony)->rooms[tp]);
+        }
+    }
   /* /\* set title *\/ */
   /* title = l_object_to_string(L_OBJECT(colony)); */
   /* altk_label_set_text(ALTK_LABEL(priv->title), title); */
@@ -209,6 +249,7 @@ static void resize_backbuf ( MbtkColonyView *view )
 static void update_backbuf ( MbtkColonyView *view )
 {
   Private *priv = PRIVATE(view);
+  gint tp;
   altk_gc_set_color_hrgb(priv->gc_backbuf, 0x00FF00);
   altk_gc_draw_rectangle(priv->gc_backbuf,
                          TRUE,
@@ -222,6 +263,25 @@ static void update_backbuf ( MbtkColonyView *view )
                                 0,
                                 ALTK_WIDGET(view)->width,
                                 ALTK_WIDGET(view)->height);
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      MbcProxy *room  = MBC_COLONY_PROXY(priv->colony)->rooms[tp];
+      if (room)
+        {
+          const RoomInfo *info = &ROOM_INFO[tp];
+          gint x = (gint) (ALTK_WIDGET(view)->width * info->x);
+          gint y = (gint) (ALTK_WIDGET(view)->height * info->y);
+          gint w = ALTK_WIDGET(view)->width * 0.1;
+          gint h = ALTK_WIDGET(view)->height * 0.1;
+          altk_gc_set_color_hrgb(priv->gc_backbuf, 0x0);
+          altk_gc_draw_rectangle(priv->gc_backbuf,
+                                 FALSE,
+                                 x - w/2,
+                                 y - h/2,
+                                 w,
+                                 h);
+        }
+    }
 }
 
 
