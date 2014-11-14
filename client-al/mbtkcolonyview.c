@@ -91,7 +91,7 @@ static void mbtk_colony_view_class_init ( LObjectClass *cls )
 static void mbtk_colony_view_init ( LObject *obj )
 {
   MBTK_COLONY_VIEW(obj)->private = g_new0(Private, 1);
-  ALTK_WIDGET(obj)->flags = ALTK_WIDGET_FLAG_NOWINDOW;
+  ALTK_WIDGET(obj)->flags |= ALTK_WIDGET_FLAG_NOWINDOW;
   altk_widget_set_event_mask(ALTK_WIDGET(obj), ALTK_EVENT_MASK_EXPOSE);
 }
 
