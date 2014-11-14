@@ -6,6 +6,7 @@
 #include "client-al/mbtkmapview.h"
 #include "client-al/mbtkpoptable.h"
 #include "client-al/mbtkcolonyview.h"
+#include "client-al/mbtkinfopanel.h"
 #include "client-al/mbtkdialog.inl"
 
 
@@ -83,7 +84,7 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
                       L_TRASH_OBJECT(_create_pop_table(dlg)),
                       ALTK_PACK_ANCHOR_LEFT);
   altk_box_pack_start(ALTK_BOX(box),
-                      L_TRASH_OBJECT(altk_frame_new("")),
+                      L_TRASH_OBJECT(mbtk_info_panel_new()),
                       ALTK_PACK_EXPAND_FILL);
   return box;
 }

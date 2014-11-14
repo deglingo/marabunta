@@ -48,6 +48,10 @@ namespace Mbtk
     void init ();
   };
 
+  class InfoPanel : Altk::Frame
+  {
+  };
+
   class TaskView : Altk::Frame
   {
   };
