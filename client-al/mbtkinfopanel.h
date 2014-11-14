@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkInfoPanel
 {
   MBTK_INFO_PANEL_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
