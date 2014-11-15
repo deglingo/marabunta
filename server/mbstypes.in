@@ -40,6 +40,10 @@ namespace Mbs
   {
   };
 
+  class Resource : Object
+  {
+  };
+
   class Game : Object
   {
     void class_init ();

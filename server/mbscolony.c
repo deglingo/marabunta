@@ -55,6 +55,29 @@ static gboolean t_work_check ( MbsTask *task,
 
 
 
+static gboolean t_farm_check ( MbsTask *task,
+                               MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static gboolean t_food_check ( MbsTask *task,
+                               MbPopType pop_type )
+{
+  return pop_type == MB_POP_ADULT_WORKER;
+}
+
+
+
+static void t_food_process ( MbsTask *task )
+{
+  CL_DEBUG("[TODO]");
+}
+
+
+
 static gboolean t_mine_check ( MbsTask *task,
                                MbPopType pop_type )
 {
@@ -113,6 +136,16 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
       t_work_check,
       NULL,
     };
+  MbsTaskFuncs t_farm_funcs =
+    {
+      t_farm_check,
+      NULL,
+    };
+  MbsTaskFuncs t_food_funcs =
+    {
+      t_food_check,
+      t_food_process,
+    };
   MbsTaskFuncs t_mine_funcs =
     {
       t_mine_check,
@@ -134,11 +167,15 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   col->pop_tree = mbs_pop_tree_new();
   col->pop_adj = mbs_pop_tree_new();
   { /* setup tasks */
-    MbsTask *t_work, *t_mine, *t_mine1, *t_mine2;
+    MbsTask *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
     col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
     l_object_unref(mbs_task_new(col, col->top_task, "spawn", &t_spawn_funcs));
     t_work = mbs_task_new_group(col, col->top_task, "work", &t_work_funcs);
     l_object_unref(t_work);
+    t_farm = mbs_task_new_group(col, t_work, "farm", &t_farm_funcs);
+    l_object_unref(t_farm);
+    t_food = mbs_task_new(col, t_farm, "food", &t_food_funcs);
+    l_object_unref(t_food);
     t_mine = mbs_task_new_group(col, t_work, "mine", &t_mine_funcs);
     l_object_unref(t_mine);
     t_mine1 = mbs_task_new(col, t_mine, "mine1", &t_mine1_funcs);

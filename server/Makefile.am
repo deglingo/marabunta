@@ -17,6 +17,7 @@ libmarabunta_server_la_SOURCES = \
 	mbspriority.c \
 	mbstask.c \
 	mbsroom.c \
+	mbsresource.c \
 	mbsgame.c \
 	mbsapp.c
 
@@ -29,6 +30,7 @@ BUILT_SOURCES = \
 	mbspriority-def.h mbspriority.inl \
 	mbstask-def.h mbstask.inl \
 	mbsroom-def.h mbsroom.inl \
+	mbsresource-def.h mbsresource.inl \
 	mbsgame-def.h mbsgame.inl \
 	mbsapp-def.h mbsapp.inl
 
@@ -40,6 +42,7 @@ mbscontrol-def.h mbscontrol.inl \
 mbspriority-def.h mbspriority.inl \
 mbstask-def.h mbstask.inl \
 mbsroom-def.h mbsroom.inl \
+mbsresource-def.h mbsresource.inl \
 mbsgame-def.h mbsgame.inl \
 mbsapp-def.h mbsapp.inl \
 : mbstypes.stamp-h

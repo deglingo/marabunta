@@ -27,5 +27,7 @@
 
 #include "common/mbroom.h"
 
+#include "common/mbresource.h"
+
 
 #endif

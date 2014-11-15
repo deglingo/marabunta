@@ -6,6 +6,7 @@
 #include "server/mbsapp.h"
 #include "server/mbstask.h"
 #include "server/mbscontrol.h"
+#include "server/mbsresource.h"
 #include "server/mbsgame.inl"
 
 
@@ -37,6 +38,7 @@ typedef struct _Private
   Player *players[MAX_PLAYERS];
   gint n_players;
   GHashTable *control_map;
+  GList *resources;
 }
   Private;
 
@@ -95,6 +97,21 @@ static void mbs_game_init ( LObject *obj )
 MbsGame *mbs_game_new ( void )
 {
   return MBS_GAME_NEW(NULL);
+}
+
+
+
+/* mbs_game_register_resource:
+ */
+MbsObject *mbs_game_register_resource ( MbsGame *game,
+                                        const gchar *name,
+                                        MbResourceFlags flags )
+{
+  Private *priv = PRIVATE(game);
+  MbsResource *rsc;
+  rsc = mbs_resource_new(name, flags);
+  priv->resources = g_list_append(priv->resources, rsc);
+  return MBS_OBJECT(rsc);
 }
 
 
@@ -391,6 +408,9 @@ static gboolean _on_game_timer ( MbsGame *game )
  */
 static void _setup ( MbsGame *game )
 {
+  mbs_game_register_resource(game,
+                             "food",
+                             MB_RESOURCE_FLAG_FOOD);
   game->world = mbs_world_new(game, 1, 2);
   mbs_sector_create_colony(game->world->sectors[0][0], 0);
   mbs_pop_tree_add(game->world->sectors[0][0]->colony->pop_tree,
