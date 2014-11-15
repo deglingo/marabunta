@@ -134,6 +134,14 @@ static void _process_game_state ( MbcApp *app,
                                        st_room->colony_id);
           }
           break;
+        case MB_STATE_NEW_RESOURCE:
+          {
+            MbStateNewResource *st_rsc = (MbStateNewResource *) block;
+            mbc_game_proxy_create_resource(app->game_proxy,
+                                           st_rsc->resource_id,
+                                           st_rsc->name);
+          }
+          break;
         case MB_STATE_POP:
           {
             MbStatePop *st_pop = (MbStatePop *) block;

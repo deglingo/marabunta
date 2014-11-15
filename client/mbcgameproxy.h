@@ -22,6 +22,7 @@ struct _MbcGameProxy
   struct _MbcApp *app;
   guint sim_time;
   GHashTable *proxy_map;
+  GHashTable *resources; /* map < gchar *name, MbcProxy *rsc > */
   /* world proxy */
   MbcProxy *world;
 };
@@ -71,6 +72,9 @@ void mbc_game_proxy_create_room ( MbcGameProxy *game,
                                   guint room_id,
                                   MbRoomType type,
                                   guint colony_id );
+void mbc_game_proxy_create_resource ( MbcGameProxy *game,
+                                      guint resource_id,
+                                      const gchar *name );
 void mbc_game_proxy_reset ( MbcGameProxy *proxy );
 void mbc_game_proxy_set_sim_time ( MbcGameProxy *proxy,
                                    guint sim_time );

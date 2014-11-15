@@ -475,6 +475,26 @@ static void _send_colony_setup ( MbsGame *game,
 
 
 
+/* _send_resources_setup:
+ */
+static void _send_resources_setup ( MbsGame *game,
+                                    Player *player,
+                                    MbState *state )
+{
+  MbStateNewResource *st_rsc;
+  GList *l;
+  for (l = PRIVATE(game)->resources; l; l = l->next)
+    {
+      MbsResource *rsc = l->data;
+      st_rsc = mb_state_next(state, MB_STATE_NEW_RESOURCE);
+      st_rsc->resource_id = MBS_OBJECT_ID(rsc);
+      ASSERT(strlen(rsc->name) < MB_RESOURCE_MAX_NAME);
+      sprintf(st_rsc->name, rsc->name);
+    }
+}
+
+
+
 /* _send_game_setup:
  */
 static void _send_game_setup ( MbsGame *game,
@@ -489,6 +509,7 @@ static void _send_game_setup ( MbsGame *game,
   reset->world_id = MBS_OBJECT_ID(game->world);
   reset->world_width = game->world->width;
   reset->world_height = game->world->height;
+  _send_resources_setup(game, player, state);
   for (y = 0; y < game->world->height; y++)
     {
       for (x = 0; x < game->world->width; x++)

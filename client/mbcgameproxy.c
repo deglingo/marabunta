@@ -8,6 +8,7 @@
 #include "client/mbcpriorityproxy.h"
 #include "client/mbctaskproxy.h"
 #include "client/mbcroomproxy.h"
+#include "client/mbcresourceproxy.h"
 #include "client/mbcapp.h"
 #include "client/mbcgameproxy.inl"
 
@@ -64,6 +65,10 @@ MbcGameProxy *mbc_game_proxy_new ( MbcApp *app,
   gp->app = app; /* [fixme] ref ? */
   gp->proxy_map = g_hash_table_new_full(NULL, NULL, NULL,
                                         (GDestroyNotify) l_object_unref);
+  gp->resources = g_hash_table_new_full(g_str_hash,
+                                        g_str_equal,
+                                        NULL,
+                                        NULL);
   g_hash_table_insert(gp->proxy_map,
                       GUINT_TO_POINTER(id),
                       l_object_ref(gp)); /* [fixme] ref ? */
@@ -206,6 +211,21 @@ void mbc_game_proxy_create_room ( MbcGameProxy *game,
   ASSERT(MBC_IS_COLONY_PROXY(colony));
   room = mbc_room_proxy_new(MBC_PROXY(game), room_id, type);
   mbc_colony_proxy_add_room(MBC_COLONY_PROXY(colony), room);
+}
+
+
+
+/* mbc_game_proxy_create_resource:
+ */
+void mbc_game_proxy_create_resource ( MbcGameProxy *game,
+                                      guint resource_id,
+                                      const gchar *name )
+{
+  MbcProxy *rsc;
+  rsc = mbc_resource_proxy_new(MBC_PROXY(game), resource_id, name);
+  g_hash_table_insert(game->resources,
+                      MBC_RESOURCE_PROXY(rsc)->name,
+                      rsc);
 }
 
 

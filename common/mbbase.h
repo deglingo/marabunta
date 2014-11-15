@@ -10,6 +10,7 @@
 
 /* [fixme] */
 #define MBS_TASK_MAX_NAME 16
+#define MB_RESOURCE_MAX_NAME 16
 
 /* [fixme] */
 typedef gint MbPriorityValue;

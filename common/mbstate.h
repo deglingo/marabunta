@@ -24,6 +24,7 @@ typedef struct _MbStateColony MbStateColony;
 typedef struct _MbStateNewPriority MbStateNewPriority;
 typedef struct _MbStateNewTask MbStateNewTask;
 typedef struct _MbStateNewRoom MbStateNewRoom;
+typedef struct _MbStateNewResource MbStateNewResource;
 typedef struct _MbStatePop MbStatePop;
 typedef struct _MbStateTask MbStateTask;
 typedef struct _MbStatePriority MbStatePriority;
@@ -40,6 +41,7 @@ enum _MbStateType
     MB_STATE_COLONY,
     MB_STATE_NEW_TASK,
     MB_STATE_NEW_ROOM,
+    MB_STATE_NEW_RESOURCE,
     MB_STATE_POP,
     MB_STATE_NEW_PRIORITY,
     MB_STATE_TASK,
@@ -140,6 +142,17 @@ struct _MbStateNewRoom
   guint room_id;
   MbRoomType type;
   guint colony_id;
+};
+
+
+
+/* MbStateNewResource:
+ */
+struct _MbStateNewResource
+{
+  MbStateBlock block;
+  guint resource_id;
+  gchar name[MB_RESOURCE_MAX_NAME+1];
 };
 
 

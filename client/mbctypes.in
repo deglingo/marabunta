@@ -42,6 +42,10 @@ namespace Mbc
   class RoomProxy : Proxy
   {
   };
+
+  class ResourceProxy : Proxy
+  {
+  };
   
   class App : Mb::App
   {
