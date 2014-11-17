@@ -1,7 +1,9 @@
 /* mbtkinfopanel.c -
  */
 
+#include "client-al/alprivate.h"
 #include "client-al/mbtkinfopanel.h"
+#include "client-al/mbtktaskview.h"
 #include "client-al/mbtkinfopanel.inl"
 
 
@@ -12,6 +14,7 @@ typedef struct _PageInfo
 {
   AltkWidget *panel;
   AltkWidget *page;
+  gchar *name;
 }
   PageInfo;
 
@@ -21,6 +24,7 @@ typedef struct _PageInfo
  */
 typedef struct _Private
 {
+  MbcProxy *colony;
   GList *pages;
   PageInfo *current_page;
 }
@@ -35,6 +39,21 @@ typedef struct _Private
 static void mbtk_info_panel_init ( LObject *obj )
 {
   MBTK_INFO_PANEL(obj)->private = g_new0(Private, 1);
+}
+
+
+
+PageInfo *_get_page ( MbtkInfoPanel *panel,
+                      const gchar *name )
+{
+  GList *l;
+  for (l = PRIVATE(panel)->pages; l; l = l->next)
+    {
+      PageInfo *page = l->data;
+      if (!strcmp(page->name, name))
+        return page;
+    }
+  return NULL;
 }
 
 
@@ -57,12 +76,14 @@ static void _add_page ( AltkWidget *panel,
                         AltkWidget *top_box,
                         AltkWidget *but_box,
                         const gchar *label,
-                        AltkWidget *page)
+                        AltkWidget *page,
+                        const gchar *name )
 {
   Private *priv = PRIVATE(panel);
   PageInfo *info = g_new0(PageInfo, 1);
   AltkWidget *button;
   info->panel = panel;
+  info->name = g_strdup(name);
   button = L_TRASH_OBJECT
     (altk_button_new_with_label(label));
   ALTK_BOX_ADD(but_box, button, 0);
@@ -95,6 +116,32 @@ AltkWidget *_create_mine_page ( void )
 
 
 
+void _mine_page_set_colony ( MbtkInfoPanel *panel,
+                             PageInfo *page,
+                             MbcProxy *colony )
+{
+  MbcTaskProxy *t_mine;
+  GList *l;
+  AltkWidget *box = ALTK_BIN_CHILD(page->page);
+  AltkWidget *tview;
+  t_mine = mbc_task_proxy_find(MBC_TASK_PROXY(MBC_COLONY_PROXY(colony)->top_task),
+                               "work/mine");
+  ASSERT(t_mine);
+  tview = mbtk_task_view_new(MBC_PROXY(t_mine));
+  ALTK_BOX_ADD(box, tview, 0);
+  l_object_unref(tview);
+  altk_widget_show_all(tview);
+  for (l = t_mine->children; l; l = l->next)
+    {
+      AltkWidget *tview = mbtk_task_view_new(l->data);
+      ALTK_BOX_ADD(box, tview, 0);
+      l_object_unref(tview);
+      altk_widget_show_all(tview);
+    }
+}
+
+
+
 /* mbtk_info_panel_new:
  */
 AltkWidget *mbtk_info_panel_new ( void )
@@ -109,8 +156,23 @@ AltkWidget *mbtk_info_panel_new ( void )
     (altk_box_new(ALTK_VERTICAL));
   /* _add_page(panel, top_box, but_box, "Pop", "P"); */
   _add_page(panel, top_box, but_box, "M",
-            L_TRASH_OBJECT(_create_mine_page()));
+            L_TRASH_OBJECT(_create_mine_page()), "mine");
   ALTK_BOX_ADD(top_box, but_box, ALTK_PACK_ANCHOR_TOP);
   l_trash_pop();
   return panel;
+}
+
+
+
+/* mbtk_info_panel_set_colony:
+ */
+void mbtk_info_panel_set_colony ( MbtkInfoPanel *panel,
+                                  MbcProxy *colony )
+{
+  Private *priv = PRIVATE(panel);
+  ASSERT(colony); /* [todo] */
+  ASSERT(MBC_IS_COLONY_PROXY(colony));
+  ASSERT(!priv->colony); /* [todo] */
+  priv->colony = l_object_ref(colony);
+  _mine_page_set_colony(panel, _get_page(panel, "mine"), colony);
 }

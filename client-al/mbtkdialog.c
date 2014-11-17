@@ -22,6 +22,7 @@ typedef struct _Private
   AltkWidget *map_view;
   AltkWidget *pop_table;
   AltkWidget *colony_view;
+  AltkWidget *info_panel;
 }
   Private;
 
@@ -71,6 +72,15 @@ static AltkWidget *_create_pop_table ( AltkWidget *dlg )
 
 
 
+static AltkWidget *_create_info_panel ( AltkWidget *dlg )
+{
+  Private *priv = PRIVATE(dlg);
+  priv->info_panel = mbtk_info_panel_new();
+  return priv->info_panel;
+}
+
+
+
 /* _create_side_panel:
  */
 static AltkWidget *_create_side_panel ( AltkWidget *dlg )
@@ -84,7 +94,7 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
                       L_TRASH_OBJECT(_create_pop_table(dlg)),
                       ALTK_PACK_ANCHOR_LEFT);
   altk_box_pack_start(ALTK_BOX(box),
-                      L_TRASH_OBJECT(mbtk_info_panel_new()),
+                      L_TRASH_OBJECT(_create_info_panel(dlg)),
                       ALTK_PACK_EXPAND_FILL);
   return box;
 }
@@ -177,6 +187,8 @@ static void _set_sector ( MbtkDialog *dialog,
                                 MBC_SECTOR_PROXY(sector)->colony);
       mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
                                   MBC_SECTOR_PROXY(sector)->colony);
+      mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
+                                 MBC_SECTOR_PROXY(sector)->colony);
     }
 }
 
