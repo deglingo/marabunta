@@ -56,8 +56,8 @@ static void _on_page_button_clicked ( AltkWidget *button,
 static void _add_page ( AltkWidget *panel,
                         AltkWidget *top_box,
                         AltkWidget *but_box,
-                        const gchar *title,
-                        const gchar *label )
+                        const gchar *label,
+                        AltkWidget *page)
 {
   Private *priv = PRIVATE(panel);
   PageInfo *info = g_new0(PageInfo, 1);
@@ -66,8 +66,9 @@ static void _add_page ( AltkWidget *panel,
   button = L_TRASH_OBJECT
     (altk_button_new_with_label(label));
   ALTK_BOX_ADD(but_box, button, 0);
-  info->page = L_TRASH_OBJECT
-    (altk_frame_new(title));
+  info->page = page;
+  altk_widget_show_all(info->page);
+  altk_widget_hide(info->page);
   altk_widget_set_enable_show_all(info->page, FALSE);
   priv->pages = g_list_append(priv->pages, info);
   ALTK_BOX_ADD(top_box, info->page, ALTK_PACK_EXPAND_FILL);
@@ -75,6 +76,21 @@ static void _add_page ( AltkWidget *panel,
                    "clicked", 0,
                    (LSignalHandler) _on_page_button_clicked,
                    info, NULL);
+}
+
+
+
+AltkWidget *_create_mine_page ( void )
+{
+  AltkWidget *page, *box, *title;
+  page = altk_frame_new("Mine");
+  box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(page, box);
+  title = L_TRASH_OBJECT
+    (altk_label_new("Mine"));
+  ALTK_BOX_ADD(box, title, 0);
+  return page;
 }
 
 
@@ -91,8 +107,9 @@ AltkWidget *mbtk_info_panel_new ( void )
   ALTK_CONTAINER_ADD(panel, top_box);
   but_box = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
-  _add_page(panel, top_box, but_box, "Pop", "P");
-  _add_page(panel, top_box, but_box, "Mine", "M");
+  /* _add_page(panel, top_box, but_box, "Pop", "P"); */
+  _add_page(panel, top_box, but_box, "M",
+            L_TRASH_OBJECT(_create_mine_page()));
   ALTK_BOX_ADD(top_box, but_box, ALTK_PACK_ANCHOR_TOP);
   l_trash_pop();
   return panel;
