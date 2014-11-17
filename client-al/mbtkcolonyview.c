@@ -24,7 +24,8 @@ typedef struct _RoomInfo
 
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
-    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn", 0.5, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn",     0.5, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_MINE]          = { "Mine",          "work/mine", 0.2, 0.5, 0.1, 0.1 },
   };
 
 
@@ -240,8 +241,8 @@ static void _add_building ( MbtkColonyView *view,
   const RoomInfo *info = &ROOM_INFO[MBC_ROOM_PROXY(room)->type];
   RoomData *data = &priv->room_data[MBC_ROOM_PROXY(room)->type];
   data->room = l_object_ref(room);
-  data->task = mbc_colony_proxy_find_task(MBC_COLONY_PROXY(priv->colony),
-                                          info->task_name);
+  data->task = MBC_PROXY(mbc_task_proxy_find(MBC_TASK_PROXY(MBC_COLONY_PROXY(priv->colony)->top_task),
+                                             info->task_name));
   ASSERT(data->task);
   l_object_ref(data->task);
   data->task_view = mbtk_task_view_new(data->task);

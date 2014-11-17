@@ -417,6 +417,8 @@ static void _setup ( MbsGame *game )
                   MB_POP_ADULT_QUEEN, 0, 1);
   mbs_colony_create_room(game->world->sectors[0][0]->colony,
                          MB_ROOM_TYPE_ROYAL_CHAMBER);
+  mbs_colony_create_room(game->world->sectors[0][0]->colony,
+                         MB_ROOM_TYPE_MINE);
 }
 
 

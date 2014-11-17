@@ -47,6 +47,8 @@ void mbc_task_proxy_add_child ( MbcTaskProxy *task,
                                 MbcProxy *child );
 void mbc_task_proxy_set_workers ( MbcTaskProxy *task,
                                   gint64 workers );
+MbcTaskProxy *mbc_task_proxy_find ( MbcTaskProxy *task,
+                                    const gchar *path );
 
 
 

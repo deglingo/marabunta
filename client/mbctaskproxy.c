@@ -90,3 +90,35 @@ void mbc_task_proxy_set_workers ( MbcTaskProxy *task,
   task->workers = workers;
   l_object_notify(L_OBJECT(task), pspecs[PROP_WORKERS]);
 }
+
+
+
+static MbcTaskProxy *_find ( MbcTaskProxy *task,
+                             const gchar *name )
+{
+  GList *l;
+  for (l = task->children; l; l = l->next)
+    {
+      if (!strcmp(MBC_TASK_PROXY(l->data)->name, name))
+        return l->data;
+    }
+  return NULL;
+}
+
+
+
+/* mbc_task_proxy_find:
+ */
+MbcTaskProxy *mbc_task_proxy_find ( MbcTaskProxy *task,
+                                    const gchar *path )
+{
+  gchar comp[MBS_TASK_MAX_NAME+1];
+  const gchar *p = path;
+  ASSERT(path);
+  while (mb_task_path_next(&p, comp))
+    {
+      if (!(task = _find(task, comp)))
+        return NULL;
+    }
+  return task;
+}

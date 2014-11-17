@@ -15,6 +15,9 @@
 /* [fixme] */
 typedef gint MbPriorityValue;
 
+gchar *mb_task_path_next ( const gchar **path,
+                           gchar *dest );
+
 
 
 #endif
