@@ -115,7 +115,7 @@ static MbsTask *_select ( MbsTask *task,
                           MbPopType type )
 {
   if (!(ACCEPT(task, type) && READY(task)))
-    return NULL;
+      return NULL;
   if (task->isgroup)
     {
       MbsTask *found = NULL;
@@ -123,15 +123,16 @@ static MbsTask *_select ( MbsTask *task,
       GList *l;
       for (l = task->children; l; l = l->next)
         {
-          MbsTask *child = _select(l->data, type);
-          if (child)
+          MbsTask *child = l->data;
+          MbsTask *sel = _select(child, type);
+          gint64 score;
+          if (!sel)
+            continue;
+          score = mbs_task_get_next_score(child);
+          if ((!found) || score < found_score)
             {
-              gint64 score = mbs_task_get_next_score(child);
-              if ((!found) || score < found_score)
-                {
-                  found = child;
-                  found_score = score;
-                }
+              found = sel;
+              found_score = score;
             }
         }
       return found;

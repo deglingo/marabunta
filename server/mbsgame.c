@@ -418,6 +418,8 @@ static void _setup ( MbsGame *game )
   mbs_colony_create_room(game->world->sectors[0][0]->colony,
                          MB_ROOM_TYPE_ROYAL_CHAMBER);
   mbs_colony_create_room(game->world->sectors[0][0]->colony,
+                         MB_ROOM_TYPE_FARM);
+  mbs_colony_create_room(game->world->sectors[0][0]->colony,
                          MB_ROOM_TYPE_MINE);
 }
 

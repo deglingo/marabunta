@@ -25,6 +25,7 @@ typedef struct _RoomInfo
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
     [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn",     0.5, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_FARM]          = { "Farm",          "work/farm", 0.5, 0.2, 0.1, 0.1 },
     [MB_ROOM_TYPE_MINE]          = { "Mine",          "work/mine", 0.2, 0.5, 0.1, 0.1 },
   };
 
