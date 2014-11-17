@@ -9,6 +9,7 @@
 
 
 typedef enum _MbPopType MbPopType;
+typedef enum _MbPopFlags MbPopFlags;
 typedef enum _MbMaturity MbMaturity;
 typedef enum _MbCast MbCast;
 
@@ -26,6 +27,21 @@ enum _MbPopType
     MB_POP_ADULT_WORKER,
     MB_POP_ADULT_SOLDIER,
     MB_POP_TYPE_COUNT,
+  };
+
+
+
+/* MbPopFlags:
+ */
+enum _MbPopFlags
+  {
+    MB_POP_FLAG_EGG            = 1 << MB_POP_EGG,
+    MB_POP_FLAG_LARVAE_QUEEN   = 1 << MB_POP_LARVAE_QUEEN,
+    MB_POP_FLAG_LARVAE_WORKER  = 1 << MB_POP_LARVAE_WORKER,
+    MB_POP_FLAG_LARVAE_SOLDIER = 1 << MB_POP_LARVAE_SOLDIER,
+    MB_POP_FLAG_ADULT_QUEEN    = 1 << MB_POP_ADULT_QUEEN,
+    MB_POP_FLAG_ADULT_WORKER   = 1 << MB_POP_ADULT_WORKER,
+    MB_POP_FLAG_ADULT_SOLDIER  = 1 << MB_POP_ADULT_SOLDIER,
   };
 
 
