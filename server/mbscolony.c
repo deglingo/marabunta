@@ -38,7 +38,7 @@ static gboolean t_mine_check ( MbsTask *task )
 
 static void t_mine_process ( MbsTask *task )
 {
-  CL_DEBUG("[TODO]");
+  /* CL_DEBUG("[TODO]"); */
 }
 
 
