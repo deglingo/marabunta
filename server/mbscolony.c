@@ -11,107 +11,20 @@
 
 
 
-/* t_top_check:
- */
-static gboolean t_top_check ( MbsTask *task,
-                              MbPopType pop_type )
+static gboolean t_spawn_check ( MbsTask *task )
 {
-  GList *l;
-  for (l = task->children; l; l = l->next)
-    {
-      if (mbs_task_check(l->data, pop_type))
-        return TRUE;
-    }
-  return FALSE;
+  return TRUE;
 }
 
 
 
-/* t_spawn_check:
- */
-static gboolean t_spawn_check ( MbsTask *task,
-                                MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_QUEEN;
-}
-
-
-
-/* t_spawn_process:
- */
 static void t_spawn_process ( MbsTask *task )
 {
-  /* CL_DEBUG("process: t_spawn(%qd)", task->workers); */
-  mbs_colony_adjust_pop(task->colony, MB_POP_EGG, task->colony->sector->world->game->frame, 10 * task->workers);
-}
-
-
-
-static gboolean t_work_check ( MbsTask *task,
-                               MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static gboolean t_farm_check ( MbsTask *task,
-                               MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static gboolean t_food_check ( MbsTask *task,
-                               MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static void t_food_process ( MbsTask *task )
-{
-  CL_DEBUG("[TODO]");
-}
-
-
-
-static gboolean t_mine_check ( MbsTask *task,
-                               MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static gboolean t_mine1_check ( MbsTask *task,
-                                MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static gboolean t_mine2_check ( MbsTask *task,
-                                MbPopType pop_type )
-{
-  return pop_type == MB_POP_ADULT_WORKER;
-}
-
-
-
-static void t_mine1_process ( MbsTask *task )
-{
-  /* CL_DEBUG("[TODO] mine1"); */
-}
-
-
-
-static void t_mine2_process ( MbsTask *task )
-{
-  /* CL_DEBUG("[TODO] mine2"); */
+  MbsGame *game = task->colony->sector->world->game;
+  mbs_colony_adjust_pop(task->colony,
+                        MB_POP_EGG,
+                        game->frame,
+                        10);
 }
 
 
@@ -121,45 +34,10 @@ static void t_mine2_process ( MbsTask *task )
 MbsColony *mbs_colony_new ( MbsSector *sector,
                             guint owner )
 {
-  MbsTaskFuncs t_top_funcs =
-    {
-      t_top_check,
-      NULL,
-    };
   MbsTaskFuncs t_spawn_funcs =
     {
       t_spawn_check,
       t_spawn_process,
-    };
-  MbsTaskFuncs t_work_funcs =
-    {
-      t_work_check,
-      NULL,
-    };
-  MbsTaskFuncs t_farm_funcs =
-    {
-      t_farm_check,
-      NULL,
-    };
-  MbsTaskFuncs t_food_funcs =
-    {
-      t_food_check,
-      t_food_process,
-    };
-  MbsTaskFuncs t_mine_funcs =
-    {
-      t_mine_check,
-      NULL,
-    };
-  MbsTaskFuncs t_mine1_funcs =
-    {
-      t_mine1_check,
-      t_mine1_process,
-    };
-  MbsTaskFuncs t_mine2_funcs =
-    {
-      t_mine2_check,
-      t_mine2_process,
     };
   MbsColony *col = MBS_COLONY_NEW(NULL);
   col->sector = sector;
@@ -167,21 +45,11 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
   col->pop_tree = mbs_pop_tree_new();
   col->pop_adj = mbs_pop_tree_new();
   { /* setup tasks */
-    MbsTask *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
-    col->top_task = mbs_task_new_group(col, NULL, "top", &t_top_funcs);
-    l_object_unref(mbs_task_new(col, col->top_task, "spawn", &t_spawn_funcs));
-    t_work = mbs_task_new_group(col, col->top_task, "work", &t_work_funcs);
+    MbsTask *t_work;
+    col->top_task = mbs_task_new_group(col, NULL, "top", MB_POP_FLAG_ALL);
+    l_object_unref(mbs_task_new(col, col->top_task, "spawn", MB_POP_FLAG_ADULT_QUEEN, &t_spawn_funcs));
+    t_work = mbs_task_new_group(col, col->top_task, "work", MB_POP_FLAG_ADULT_WORKER);
     l_object_unref(t_work);
-    t_farm = mbs_task_new_group(col, t_work, "farm", &t_farm_funcs);
-    l_object_unref(t_farm);
-    t_food = mbs_task_new(col, t_farm, "food", &t_food_funcs);
-    l_object_unref(t_food);
-    t_mine = mbs_task_new_group(col, t_work, "mine", &t_mine_funcs);
-    l_object_unref(t_mine);
-    t_mine1 = mbs_task_new(col, t_mine, "mine1", &t_mine1_funcs);
-    l_object_unref(t_mine1);
-    t_mine2 = mbs_task_new(col, t_mine, "mine2", &t_mine2_funcs);
-    l_object_unref(t_mine2);
   }
   col->prio_pop_queen = mb_priority_new(1);
   col->prio_pop_worker = mb_priority_new(7);
@@ -191,43 +59,12 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
 
 
 
-static MbsTask *_select_task ( MbsColony *colony,
-                               MbPopType pop_type,
-                               MbsTask *group )
-{
-  GList *l;
-  MbsTask *found = NULL;
-  gint64 found_score;
-  for (l = group->children; l; l = l->next)
-    {
-      MbsTask *task = l->data;
-      if (mbs_task_check(task, pop_type))
-        {
-          gint64 score = mbs_task_get_next_score(task);
-          if ((!found) || score < found_score)
-            {
-              found = task;
-              found_score = score;
-            }
-        }
-    }
-  return found;
-}
-
-
-
 /* mbs_colony_select_task:
  */
 MbsTask *mbs_colony_select_task ( MbsColony *colony,
                                   MbPopType pop_type )
 {
-  MbsTask *task = colony->top_task;
-  while (task->isgroup)
-    {
-      if (!(task = _select_task(colony, pop_type, task)))
-        return NULL;
-    }
-  return task;
+  return mbs_task_select(colony->top_task, pop_type);
 }
 
 

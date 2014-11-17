@@ -18,9 +18,8 @@ struct _MbsColony;
  */
 typedef struct _MbsTaskFuncs
 {
-  gboolean (* check) ( MbsTask *task,
-                       MbPopType pop_type );
-  
+  gboolean (* ready) ( MbsTask *task );
+
   void (* process) ( MbsTask *task );
 }
   MbsTaskFuncs;
@@ -35,13 +34,18 @@ struct _MbsTask
 
   struct _MbsColony *colony;
   MbsTask *parent;
-  GList *children;
   gchar *name;
+  MbPopFlags accept_flags;
+  gboolean ready;
   MbsTaskFuncs funcs;
   gboolean isgroup;
+  GList *children;
+  guint children_ready;
   MbsPriority *priority;
   gint64 score;
   gint64 workers;
+  /* user data */
+  gpointer data;
 };
 
 
@@ -55,18 +59,19 @@ struct _MbsTaskClass
 
 
 
-extern const MbsTaskFuncs MBS_TASK_GROUP_FUNCS;
-
 MbsTask *mbs_task_new ( struct _MbsColony *colony,
                         MbsTask *parent,
                         const gchar *name,
+                        MbPopFlags accept_flags,
                         MbsTaskFuncs *funcs );
 MbsTask *mbs_task_new_group ( struct _MbsColony *colony,
                               MbsTask *parent,
                               const gchar *name,
-                              MbsTaskFuncs *funcs );
-gboolean mbs_task_check ( MbsTask *task,
-                          MbPopType pop_type );
+                              MbPopFlags accept_flags );
+void mbs_task_set_ready ( MbsTask *task,
+                          gboolean ready );
+MbsTask *mbs_task_select ( MbsTask *task,
+                           MbPopType type );
 void mbs_task_process ( MbsTask *task );
 gint64 mbs_task_get_score ( MbsTask *task );
 gint64 mbs_task_get_next_score ( MbsTask *task );

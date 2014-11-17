@@ -44,6 +44,8 @@ enum _MbPopFlags
     MB_POP_FLAG_ADULT_SOLDIER  = 1 << MB_POP_ADULT_SOLDIER,
   };
 
+#define MB_POP_FLAG_ALL ((1 << MB_POP_TYPE_COUNT) - 1)
+
 
 
 /* MbMaturity:
