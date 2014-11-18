@@ -11,6 +11,16 @@
 
 
 
+/* FoodData:
+ */
+typedef struct _FoodData
+{
+  MbsObjectID food_id;
+}
+  FoodData;
+
+
+
 static gboolean t_spawn_check ( MbsTask *task )
 {
   return TRUE;
@@ -25,6 +35,16 @@ static void t_spawn_process ( MbsTask *task )
                         MB_POP_EGG,
                         game->frame,
                         10);
+}
+
+
+
+static void t_food_init ( MbsTask *task )
+{
+  FoodData *data;
+  MbsGame *game = task->colony->sector->world->game;
+  data = task->data = g_new0(FoodData, 1);
+  data->food_id = mbs_game_get_resource(game, "food")->id;
 }
 
 
@@ -64,16 +84,19 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
 {
   MbsTaskFuncs t_spawn_funcs =
     {
+      NULL,
       t_spawn_check,
       t_spawn_process,
     };
   MbsTaskFuncs t_food_funcs =
     {
+      t_food_init,
       t_food_check,
       t_food_process,
     };
   MbsTaskFuncs t_mine_funcs =
     {
+      NULL,
       t_mine_check,
       t_mine_process,
     };

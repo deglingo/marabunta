@@ -38,7 +38,11 @@ static MbsTask *_task_new ( struct _MbsColony *colony,
   task->isgroup = isgroup;
   task->priority = mbs_priority_new(colony->sector->world->game, 5);
   if (!isgroup)
-    mbs_task_set_ready(task, TRUE);
+    {
+      mbs_task_set_ready(task, TRUE);
+      if (task->funcs.init)
+        task->funcs.init(task);
+    }
   return task;
 }
 

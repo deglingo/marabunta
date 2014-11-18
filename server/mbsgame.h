@@ -50,6 +50,8 @@ MbsGame *mbs_game_new ( void );
 MbsObject *mbs_game_register_resource ( MbsGame *game,
                                         const gchar *name,
                                         MbResourceFlags flags );
+MbsObject *mbs_game_get_resource ( MbsGame *game,
+                                   const gchar *name );
 MbsPlayerID mbs_game_add_player ( MbsGame *game,
                                   const gchar *name,
                                   MbsMessageHandler message_handler,

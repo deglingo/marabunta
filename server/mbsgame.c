@@ -38,7 +38,7 @@ typedef struct _Private
   Player *players[MAX_PLAYERS];
   gint n_players;
   GHashTable *control_map;
-  GList *resources;
+  GHashTable *resources; /* map < gchar *name, MbsObject *rsc > */
 }
   Private;
 
@@ -88,6 +88,7 @@ static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
   PRIVATE(obj)->control_map = g_hash_table_new(NULL, NULL);
+  PRIVATE(obj)->resources = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
 
@@ -109,9 +110,20 @@ MbsObject *mbs_game_register_resource ( MbsGame *game,
 {
   Private *priv = PRIVATE(game);
   MbsResource *rsc;
+  ASSERT(!mbs_game_get_resource(game, name));
   rsc = mbs_resource_new(name, flags);
-  priv->resources = g_list_append(priv->resources, rsc);
+  g_hash_table_insert(priv->resources, rsc->name, rsc);
   return MBS_OBJECT(rsc);
+}
+
+
+
+/* mbs_game_get_resource:
+ */
+MbsObject *mbs_game_get_resource ( MbsGame *game,
+                                   const gchar *name )
+{
+  return g_hash_table_lookup(PRIVATE(game)->resources, name);
 }
 
 
@@ -486,10 +498,12 @@ static void _send_resources_setup ( MbsGame *game,
                                     MbState *state )
 {
   MbStateNewResource *st_rsc;
-  GList *l;
-  for (l = PRIVATE(game)->resources; l; l = l->next)
+  GHashTableIter iter;
+  gpointer key, value;
+  g_hash_table_iter_init(&iter, PRIVATE(game)->resources);
+  while (g_hash_table_iter_next(&iter, &key, &value))
     {
-      MbsResource *rsc = l->data;
+      MbsResource *rsc = value;
       st_rsc = mb_state_next(state, MB_STATE_NEW_RESOURCE);
       st_rsc->resource_id = MBS_OBJECT_ID(rsc);
       ASSERT(strlen(rsc->name) < MB_RESOURCE_MAX_NAME);

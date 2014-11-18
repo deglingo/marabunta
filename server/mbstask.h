@@ -18,6 +18,8 @@ struct _MbsColony;
  */
 typedef struct _MbsTaskFuncs
 {
+  void (* init) ( MbsTask *task );
+  
   gboolean (* ready) ( MbsTask *task );
 
   void (* process) ( MbsTask *task );
