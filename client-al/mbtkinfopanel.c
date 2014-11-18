@@ -133,7 +133,6 @@ void _mine_page_set_colony ( MbtkInfoPanel *panel,
   MbcTaskProxy *t_mine;
   GList *l;
   AltkWidget *box, *tview;
-  l_trash_push();
   /* box */
   box = altk_box_new(ALTK_VERTICAL);
   ALTK_CONTAINER_ADD(page->body, box);
@@ -151,7 +150,34 @@ void _mine_page_set_colony ( MbtkInfoPanel *panel,
         (mbtk_task_view_new(l->data));
       ALTK_BOX_ADD(box, tview, 0);
     }
-  l_trash_pop();
+}
+
+
+
+void _food_page_set_colony ( MbtkInfoPanel *panel,
+                             Page *page,
+                             MbcProxy *colony )
+{
+  MbcTaskProxy *t_farm;
+  GList *l;
+  AltkWidget *box, *tview;
+  /* box */
+  box = altk_box_new(ALTK_VERTICAL);
+  ALTK_CONTAINER_ADD(page->body, box);
+  /* main task */
+  t_farm = mbc_task_proxy_find(MBC_TASK_PROXY(MBC_COLONY_PROXY(colony)->top_task),
+                               "work/farm");
+  ASSERT(t_farm);
+  tview = L_TRASH_OBJECT
+    (mbtk_task_view_new(MBC_PROXY(t_farm)));
+  ALTK_BOX_ADD(box, tview, 0);
+  /* sub tasks */
+  for (l = t_farm->children; l; l = l->next)
+    {
+      tview = L_TRASH_OBJECT
+        (mbtk_task_view_new(l->data));
+      ALTK_BOX_ADD(box, tview, 0);
+    }
 }
 
 
@@ -197,6 +223,9 @@ void mbtk_info_panel_set_colony ( MbtkInfoPanel *panel,
   ASSERT(colony); /* [todo] */
   ASSERT(MBC_IS_COLONY_PROXY(colony));
   ASSERT(!priv->colony); /* [todo] */
+  l_trash_push();
   priv->colony = l_object_ref(colony);
+  _food_page_set_colony(panel, _get_page(panel, "food"), colony);
   _mine_page_set_colony(panel, _get_page(panel, "mine"), colony);
+  l_trash_pop();
 }
