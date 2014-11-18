@@ -12,13 +12,13 @@ libmarabunta_common_la_SOURCES = \
 	mbobject.c \
 	mbgame.c \
 	mbplayer.c \
+	mbworld.c \
 	mbmessage.c \
 	mbstate.c \
 	mbpriority.c \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
-	mbworld.c \
 	mbpoptype.c \
 	mbresource.c
 
@@ -27,19 +27,19 @@ BUILT_SOURCES = \
 	mbobject-def.h mbobject.inl \
 	mbgame-def.h mbgame.inl \
 	mbplayer-def.h mbplayer.inl \
+	mbworld-def.h mbworld.inl \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
-	mbpriority-def.h mbpriority.inl \
-	mbworld-def.h mbworld.inl
+	mbpriority-def.h mbpriority.inl
 
 mbapp-def.h mbapp.inl \
 mbobject-def.h mbobject.inl \
 mbgame-def.h mbgame.inl \
 mbplayer-def.h mbplayer.inl \
+mbworld-def.h mbworld.inl \
 mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \
-mbworld-def.h mbworld.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in

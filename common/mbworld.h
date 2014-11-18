@@ -4,7 +4,7 @@
 #ifndef _MBWORLD_H_
 #define _MBWORLD_H_
 
-#include "common/mbbase.h"
+#include "common/mbobject.h"
 #include "common/mbworld-def.h"
 
 
@@ -27,7 +27,8 @@ struct _MbWorldClass
 
 
 
-MbWorld *mb_world_new ( void );
+MbObject *mb_world_new ( MbObject *game,
+                         MbObjectID id );
 
 
 

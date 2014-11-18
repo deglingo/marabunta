@@ -18,6 +18,10 @@ namespace Mb
   class Player : Object
   {
   };
+
+  class World : Object
+  {
+  };
   
   class Message
   {
@@ -28,10 +32,6 @@ namespace Mb
   };
 
   class Priority
-  {
-  };
-
-  class World
   {
   };
 }

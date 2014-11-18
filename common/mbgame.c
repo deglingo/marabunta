@@ -4,6 +4,7 @@
 #include "common/private.h"
 #include "common/mbgame.h"
 #include "common/mbplayer.h"
+#include "common/mbworld.h"
 #include "common/mbgame.inl"
 
 
@@ -80,4 +81,14 @@ MbObject *mb_game_add_player ( MbGame *game,
   player = mb_player_new(MB_OBJECT(game), id, name);
   game->players = g_list_append(game->players, player);
   return player;
+}
+
+
+
+/* mb_game_setup:
+ */
+void mb_game_setup ( MbGame *game )
+{
+  ASSERT(!game->world);
+  game->world = mb_world_new(MB_OBJECT(game), 0);
 }

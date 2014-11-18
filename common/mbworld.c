@@ -9,7 +9,10 @@
 
 /* mb_world_new:
  */
-MbWorld *mb_world_new ( void )
+MbObject *mb_world_new ( MbObject *game,
+                         MbObjectID id )
 {
-  return MB_WORLD(l_object_new(MB_CLASS_WORLD, NULL));
+  MbObject *world;
+  world = mb_object_new(MB_CLASS_WORLD, game, id);
+  return world;
 }
