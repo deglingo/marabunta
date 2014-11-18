@@ -211,6 +211,9 @@ static void player_message_handler ( MbsPlayerID player,
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
   app->new_game = mb_game_new(0);
+  app->new_player = mb_game_add_player(MB_GAME(app->new_game),
+                                       0,
+                                       "Player1" /* [fixme] msg handler */);
   app->game = mbs_game_new();
   app->player = mbs_game_add_player(app->game, "Player1", player_message_handler, app, NULL);
 }

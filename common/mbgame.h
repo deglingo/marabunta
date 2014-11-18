@@ -19,6 +19,7 @@ struct _MbGame
 
   volatile MbObjectID id_counter;
   GHashTable *object_map;
+  GList *players;
 };
 
 
@@ -38,6 +39,9 @@ void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,
                                   MbObjectID id );
+MbObject *mb_game_add_player ( MbGame *game,
+                               guint id,
+                               const gchar *name );
 
 
 

@@ -3,6 +3,7 @@
 
 #include "common/private.h"
 #include "common/mbgame.h"
+#include "common/mbplayer.h"
 #include "common/mbgame.inl"
 
 
@@ -26,7 +27,7 @@ static void mb_game_init ( LObject *obj )
 MbObject *mb_game_new ( guint id )
 {
   MbObject *game;
-  game = mb_object_new(MB_CLASS_GAME, id, NULL);
+  game = mb_object_new(MB_CLASS_GAME, NULL, id);
   return game;
 }
 
@@ -65,4 +66,18 @@ MbObject *mb_game_lookup_object ( MbGame *game,
 {
   return g_hash_table_lookup(game->object_map,
                              GUINT_TO_POINTER(id));
+}
+
+
+
+/* mb_game_add_player:
+ */
+MbObject *mb_game_add_player ( MbGame *game,
+                               guint id,
+                               const gchar *name )
+{
+  MbObject *player;
+  player = mb_player_new(MB_OBJECT(game), id, name);
+  game->players = g_list_append(game->players, player);
+  return player;
 }

@@ -24,7 +24,8 @@ struct _MbcApp
   /* solo game */
   MbsGame *game; /* [removeme] */
   MbObject *new_game;
-  MbsPlayerID player;
+  MbsPlayerID player; /* [removeme] */
+  MbObject *new_player;
 
   /* proxy datas */
   MbcGameProxy *game_proxy;

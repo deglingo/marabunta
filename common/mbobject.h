@@ -40,8 +40,8 @@ struct _MbObjectClass
 #define MB_OBJECT_ID(obj) (MB_OBJECT(obj)->id)
 
 MbObject *mb_object_new ( LObjectClass *cls,
-                          guint id,
-                          MbObject *game );
+                          MbObject *game,
+                          MbObjectID id );
 
 
 

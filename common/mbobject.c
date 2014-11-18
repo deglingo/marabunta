@@ -11,8 +11,8 @@
 /* mb_object_new:
  */
 MbObject *mb_object_new ( LObjectClass *cls,
-                          guint id,
-                          MbObject *game )
+                          MbObject *game,
+                          MbObjectID id )
 {
   MbObject *obj;
   ASSERT(l_object_issubclass(L_OBJECT(cls), L_OBJECT(MB_CLASS_OBJECT)));
