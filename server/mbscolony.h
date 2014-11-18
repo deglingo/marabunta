@@ -36,6 +36,7 @@ struct _MbsColony
   gint64 score_pop_soldier;
   /* rooms list */
   MbsRoom *rooms[MB_ROOM_TYPE_COUNT];
+  GHashTable *stock;
 };
 
 
@@ -65,6 +66,14 @@ void mbs_colony_adjust_hatch_score ( MbsColony *colony,
 void mbs_colony_adjust_hatch_scores ( MbsColony *colony );
 void mbs_colony_create_room ( MbsColony *colony,
                               MbRoomType type );
+gint64 mbs_colony_set_stock ( MbsColony *colony,
+                              MbsObjectID rscid,
+                              gint64 qtty );
+gint64 mbs_colony_add_stock ( MbsColony *colony,
+                              MbsObjectID rscid,
+                              gint64 qtty );
+gint64 mbs_colony_get_stock ( MbsColony *colony,
+                              MbsObjectID rscid );
 
 
 

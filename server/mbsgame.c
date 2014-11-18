@@ -38,7 +38,8 @@ typedef struct _Private
   Player *players[MAX_PLAYERS];
   gint n_players;
   GHashTable *control_map;
-  GHashTable *resources; /* map < gchar *name, MbsObject *rsc > */
+  GHashTable *resources_by_name; /* map < gchar *name, MbsObject *rsc > */
+  GHashTable *resources_by_id;   /* map < MbsObjectID id, MbsObject *rsc > */
 }
   Private;
 
@@ -88,7 +89,8 @@ static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
   PRIVATE(obj)->control_map = g_hash_table_new(NULL, NULL);
-  PRIVATE(obj)->resources = g_hash_table_new(g_str_hash, g_str_equal);
+  PRIVATE(obj)->resources_by_name = g_hash_table_new(g_str_hash, g_str_equal);
+  PRIVATE(obj)->resources_by_id = g_hash_table_new(NULL, NULL);
 }
 
 
@@ -112,7 +114,12 @@ MbsObject *mbs_game_register_resource ( MbsGame *game,
   MbsResource *rsc;
   ASSERT(!mbs_game_get_resource(game, name));
   rsc = mbs_resource_new(name, flags);
-  g_hash_table_insert(priv->resources, rsc->name, rsc);
+  g_hash_table_insert(priv->resources_by_name,
+                      rsc->name,
+                      rsc);
+  g_hash_table_insert(priv->resources_by_id,
+                      GUINT_TO_POINTER(MBS_OBJECT_ID(rsc)),
+                      rsc);
   return MBS_OBJECT(rsc);
 }
 
@@ -123,7 +130,19 @@ MbsObject *mbs_game_register_resource ( MbsGame *game,
 MbsObject *mbs_game_get_resource ( MbsGame *game,
                                    const gchar *name )
 {
-  return g_hash_table_lookup(PRIVATE(game)->resources, name);
+  return g_hash_table_lookup(PRIVATE(game)->resources_by_name,
+                             name);
+}
+
+
+
+/* mbs_game_get_resource_by_id:
+ */
+MbsObject *mbs_game_get_resource_by_id ( MbsGame *game,
+                                         MbsObjectID id )
+{
+  return g_hash_table_lookup(PRIVATE(game)->resources_by_id,
+                             GUINT_TO_POINTER(id));
 }
 
 
@@ -500,7 +519,7 @@ static void _send_resources_setup ( MbsGame *game,
   MbStateNewResource *st_rsc;
   GHashTableIter iter;
   gpointer key, value;
-  g_hash_table_iter_init(&iter, PRIVATE(game)->resources);
+  g_hash_table_iter_init(&iter, PRIVATE(game)->resources_by_id);
   while (g_hash_table_iter_next(&iter, &key, &value))
     {
       MbsResource *rsc = value;

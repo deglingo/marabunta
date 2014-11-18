@@ -11,6 +11,36 @@
 
 
 
+/* StockNode:
+ */
+typedef struct _StockNode
+{
+  MbsObject *resource;
+  gint64 qtty;
+}
+  StockNode;
+
+
+
+/* stock_node_new:
+ */
+static StockNode *stock_node_new ( void )
+{
+  /* [FIXME] use a trash stack */
+  return g_new0(StockNode, 1);
+}
+
+
+
+/* stock_node_free:
+ */
+static void stock_node_free ( StockNode *node )
+{
+  g_free(node);
+}
+
+
+
 /* FoodData:
  */
 typedef struct _FoodData
@@ -58,7 +88,8 @@ static gboolean t_food_check ( MbsTask *task )
 
 static void t_food_process ( MbsTask *task )
 {
-  /* CL_DEBUG("[TODO]"); */
+  FoodData *data = task->data;
+  mbs_colony_add_stock(MBS_COLONY(task->colony), data->food_id, task->workers);
 }
 
 
@@ -101,6 +132,9 @@ MbsColony *mbs_colony_new ( MbsSector *sector,
       t_mine_process,
     };
   MbsColony *col = MBS_COLONY_NEW(NULL);
+  col->stock = g_hash_table_new_full(NULL, NULL,
+                                     NULL,
+                                     (GDestroyNotify) stock_node_free);
   col->sector = sector;
   col->owner = owner;
   col->pop_tree = mbs_pop_tree_new();
@@ -243,4 +277,63 @@ void mbs_colony_create_room ( MbsColony *colony,
 {
   ASSERT(!colony->rooms[type]);
   colony->rooms[type] = mbs_room_new(type);
+}
+
+
+
+/* mbs_colony_set_stock:
+ */
+gint64 mbs_colony_set_stock ( MbsColony *colony,
+                              MbsObjectID rscid,
+                              gint64 qtty )
+{
+  StockNode *node;
+  if ((node = g_hash_table_lookup(colony->stock,
+                                  GUINT_TO_POINTER(rscid))))
+    {
+      if (qtty == 0)
+        g_hash_table_remove(colony->stock, GUINT_TO_POINTER(rscid));
+      else
+        node->qtty = qtty;
+    }
+  else
+    {
+      if (qtty != 0)
+        {
+          StockNode *node = stock_node_new();
+          node->resource = mbs_game_get_resource_by_id(colony->sector->world->game, rscid);
+          ASSERT(node->resource);
+          node->qtty = qtty;
+          g_hash_table_insert(colony->stock, GUINT_TO_POINTER(rscid), node);
+        }
+    }
+  return qtty;
+}
+
+
+
+/* mbs_colony_add_stock:
+ */
+gint64 mbs_colony_add_stock ( MbsColony *colony,
+                              MbsObjectID rscid,
+                              gint64 qtty )
+{
+  /* [FIXME] optimization possible */
+  return mbs_colony_set_stock(colony,
+                              rscid,
+                              mbs_colony_get_stock(colony, rscid) + qtty);
+}
+
+
+
+/* mbs_colony_get_stock:
+ */
+gint64 mbs_colony_get_stock ( MbsColony *colony,
+                              MbsObjectID rscid )
+{
+  StockNode *node;
+  if ((node = g_hash_table_lookup(colony->stock, GUINT_TO_POINTER(rscid))))
+    return node->qtty;
+  else
+    return 0;
 }
