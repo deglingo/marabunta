@@ -13,6 +13,8 @@
 
 #include "common/mbgame.h"
 
+#include "common/mbplayer.h"
+
 #include "common/mbmessage.h"
 
 #include "common/mbstate.h"

@@ -5,9 +5,16 @@
 #define _MBPLAYER_H_
 
 #include "common/mbobject.h"
+#include "common/mbstate.h"
 #include "common/mbplayer-def.h"
 
 G_BEGIN_DECLS
+
+
+
+typedef void (* MbPlayerHandler) ( MbPlayer *player,
+                                   MbState *state,
+                                   gpointer data );
 
 
 
@@ -18,6 +25,9 @@ struct _MbPlayer
   MB_PLAYER_INSTANCE_HEADER;
 
   gchar *name;
+  MbPlayerHandler handler;
+  gpointer handler_data;
+  GDestroyNotify destroy_data;
 };
 
 
@@ -33,7 +43,12 @@ struct _MbPlayerClass
 
 MbObject *mb_player_new ( MbObject *game,
                           guint id,
-                          const gchar *name );
+                          const gchar *name,
+                          MbPlayerHandler handler,
+                          gpointer handler_data,
+                          GDestroyNotify destroy_data );
+void mb_player_handle_state ( MbPlayer *player,
+                              MbState *state );
 
 
 

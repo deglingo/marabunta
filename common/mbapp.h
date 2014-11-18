@@ -26,8 +26,6 @@ struct _MbAppClass
 {
   MB_APP_CLASS_HEADER;
 
-  void (* setup) ( MbApp *app );
-
   gint (* run) ( MbApp *app );
 };
 

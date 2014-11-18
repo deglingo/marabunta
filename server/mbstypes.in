@@ -1,52 +1,14 @@
 /* -*- c++ -*- */
 
+namespace Mb
+{
+  extern class Game;
+}
+
 namespace Mbs
 {
-  class App
+  class Game : Mb::Game
   {
-  };
-
-  class Object
-  {
-    void init ();
-  };
-  
-  class World : Object
-  {
-  };
-
-  class Sector : Object
-  {
-  };
-
-  class Colony : Object
-  {
-  };
-
-  class Control : Object
-  {
-  };
-  
-  class Priority : Control
-  {
-    void class_init ();
-  };
-  
-  class Task : Object
-  {
-  };
-
-  class Room : Object
-  {
-  };
-
-  class Resource : Object
-  {
-  };
-
-  class Game : Object
-  {
-    void class_init ();
     void init ();
   };
 }

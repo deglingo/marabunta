@@ -28,6 +28,8 @@ typedef struct _MbStateNewResource MbStateNewResource;
 typedef struct _MbStatePop MbStatePop;
 typedef struct _MbStateTask MbStateTask;
 typedef struct _MbStatePriority MbStatePriority;
+/* new ones */
+typedef struct _MbStateGameSetup MbStateGameSetup;
 
 
 
@@ -46,6 +48,8 @@ enum _MbStateType
     MB_STATE_NEW_PRIORITY,
     MB_STATE_TASK,
     MB_STATE_PRIORITY,
+    /* new ones */
+    MB_STATE_GAME_SETUP,
     MB_STATE_COUNT,
   };
 
@@ -186,6 +190,16 @@ struct _MbStatePriority
   MbStateBlock block;
   guint priority_id;
   MbPriorityValue value;
+};
+
+
+
+/* MbStateGameSetup:
+ */
+struct _MbStateGameSetup
+{
+  MbStateBlock block;
+  MbObjectID game_id;
 };
 
 

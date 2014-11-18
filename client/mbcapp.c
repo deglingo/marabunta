@@ -3,9 +3,6 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcapp.h"
-#include "client/mbccolonyproxy.h"
-#include "client/mbctaskproxy.h"
-#include "client/mbcpriorityproxy.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -56,167 +53,11 @@ static void mbc_app_init ( LObject *object )
 
 
 
-/* _process_game_state:
- */
-static void _process_game_state ( MbcApp *app,
-                                  MbsPlayerID player,
-                                  MbState *state )
-{
-  MbStateBlock *block;
-  guint offset = 0;
-  while ((block = mb_state_read(state, &offset)))
-    {
-      switch (block->type)
-        {
-        case MB_STATE_RESET:
-          {
-            MbStateReset *st_reset = (MbStateReset *) block;
-            ASSERT(!app->game_proxy); /* [todo] delete */
-            app->game_proxy = mbc_game_proxy_new(app, st_reset->game_id);
-            mbc_game_proxy_reset(app->game_proxy);
-            mbc_game_proxy_create_world(app->game_proxy,
-                                        st_reset->world_id,
-                                        st_reset->world_width,
-                                        st_reset->world_height);
-          }
-          break;
-        case MB_STATE_SECTOR:
-          {
-            MbStateSector *st_sector = (MbStateSector *) block;
-            mbc_game_proxy_create_sector(app->game_proxy,
-                                         st_sector->sector_id,
-                                         st_sector->x,
-                                         st_sector->y);
-          }
-          break;
-        case MB_STATE_COLONY:
-          {
-            MbStateColony *st_col = (MbStateColony *) block;
-            mbc_game_proxy_create_colony(app->game_proxy,
-                                         st_col->colony_id,
-                                         st_col->sector_id,
-                                         st_col->owner);
-          }
-          break;
-        case MB_STATE_FRAME:
-          {
-            MbStateFrame *st_frame = (MbStateFrame *) block;
-            mbc_game_proxy_set_sim_time(app->game_proxy, st_frame->sim_time);
-          }
-          break;
-        case MB_STATE_NEW_PRIORITY:
-          {
-            MbStateNewPriority *st_prio = (MbStateNewPriority *) block;
-            mbc_game_proxy_create_priority(app->game_proxy,
-                                           st_prio->priority_id,
-                                           st_prio->value);
-          }
-          break;
-        case MB_STATE_NEW_TASK:
-          {
-            MbStateNewTask *st_task = (MbStateNewTask *) block;
-            mbc_game_proxy_create_task(app->game_proxy,
-                                       st_task->task_id,
-                                       st_task->colony_id,
-                                       st_task->parent_id,
-                                       st_task->priority_id,
-                                       st_task->isgroup,
-                                       st_task->name,
-                                       st_task->workers);
-          }
-          break;
-        case MB_STATE_NEW_ROOM:
-          {
-            MbStateNewRoom *st_room = (MbStateNewRoom *) block;
-            mbc_game_proxy_create_room(app->game_proxy,
-                                       st_room->room_id,
-                                       st_room->type,
-                                       st_room->colony_id);
-          }
-          break;
-        case MB_STATE_NEW_RESOURCE:
-          {
-            MbStateNewResource *st_rsc = (MbStateNewResource *) block;
-            mbc_game_proxy_create_resource(app->game_proxy,
-                                           st_rsc->resource_id,
-                                           st_rsc->name);
-          }
-          break;
-        case MB_STATE_POP:
-          {
-            MbStatePop *st_pop = (MbStatePop *) block;
-            MbcProxy *col = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy), st_pop->colony_id);
-            ASSERT(col);
-            ASSERT(MBC_IS_COLONY_PROXY(col));
-            mbc_colony_proxy_set_pop(MBC_COLONY_PROXY(col), st_pop->pop);
-          }
-          break;
-        case MB_STATE_TASK:
-          {
-            MbStateTask *st_task = (MbStateTask *) block;
-            MbcProxy *task = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy),
-                                                          st_task->task_id);
-            ASSERT(task);
-            ASSERT(MBC_IS_TASK_PROXY(task));
-            mbc_task_proxy_set_workers(MBC_TASK_PROXY(task), st_task->workers);
-          }
-          break;
-        case MB_STATE_PRIORITY:
-          {
-            MbStatePriority *st_prio = (MbStatePriority *) block;
-            MbcProxy *prio = mbc_game_proxy_lookup_object(MBC_GAME_PROXY(app->game_proxy),
-                                                          st_prio->priority_id);
-            ASSERT(prio);
-            ASSERT(MBC_IS_PRIORITY_PROXY(prio));
-            mbc_priority_proxy_set_value(MBC_PRIORITY_PROXY(prio), st_prio->value);
-          }
-          break;
-        default:
-          CL_ERROR("[TODO] block type: %d", block->type);
-        }
-    }
-}
-
-
-
-/* player_message_handler:
- */
-static void player_message_handler ( MbsPlayerID player,
-                                     MbMessage *message,
-                                     gpointer data )
-{
-  MbcApp *app = data;
-  /* CL_DEBUG("message(player=%d, key=%d", player, message->key); */
-  switch (message->key)
-    {
-    case MB_MESSAGE_KEY_GAME_SETUP:
-      /* CL_DEBUG("game_setup"); */
-      _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
-      mbc_app_setup_proxy(app);
-      break;
-    case MB_MESSAGE_KEY_GAME_STATE:
-      /* CL_DEBUG("game_state"); */
-      ASSERT(MB_IS_STATE(message->arg));
-      _process_game_state(MBC_APP(data), player, MB_STATE(message->arg));
-      break;
-    default:
-      CL_DEBUG("[TODO] msg key %d", message->key);
-    }
-}
-
-
-
 /* mbc_app_setup_solo_game:
  */
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
-  app->new_game = mb_game_new(0);
-  app->new_player = mb_game_add_player(MB_GAME(app->new_game),
-                                       0,
-                                       "Player1" /* [fixme] msg handler */);
-  mb_game_setup(MB_GAME(app->new_game));
   app->game = mbs_game_new();
-  app->player = mbs_game_add_player(app->game, "Player1", player_message_handler, app, NULL);
 }
 
 
@@ -229,25 +70,4 @@ static gint run ( MbApp *app )
   loop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(loop);
   return 0;
-}
-
-
-
-/* mbc_app_setup_proxy:
- */
-void mbc_app_setup_proxy ( MbcApp *app )
-{
-  ASSERT(MBC_APP_GET_CLASS(app)->setup_proxy);
-  MBC_APP_GET_CLASS(app)->setup_proxy(app);
-}
-
-
-
-/* mbc_app_send_message:
- */
-void mbc_app_send_message ( MbcApp *app,
-                            MbMessage *msg )
-{
-  ASSERT(app->game);
-  mbs_game_handle_message(app->game, msg);
 }

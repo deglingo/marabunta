@@ -7,46 +7,6 @@ namespace Mb
 
 namespace Mbc
 {
-  class Proxy
-  {
-  };
-  
-  class GameProxy : Proxy
-  {
-    void class_init ();
-  };
-
-  class WorldProxy : Proxy
-  {
-  };
-
-  class SectorProxy : Proxy
-  {
-  };
-
-  class ColonyProxy : Proxy
-  {
-    void class_init ();
-  };
-
-  class PriorityProxy : Proxy
-  {
-    void class_init ();
-  };
-  
-  class TaskProxy : Proxy
-  {
-    void class_init ();
-  };
-
-  class RoomProxy : Proxy
-  {
-  };
-
-  class ResourceProxy : Proxy
-  {
-  };
-  
   class App : Mb::App
   {
     void class_init ();

@@ -13,7 +13,6 @@ gint mb_app_main ( MbApp *app,
                    gchar **argv )
 {
   gint r;
-  MB_APP_GET_CLASS(app)->setup(app);
   r = MB_APP_GET_CLASS(app)->run(app);
   return r;
 }

@@ -6,8 +6,6 @@
 
 #include "server/mbsbase.h"
 
-#include "server/mbsobject.h"
-
 #include "server/mbsgame.h"
 
 #endif

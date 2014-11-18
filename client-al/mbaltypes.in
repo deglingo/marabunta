@@ -2,12 +2,7 @@
 
 namespace Altk
 {
-  extern class Widget;
-  extern class Container;
   extern class Dialog;
-  extern class Box;
-  extern class Table;
-  extern class Frame;
 }
 
 namespace Mbc
@@ -26,34 +21,6 @@ namespace Mbal
 namespace Mbtk
 {
   class Dialog : Altk::Dialog
-  {
-  };
-
-  class Priority : Altk::Frame
-  {
-  };
-  
-  class MapView : Altk::Table
-  {
-  };
-
-  class PopTable : Altk::Frame
-  {
-    void init ();
-  };
-
-  class ColonyView : Altk::Widget
-  {
-    void class_init ();
-    void init ();
-  };
-
-  class InfoPanel : Altk::Frame
-  {
-    void init ();
-  };
-
-  class TaskView : Altk::Frame
   {
   };
 }
