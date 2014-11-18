@@ -9,6 +9,10 @@
 
 #include "common/mbapp.h"
 
+#include "common/mbobject.h"
+
+#include "common/mbgame.h"
+
 #include "common/mbmessage.h"
 
 #include "common/mbstate.h"

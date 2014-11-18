@@ -5,6 +5,15 @@ namespace Mb
   class App
   {
   };
+
+  class Object
+  {
+  };
+
+  class Game : Object
+  {
+    void init ();
+  };
   
   class Message
   {

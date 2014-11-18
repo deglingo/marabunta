@@ -22,7 +22,8 @@ struct _MbcApp
   /* LUnpacker *unpacker; */
 
   /* solo game */
-  MbsGame *game;
+  MbsGame *game; /* [removeme] */
+  MbObject *new_game;
   MbsPlayerID player;
 
   /* proxy datas */

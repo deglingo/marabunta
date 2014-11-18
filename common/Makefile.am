@@ -9,6 +9,8 @@ libmarabunta_common_la_CFLAGS = -DCL_LOG_DOMAIN=\"mbcommon\" -I$(top_srcdir) -I$
 libmarabunta_common_la_SOURCES = \
 	mbbase.c \
 	mbapp.c \
+	mbobject.c \
+	mbgame.c \
 	mbmessage.c \
 	mbstate.c \
 	mbpriority.c \
@@ -21,12 +23,16 @@ libmarabunta_common_la_SOURCES = \
 
 BUILT_SOURCES = \
 	mbapp-def.h mbapp.inl \
+	mbobject-def.h mbobject.inl \
+	mbgame-def.h mbgame.inl \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
 	mbpriority-def.h mbpriority.inl \
 	mbworld-def.h mbworld.inl
 
 mbapp-def.h mbapp.inl \
+mbobject-def.h mbobject.inl \
+mbgame-def.h mbgame.inl \
 mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \

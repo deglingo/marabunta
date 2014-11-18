@@ -382,53 +382,6 @@ static void _sector_update ( MbsGame *game,
 
 
 
-/* _update_colony_state:
- */
-static void _update_colony_state ( MbsGame *game,
-                                   MbsColony *colony )
-{
-  MbState *state;
-  MbStateColonyUpdate *st_col;
-  GHashTableIter iter;
-  gpointer key, value;
-  MbStateStock *st_stock;
-  state = game->players[colony->owner];
-  st_col = mb_state_next(state, MB_STATE_COLONY_UPDATE);
-  st_col->colony_id = MBS_OBJECT_ID(colony);
-  ASSERT(g_hash_table_size(colony->stock) <= MB_RESOURCE_MAX_COUNT);
-  g_hash_table_iter_init(&iter, colony->stock);
-  for (st_stock = st_col->stock;
-       g_hash_table_iter_next(&iter, &key, &value);
-       st_stock++)
-    {
-      MbsStockNode *node = value;
-      st_stock->resource_id = MBS_OBJECT_ID(node->resource);
-      st_stock->qtty = node->qtty;
-    }
-}
-
-
-
-/* _update_game_state:
- */
-static void _update_game_state ( MbsGame *game )
-{
-  gint x, y;
-  for (y = 0; y < game->world->height; y++)
-    {
-      for (x = 0; x < game->world->width; x++)
-        {
-          MbsSector *sector = game->sectors[y][x];
-          if (sector->colony)
-            {
-              _update_colony_state(game, sector->colony);
-            }
-        }
-    }
-}
-
-
-
 /* _game_update:
  */
 static void _game_update ( MbsGame *game )
@@ -453,8 +406,6 @@ static void _game_update ( MbsGame *game )
   for (y = 0; y < game->world->height; y++)
     for (x = 0; x < game->world->width; x++)
       _sector_update(game, game->world->sectors[y][x]);
-  /* game state */
-  _update_game_state(game);
   /* send all the messages */
   for (p = 0; p < priv->n_players; p++)
     {
