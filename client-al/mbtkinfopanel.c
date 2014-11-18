@@ -8,15 +8,16 @@
 
 
 
-/* PageInfo:
+/* Page:
  */
-typedef struct _PageInfo
+typedef struct _Page
 {
-  AltkWidget *panel;
-  AltkWidget *page;
   gchar *name;
+  AltkWidget *panel;
+  AltkWidget *frame;
+  AltkWidget *body;
 }
-  PageInfo;
+  Page;
 
 
 
@@ -25,8 +26,9 @@ typedef struct _PageInfo
 typedef struct _Private
 {
   MbcProxy *colony;
+  AltkWidget *button_box;
   GList *pages;
-  PageInfo *current_page;
+  Page *current_page;
 }
   Private;
 
@@ -43,13 +45,79 @@ static void mbtk_info_panel_init ( LObject *obj )
 
 
 
-PageInfo *_get_page ( MbtkInfoPanel *panel,
-                      const gchar *name )
+static void _set_page ( MbtkInfoPanel *panel,
+                        Page *page )
+{
+  Private *priv = PRIVATE(panel);
+  ASSERT(page->panel == ALTK_WIDGET(panel));
+  if (priv->current_page == page)
+    return;
+  if (priv->current_page)
+    altk_widget_hide(priv->current_page->frame);
+  priv->current_page = page;
+  altk_widget_show(page->frame);
+}
+
+
+
+static void _on_page_button_clicked ( AltkWidget *button,
+                                      Page *page )
+{
+  _set_page(MBTK_INFO_PANEL(page->panel), page);
+}
+
+
+
+static Page *_create_page ( AltkWidget *panel,
+                            const gchar *name,
+                            const gchar *title,
+                            const gchar *label )
+{
+  Private *priv = PRIVATE(panel);
+  Page *page;
+  AltkWidget *box, *button, *title_label;
+  page = g_new0(Page, 1);
+  page->panel = panel;
+  page->name = g_strdup(name);
+  /* button */
+  button = L_TRASH_OBJECT
+    (altk_button_new_with_label(label));
+  ALTK_BOX_ADD(priv->button_box, button, 0);
+  l_signal_connect(L_OBJECT(button),
+                   "clicked", 0,
+                   (LSignalHandler) _on_page_button_clicked,
+                   page,
+                   NULL);
+  /* page frame */
+  page->frame = L_TRASH_OBJECT
+    (altk_frame_new(name));
+  altk_widget_set_enable_show_all(page->frame, FALSE);
+  /* box */
+  box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(page->frame, box);
+  /* page title */
+  title_label = L_TRASH_OBJECT
+    (altk_label_new(title));
+  ALTK_BOX_ADD(box, title_label, 0);
+  /* body */
+  page->body = L_TRASH_OBJECT
+    (altk_frame_new("body"));
+  ALTK_BOX_ADD(box, page->body, ALTK_PACK_EXPAND_FILL);
+  /* register */
+  priv->pages = g_list_append(priv->pages, page);
+  return page;
+}
+
+
+
+Page *_get_page ( MbtkInfoPanel *panel,
+                  const gchar *name )
 {
   GList *l;
   for (l = PRIVATE(panel)->pages; l; l = l->next)
     {
-      PageInfo *page = l->data;
+      Page *page = l->data;
       if (!strcmp(page->name, name))
         return page;
     }
@@ -58,86 +126,32 @@ PageInfo *_get_page ( MbtkInfoPanel *panel,
 
 
 
-static void _on_page_button_clicked ( AltkWidget *button,
-                                      PageInfo *info )
-{
-  Private *priv = PRIVATE(info->panel);
-  if (priv->current_page == info)
-    return;
-  if (priv->current_page)
-    altk_widget_hide(priv->current_page->page);
-  priv->current_page = info;
-  altk_widget_show(priv->current_page->page);
-}
-
-
-
-static void _add_page ( AltkWidget *panel,
-                        AltkWidget *top_box,
-                        AltkWidget *but_box,
-                        const gchar *label,
-                        AltkWidget *page,
-                        const gchar *name )
-{
-  Private *priv = PRIVATE(panel);
-  PageInfo *info = g_new0(PageInfo, 1);
-  AltkWidget *button;
-  info->panel = panel;
-  info->name = g_strdup(name);
-  button = L_TRASH_OBJECT
-    (altk_button_new_with_label(label));
-  ALTK_BOX_ADD(but_box, button, 0);
-  info->page = page;
-  altk_widget_show_all(info->page);
-  altk_widget_hide(info->page);
-  altk_widget_set_enable_show_all(info->page, FALSE);
-  priv->pages = g_list_append(priv->pages, info);
-  ALTK_BOX_ADD(top_box, info->page, ALTK_PACK_EXPAND_FILL);
-  l_signal_connect(L_OBJECT(button),
-                   "clicked", 0,
-                   (LSignalHandler) _on_page_button_clicked,
-                   info, NULL);
-}
-
-
-
-AltkWidget *_create_mine_page ( void )
-{
-  AltkWidget *page, *box, *title;
-  page = altk_frame_new("Mine");
-  box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_VERTICAL));
-  ALTK_CONTAINER_ADD(page, box);
-  title = L_TRASH_OBJECT
-    (altk_label_new("Mine"));
-  ALTK_BOX_ADD(box, title, 0);
-  return page;
-}
-
-
-
 void _mine_page_set_colony ( MbtkInfoPanel *panel,
-                             PageInfo *page,
+                             Page *page,
                              MbcProxy *colony )
 {
   MbcTaskProxy *t_mine;
   GList *l;
-  AltkWidget *box = ALTK_BIN_CHILD(page->page);
-  AltkWidget *tview;
+  AltkWidget *box, *tview;
+  l_trash_push();
+  /* box */
+  box = altk_box_new(ALTK_VERTICAL);
+  ALTK_CONTAINER_ADD(page->body, box);
+  /* main task */
   t_mine = mbc_task_proxy_find(MBC_TASK_PROXY(MBC_COLONY_PROXY(colony)->top_task),
                                "work/mine");
   ASSERT(t_mine);
-  tview = mbtk_task_view_new(MBC_PROXY(t_mine));
+  tview = L_TRASH_OBJECT
+    (mbtk_task_view_new(MBC_PROXY(t_mine)));
   ALTK_BOX_ADD(box, tview, 0);
-  l_object_unref(tview);
-  altk_widget_show_all(tview);
+  /* sub tasks */
   for (l = t_mine->children; l; l = l->next)
     {
-      AltkWidget *tview = mbtk_task_view_new(l->data);
+      tview = L_TRASH_OBJECT
+        (mbtk_task_view_new(l->data));
       ALTK_BOX_ADD(box, tview, 0);
-      l_object_unref(tview);
-      altk_widget_show_all(tview);
     }
+  l_trash_pop();
 }
 
 
@@ -146,19 +160,29 @@ void _mine_page_set_colony ( MbtkInfoPanel *panel,
  */
 AltkWidget *mbtk_info_panel_new ( void )
 {
-  AltkWidget *panel, *top_box, *but_box;
+  AltkWidget *panel, *top_box;
+  Page *page;
+  Private *priv;
   panel = ALTK_WIDGET(MBTK_INFO_PANEL_NEW(NULL));
+  priv = PRIVATE(panel);
   l_trash_push();
   top_box = L_TRASH_OBJECT
     (altk_box_new(ALTK_HORIZONTAL));
   ALTK_CONTAINER_ADD(panel, top_box);
-  but_box = L_TRASH_OBJECT
+  /* button_box */
+  priv->button_box = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
   /* _add_page(panel, top_box, but_box, "Pop", "P"); */
-  _add_page(panel, top_box, but_box, "M",
-            L_TRASH_OBJECT(_create_mine_page()), "mine");
-  ALTK_BOX_ADD(top_box, but_box, ALTK_PACK_ANCHOR_TOP);
+  page = _create_page(panel, "pop", "Pop", "P");
+  ALTK_BOX_ADD(top_box, page->frame, ALTK_PACK_EXPAND_FILL);
+  page = _create_page(panel, "food", "Food", "F");
+  ALTK_BOX_ADD(top_box, page->frame, ALTK_PACK_EXPAND_FILL);
+  page = _create_page(panel, "mine", "Mine", "M");
+  ALTK_BOX_ADD(top_box, page->frame, ALTK_PACK_EXPAND_FILL);
+  /* add button box */
+  ALTK_BOX_ADD(top_box, priv->button_box, ALTK_PACK_ANCHOR_TOP);
   l_trash_pop();
+  _set_page(MBTK_INFO_PANEL(panel), priv->pages->data);
   return panel;
 }
 
