@@ -12,6 +12,7 @@
 typedef struct _RoomInfo
 {
   gchar *name; /* [fixme] */
+  gchar *task_path;
   gfloat x;
   gfloat y;
   gfloat w;
@@ -26,6 +27,7 @@ typedef struct _RoomInfo
 typedef struct _Room
 {
   MbObject *room;
+  MbObject *task;
   gint cx, cy;
   gint x, y, w, h;
 }
@@ -48,7 +50,7 @@ typedef struct _Private
 
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
-    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", 0.5, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn", 0.5, 0.5, 0.1, 0.1 },
   };
 
 
@@ -136,10 +138,16 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
     {
       MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
       Room *room;
+      const RoomInfo *info;
       if (!mb_room)
         continue;
       room = &priv->rooms[tp];
+      info = &ROOM_INFO[tp];
       room->room = l_object_ref(mb_room);
+      room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                                info->task_path);
+      ASSERT(room->task);
+      l_object_ref(room->task);
     }
   _rooms_layout(view);
 }

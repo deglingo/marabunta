@@ -113,6 +113,32 @@ void mbs_game_setup ( MbsGame *game )
 
 
 
+/* _send_task_setup:
+ */
+static void _send_task_setup ( MbsGame *game,
+                               MbState *state,
+                               MbObject *task )
+{
+  MbStateTaskSetup *st_task;
+  st_task = mb_state_next(state, MB_STATE_TASK_SETUP);
+  st_task->task_id = MB_OBJECT_ID(task);
+  st_task->colony_id = MB_OBJECT_ID(MB_TASK_COLONY(task));
+  st_task->parent_id = MB_TASK_PARENT(task) ? MB_OBJECT_ID(MB_TASK_PARENT(task)) : 0;
+  ASSERT(strlen(MB_TASK_NAME(task)) <= MB_TASK_MAX_NAME);
+  sprintf(st_task->name, MB_TASK_NAME(task));
+  st_task->isgroup = MB_TASK_ISGROUP(task);
+  if (MB_TASK_ISGROUP(task))
+    {
+      GList *l;
+      for (l = MB_TASK_CHILDREN(task); l; l = l->next)
+        {
+          _send_task_setup(game, state, l->data);
+        }
+    }
+}
+
+
+
 /* _send_colony_setup:
  */
 static void _send_colony_setup ( MbsGame *game,
@@ -125,6 +151,7 @@ static void _send_colony_setup ( MbsGame *game,
   st_col->colony_id = MB_OBJECT_ID(colony);
   st_col->sector_id = MB_OBJECT_ID(MB_COLONY_SECTOR(colony));
   st_col->owner_id = MB_OBJECT_ID(MB_COLONY_OWNER(colony));
+  _send_task_setup(game, state, MB_COLONY_TOP_TASK(colony));
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       MbObject *room = MB_COLONY_ROOM(colony, tp);

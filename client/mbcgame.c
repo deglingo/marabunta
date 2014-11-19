@@ -7,6 +7,7 @@
 #include "client/mbcworld.h"
 #include "client/mbcsector.h"
 #include "client/mbccolony.h"
+#include "client/mbctask.h"
 #include "client/mbcroom.h"
 #include "client/mbcgame.inl"
 
@@ -128,6 +129,35 @@ static void _handle_colony_update ( MbcGame *game,
 
 
 
+/* _handle_task_setup:
+ */
+static void _handle_task_setup ( MbcGame *game,
+                                 MbStateTaskSetup *st_task )
+{
+  MbObject *parent, *colony, *task;
+  colony = mb_game_lookup_object(MB_GAME(game), st_task->colony_id);
+  ASSERT(colony && MBC_IS_COLONY(colony));
+  if (st_task->isgroup)
+    task = mbc_task_new_group(MB_OBJECT(game), st_task->task_id, st_task->name);
+  else
+    task = mbc_task_new(MB_OBJECT(game), st_task->task_id, st_task->name);
+  if (st_task->parent_id)
+    {
+      parent = mb_game_lookup_object(MB_GAME(game), st_task->parent_id);
+      ASSERT(parent && MBC_IS_TASK(parent));
+      ASSERT(MB_TASK_COLONY(parent) == colony);
+      mb_task_add(MB_TASK(parent), task);
+    }
+  else
+    {
+      parent = NULL;
+      mb_colony_set_top_task(MB_COLONY(colony), task);
+    }
+  l_object_unref(task);
+}
+
+
+
 /* _handle_room_setup:
  */
 static void _handle_room_setup ( MbcGame *game,
@@ -163,6 +193,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_COLONY_SETUP:
           _handle_colony_setup(game, (MbStateColonySetup *) block);
+          break;
+        case MB_STATE_TASK_SETUP:
+          _handle_task_setup(game, (MbStateTaskSetup *) block);
           break;
         case MB_STATE_ROOM_SETUP:
           _handle_room_setup(game, (MbStateRoomSetup *) block);

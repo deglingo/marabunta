@@ -32,6 +32,7 @@ typedef struct _MbStatePriority MbStatePriority;
 typedef struct _MbStateGameSetup MbStateGameSetup;
 typedef struct _MbStateSectorSetup MbStateSectorSetup;
 typedef struct _MbStateColonySetup MbStateColonySetup;
+typedef struct _MbStateTaskSetup MbStateTaskSetup;
 typedef struct _MbStateRoomSetup MbStateRoomSetup;
 typedef struct _MbStateGameUpdate MbStateGameUpdate;
 typedef struct _MbStateColonyUpdate MbStateColonyUpdate;
@@ -59,6 +60,7 @@ enum _MbStateType
     MB_STATE_GAME_SETUP,
     MB_STATE_SECTOR_SETUP,
     MB_STATE_COLONY_SETUP,
+    MB_STATE_TASK_SETUP,
     MB_STATE_ROOM_SETUP,
     MB_STATE_GAME_UPDATE,
     MB_STATE_COLONY_UPDATE,
@@ -143,7 +145,7 @@ struct _MbStateNewTask
   guint colony_id;
   guint parent_id;
   gboolean isgroup;
-  gchar name[MBS_TASK_MAX_NAME+1];
+  gchar name[MB_TASK_MAX_NAME+1];
   guint priority_id;
   gint64 workers;
 };
@@ -250,6 +252,20 @@ struct _MbStateColonySetup
   MbObjectID colony_id;
   MbObjectID sector_id;
   MbObjectID owner_id;
+};
+
+
+
+/* MbStateTaskSetup:
+ */
+struct _MbStateTaskSetup
+{
+  MbStateBlock block;
+  MbObjectID task_id;
+  MbObjectID colony_id;
+  MbObjectID parent_id;
+  gchar name[MB_TASK_MAX_NAME+1];
+  gboolean isgroup;
 };
 
 

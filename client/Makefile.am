@@ -14,6 +14,7 @@ libmarabunta_client_la_SOURCES = \
 	mbcworld.c \
 	mbcsector.c \
 	mbccolony.c \
+	mbctask.c \
 	mbcroom.c
 
 BUILT_SOURCES = \
@@ -23,6 +24,7 @@ BUILT_SOURCES = \
 	mbcworld-def.h mbcworld.inl \
 	mbcsector-def.h mbcsector.inl \
 	mbccolony-def.h mbccolony.inl \
+	mbctask-def.h mbctask.inl \
 	mbcroom-def.h mbcroom.inl
 
 mbcapp-def.h mbcapp.inl \
@@ -31,6 +33,7 @@ mbcplayer-def.h mbcplayer.inl \
 mbcworld-def.h mbcworld.inl \
 mbcsector-def.h mbcsector.inl \
 mbccolony-def.h mbccolony.inl \
+mbctask-def.h mbctask.inl \
 mbcroom-def.h mbcroom.inl \
 : mbctypes.stamp-h
 

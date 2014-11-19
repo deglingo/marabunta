@@ -13,7 +13,7 @@ enum
   {
     PROP_0,
     PROP_NAME,
-    PROP_GROUP,
+    PROP_ISGROUP,
     PROP_POP_FLAGS,
     N_PROPS,
   };
@@ -41,9 +41,9 @@ static void mb_task_class_init ( LObjectClass *cls )
     l_param_spec_string("name",
                         "");
   
-  pspecs[PROP_GROUP] =
+  pspecs[PROP_ISGROUP] =
     /* [fixme] bool */
-    l_param_spec_int("group",
+    l_param_spec_int("isgroup",
                      0);
   
   pspecs[PROP_POP_FLAGS] =
@@ -67,8 +67,8 @@ static void set_property ( LObject *obj,
       ASSERT(!MB_TASK(obj)->name);
       MB_TASK(obj)->name = g_strdup(L_STRING(value)->str);
       break;
-    case PROP_GROUP:
-      MB_TASK(obj)->group = L_INT_VALUE(value) ? TRUE : FALSE;
+    case PROP_ISGROUP:
+      MB_TASK(obj)->isgroup = L_INT_VALUE(value) ? TRUE : FALSE;
       break;
     case PROP_POP_FLAGS:
       MB_TASK(obj)->pop_flags = L_INT_VALUE(value);
@@ -106,9 +106,49 @@ void mb_task_add ( MbTask *task,
                    MbObject *child )
 {
   ASSERT(MB_IS_TASK(child));
-  ASSERT(task->group);
+  ASSERT(task->isgroup);
   ASSERT(!MB_TASK(child)->parent);
+  ASSERT(!MB_TASK_COLONY(child));
+  ASSERT(MB_TASK_COLONY(task));
   l_object_ref(child);
   task->children = g_list_append(task->children, child);
   MB_TASK(child)->parent = task;
+  MB_TASK(child)->colony = MB_TASK_COLONY(task);
+}
+
+
+
+/* mb_task_get_child:
+ */
+MbObject *mb_task_get_child ( MbTask *task,
+                              const gchar *name )
+{
+  GList *l;
+  ASSERT(task->isgroup);
+  for (l = task->children; l; l = l->next)
+    {
+      if (!strcmp(MB_TASK_NAME(l->data), name))
+        return l->data;
+    }
+  return NULL;
+}
+
+
+
+/* mb_task_find:
+ */
+MbObject *mb_task_find ( MbTask *task,
+                         const gchar *path )
+{
+  const gchar *p = path;
+  gchar comp[MB_TASK_MAX_NAME+1];
+  MbObject *t;
+  ASSERT(task);
+  t = MB_OBJECT(task);
+  while ((mb_task_path_next(&p, comp)))
+    {
+      if (!(t = mb_task_get_child(MB_TASK(t), comp)))
+        return NULL;
+    }
+  return t;
 }

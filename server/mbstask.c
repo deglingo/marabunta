@@ -16,7 +16,7 @@ MbObject *mbs_task_new_group ( MbObject *game,
                                      "game", l_object_ref(game),
                                      "name", l_string_new(name),
                                      "pop_flags", l_int_new(pop_flags),
-                                     "group", l_int_new(1),
+                                     "isgroup", l_int_new(1),
                                      NULL));
 }
 
@@ -33,7 +33,7 @@ MbObject *mbs_task_new ( MbObject *game,
                                                "game", l_object_ref(game),
                                                "name", l_string_new(name),
                                                "pop_flags", l_int_new(pop_flags),
-                                               "group", l_int_new(0),
+                                               "isgroup", l_int_new(0),
                                                NULL));
   MBS_TASK(task)->funcs = *funcs;
   return task;
