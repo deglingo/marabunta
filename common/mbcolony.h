@@ -17,6 +17,9 @@ struct _MbColony
 {
   MB_COLONY_INSTANCE_HEADER;
 
+  /* set by MbSector */
+  MbObject *sector;
+  /* owner player */
   MbObject *owner;
 };
 
@@ -30,6 +33,9 @@ struct _MbColonyClass
 };
 
 
+
+#define MB_COLONY_SECTOR(c) (MB_COLONY(c)->sector)
+#define MB_COLONY_OWNER(c) (MB_COLONY(c)->owner)
 
 void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );

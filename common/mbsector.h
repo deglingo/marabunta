@@ -38,6 +38,7 @@ struct _MbSectorClass
 
 #define MB_SECTOR_X(s) (MB_SECTOR(s)->x)
 #define MB_SECTOR_Y(s) (MB_SECTOR(s)->y)
+#define MB_SECTOR_COLONY(s) (MB_SECTOR(s)->colony)
 
 void mb_sector_set_colony ( MbSector *sector,
                             MbObject *colony );

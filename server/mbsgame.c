@@ -113,6 +113,21 @@ void mbs_game_setup ( MbsGame *game )
 
 
 
+/* _send_colony_setup:
+ */
+static void _send_colony_setup ( MbsGame *game,
+                                 MbState *state,
+                                 MbObject *colony )
+{
+  MbStateColonySetup *st_col;
+  st_col = mb_state_next(state, MB_STATE_COLONY_SETUP);
+  st_col->colony_id = MB_OBJECT_ID(colony);
+  st_col->sector_id = MB_OBJECT_ID(MB_COLONY_SECTOR(colony));
+  st_col->owner_id = MB_OBJECT_ID(MB_COLONY_OWNER(colony));
+}
+
+
+
 /* _send_sector_setup:
  */
 static void _send_sector_setup ( MbsGame *game,
@@ -124,6 +139,8 @@ static void _send_sector_setup ( MbsGame *game,
   st_sector->sector_id = MB_OBJECT_ID(sector);
   st_sector->x = MB_SECTOR_X(sector);
   st_sector->y = MB_SECTOR_Y(sector);
+  if (MB_SECTOR_COLONY(sector))
+    _send_colony_setup(game, state, MB_SECTOR_COLONY(sector));
 }
 
 

@@ -15,5 +15,7 @@ void mb_sector_set_colony ( MbSector *sector,
 {
   ASSERT(MB_IS_COLONY(colony));
   ASSERT(!sector->colony);
+  ASSERT(!MB_COLONY_SECTOR(colony));
   sector->colony = l_object_ref(colony);
+  MB_COLONY(colony)->sector = MB_OBJECT(sector);
 }

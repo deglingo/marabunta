@@ -6,6 +6,7 @@
 #include "client/mbcplayer.h"
 #include "client/mbcworld.h"
 #include "client/mbcsector.h"
+#include "client/mbccolony.h"
 #include "client/mbcgame.inl"
 
 
@@ -86,6 +87,23 @@ static void _handle_sector_setup ( MbcGame *game,
 
 
 
+/* _handle_colony_setup:
+ */
+static void _handle_colony_setup ( MbcGame *game,
+                                   MbStateColonySetup *st_col )
+{
+  MbObject *colony, *sector, *owner;
+  owner = mb_game_lookup_object(MB_GAME(game), st_col->owner_id);
+  ASSERT(owner && MB_IS_PLAYER(owner));
+  sector = mb_game_lookup_object(MB_GAME(game), st_col->sector_id);
+  ASSERT(sector && MB_IS_SECTOR(sector));
+  colony = mbc_colony_new(MB_OBJECT(game), st_col->colony_id);
+  mb_colony_set_owner(MB_COLONY(colony), owner);
+  mb_sector_set_colony(MB_SECTOR(sector), colony);
+}
+
+
+
 /* _handle_game_update:
  */
 static void _handle_game_update ( MbcGame *game,
@@ -114,6 +132,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_SECTOR_SETUP:
           _handle_sector_setup(game, (MbStateSectorSetup *) block);
+          break;
+        case MB_STATE_COLONY_SETUP:
+          _handle_colony_setup(game, (MbStateColonySetup *) block);
           break;
         case MB_STATE_GAME_UPDATE:
           _handle_game_update(game, (MbStateGameUpdate *) block);
