@@ -39,8 +39,8 @@ MbObject *mb_game_lookup_object ( MbGame *game,
                                   MbObjectID id );
 MbObject *mb_game_add_player ( MbGame *game,
                                MbObject *player );
-void mb_game_setup ( MbGame *game );
-void mb_game_start ( MbGame *game );
+void mb_game_set_world ( MbGame *game,
+                         MbObject *world );
 
 
 

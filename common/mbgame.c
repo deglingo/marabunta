@@ -64,40 +64,14 @@ MbObject *mb_game_add_player ( MbGame *game,
 
 
 
-/* mb_game_setup:
+/* mb_game_set_world:
  */
-void mb_game_setup ( MbGame *game )
+void mb_game_set_world ( MbGame *game,
+                         MbObject *world )
 {
+  ASSERT(MB_OBJECT_GAME(world) == MB_OBJECT(game));
+  ASSERT(MB_IS_WORLD(world));
   ASSERT(!game->world);
-  game->world = mb_world_new(MB_OBJECT(game), 0);
-}
-
-
-
-/* _send_game_setup:
- */
-static void _send_game_setup ( MbGame *game,
-                               MbPlayer *player )
-{
-  CL_ERROR("[TODO]");
-  /* MbState *state = mb_state_new(); */
-  /* MbStateGameSetup *st_game; */
-  /* st_game = mb_state_next(state, MB_STATE_GAME_SETUP); */
-  /* st_game->game_id = MB_OBJECT_ID(game); */
-  /* mb_player_handle_state(player, state); */
-  /* l_object_unref(state); */
-}
-
-
-
-/* mb_game_start:
- */
-void mb_game_start ( MbGame *game )
-{
-  GList *l;
-  for (l = game->players; l; l = l->next)
-    {
-      MbPlayer *player = l->data;
-      _send_game_setup(game, player);
-    }
+  /* note: game already owns the ref !? */
+  game->world = world;
 }

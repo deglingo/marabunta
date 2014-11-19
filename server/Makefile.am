@@ -8,14 +8,17 @@ libmarabunta_server_la_CFLAGS = @CLOG_CFLAGS@ @GLIB_CFLAGS@
 
 libmarabunta_server_la_SOURCES = \
 	mbsgame.c \
-	mbsplayer.c
+	mbsplayer.c \
+	mbsworld.c
 
 BUILT_SOURCES = \
 	mbsgame-def.h mbsgame.inl \
-	mbsplayer-def.h mbsplayer.inl
+	mbsplayer-def.h mbsplayer.inl \
+	mbswold-def.h mbsworld.inl
 
 mbsgame-def.h mbsgame.inl \
 mbsplayer-def.h mbsplayer.inl \
+mbswold-def.h mbsworld.inl \
 : mbstypes.stamp-h
 
 mbstypes.stamp-h: mbstypes.in

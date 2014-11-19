@@ -40,8 +40,9 @@ static gint run ( MbApp *app )
   MBAL_APP(app)->dialog = mbtk_dialog_new(MBAL_APP(app)->display);
   altk_widget_show_all(MBAL_APP(app)->dialog);
   altk_display_open(MBAL_APP(app)->display);
-  /* setup the game */
+  /* setup and start the game */
   mbc_app_setup_solo_game(MBC_APP(app));
+  mbs_game_start(MBS_GAME(MBC_APP(app)->game));
   /* go */
   return MB_APP_CLASS(parent_class)->run(app);
 }
