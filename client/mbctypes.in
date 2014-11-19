@@ -5,6 +5,8 @@ namespace Mb
   extern class App;
   extern class Game;
   extern class Player;
+  extern class World;
+  extern class Sector;
 }
 
 namespace Mbc
@@ -20,6 +22,14 @@ namespace Mbc
   };
 
   class Player : Mb::Player
+  {
+  };
+
+  class World : Mb::World
+  {
+  };
+
+  class Sector : Mb::Sector
   {
   };
 }

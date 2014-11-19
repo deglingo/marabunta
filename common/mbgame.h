@@ -33,6 +33,8 @@ struct _MbGameClass
 
 
 
+#define MB_GAME_WORLD(g) (MB_GAME(g)->world)
+
 void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,

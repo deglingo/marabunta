@@ -34,6 +34,11 @@ struct _MbSectorClass
 
 
 
+#define MB_SECTOR_X(s) (MB_SECTOR(s)->x)
+#define MB_SECTOR_Y(s) (MB_SECTOR(s)->y)
+
+
+
 G_END_DECLS
 
 #endif /* ifndef _MBSECTOR_H_ */

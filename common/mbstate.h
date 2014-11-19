@@ -30,6 +30,7 @@ typedef struct _MbStateTask MbStateTask;
 typedef struct _MbStatePriority MbStatePriority;
 /* new ones */
 typedef struct _MbStateGameSetup MbStateGameSetup;
+typedef struct _MbStateSectorSetup MbStateSectorSetup;
 /* inner blocks */
 typedef struct _MbStatePlayer MbStatePlayer;
 
@@ -52,6 +53,7 @@ enum _MbStateType
     MB_STATE_PRIORITY,
     /* new ones */
     MB_STATE_GAME_SETUP,
+    MB_STATE_SECTOR_SETUP,
     MB_STATE_COUNT,
   };
 
@@ -213,6 +215,21 @@ struct _MbStateGameSetup
   MbStateBlock block;
   guint n_players;
   MbStatePlayer players[MB_GAME_MAX_PLAYERS];
+  MbObjectID world_id;
+  guint world_width;
+  guint world_height;
+};
+
+
+
+/* MbStateSectorSetup:
+ */
+struct _MbStateSectorSetup
+{
+  MbStateBlock block;
+  MbObjectID sector_id;
+  guint x;
+  guint y;
 };
 
 

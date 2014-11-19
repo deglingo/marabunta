@@ -73,6 +73,7 @@ void mbc_app_setup_solo_game ( MbcApp *app )
   app->game = mbs_game_new();
   app->player = mbs_player_new(app->game, "Player1", _player_handler, app, NULL);
   mb_game_add_player(MB_GAME(app->game), app->player);
+  mbs_game_setup(MBS_GAME(app->game));
 }
 
 

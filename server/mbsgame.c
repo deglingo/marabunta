@@ -60,6 +60,21 @@ void mbs_game_setup ( MbsGame *game )
 
 
 
+/* _send_sector_setup:
+ */
+static void _send_sector_setup ( MbsGame *game,
+                                 MbState *state,
+                                 MbObject *sector )
+{
+  MbStateSectorSetup *st_sector;
+  st_sector = mb_state_next(state, MB_STATE_SECTOR_SETUP);
+  st_sector->sector_id = MB_OBJECT_ID(sector);
+  st_sector->x = MB_SECTOR_X(sector);
+  st_sector->y = MB_SECTOR_Y(sector);
+}
+
+
+
 /* _send_game_setup:
  */
 static void _send_game_setup ( MbsGame *game,
@@ -69,7 +84,9 @@ static void _send_game_setup ( MbsGame *game,
   MbStateGameSetup *st_game;
   GList *l;
   guint n;
+  guint x, y;
   st_game = mb_state_next(state, MB_STATE_GAME_SETUP);
+  /* players */
   st_game->n_players = g_list_length(MB_GAME(game)->players);
   for (l = MB_GAME(game)->players, n = 0; l; l = l->next, n++)
     {
@@ -79,6 +96,14 @@ static void _send_game_setup ( MbsGame *game,
       st_game->players[n].id = MB_OBJECT_ID(p);
       sprintf(st_game->players[n].name, MB_PLAYER(p)->name->str);
     }
+  /* world */
+  st_game->world_id = MB_OBJECT_ID(MB_GAME_WORLD(game));
+  st_game->world_width = MB_WORLD_WIDTH(MB_GAME_WORLD(game));
+  st_game->world_height = MB_WORLD_HEIGHT(MB_GAME_WORLD(game));
+  for (y = 0; y < st_game->world_height; y++)
+    for (x = 0; x < st_game->world_width; x++)
+      _send_sector_setup(game, state, MB_WORLD_SECTOR(MB_GAME_WORLD(game), x, y));
+  /* send */
   mb_player_handle_state(MB_PLAYER(player), state);
   l_object_unref(state);
 }

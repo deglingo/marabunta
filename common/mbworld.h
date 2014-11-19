@@ -31,6 +31,10 @@ struct _MbWorldClass
 
 
 
+#define MB_WORLD_WIDTH(w) (MB_WORLD(w)->width)
+#define MB_WORLD_HEIGHT(w) (MB_WORLD(w)->height)
+#define MB_WORLD_SECTOR(w, x, y) (MB_WORLD(w)->sectors[y][x])
+
 MbObject *mb_world_new ( MbObject *game,
                          MbObjectID id );
 void mb_world_add_sector ( MbWorld *world,
