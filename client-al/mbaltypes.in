@@ -30,4 +30,9 @@ namespace Mbtk
   {
     void init ();
   };
+
+  class PopTable : Altk::Frame
+  {
+    void init ();
+  };
 }

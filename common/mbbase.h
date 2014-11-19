@@ -24,6 +24,8 @@ typedef gint MbPriorityValue;
 gchar *mb_task_path_next ( const gchar **path,
                            gchar *dest );
 
+/* maximum chars of mb_count_print() result */
+#define MB_COUNT_CHARS 7
 
 
 #endif

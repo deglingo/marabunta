@@ -4,6 +4,7 @@
 #include "client-al/alprivate.h"
 #include "client-al/mbtkdialog.h"
 #include "client-al/mbtkmapview.h"
+#include "client-al/mbtkpoptable.h"
 #include "client-al/mbtkdialog.inl"
 
 
@@ -16,6 +17,7 @@ typedef struct _Private
   MbObject *sector;
   AltkWidget *frame_count_label;
   AltkWidget *map_view;
+  AltkWidget *pop_table;
 }
   Private;
 
@@ -66,6 +68,11 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
   ALTK_BOX_ADD(box,
                priv->map_view,
                ALTK_PACK_ANCHOR_LEFT);
+  /* pop table */
+  priv->pop_table = L_TRASH_OBJECT(mbtk_pop_table_new());
+  ALTK_BOX_ADD(box,
+               priv->pop_table,
+               ALTK_PACK_FILL);
   return frame;
 }
 
