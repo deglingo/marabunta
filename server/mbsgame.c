@@ -182,6 +182,7 @@ static void _send_game_setup ( MbsGame *game,
 
 static void _game_update ( MbsGame *game )
 {
+  mbs_world_update(MBS_WORLD(MB_GAME_WORLD(game)));
   mb_game_set_frame_count(MB_GAME(game),
                           MB_GAME_FRAME_COUNT(game) + 1);
 }

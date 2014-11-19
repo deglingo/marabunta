@@ -30,6 +30,7 @@ struct _MbsSectorClass
 
 
 MbObject *mbs_sector_new ( MbObject *game );
+void mbs_sector_update ( MbsSector *sector );
 
 
 

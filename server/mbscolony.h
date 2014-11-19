@@ -19,6 +19,7 @@ struct _MbsColony
   MBS_COLONY_INSTANCE_HEADER;
 
   MbsPopTree *pop_tree;
+  MbsPopTree *adj_tree;
 };
 
 
@@ -33,6 +34,7 @@ struct _MbsColonyClass
 
 
 MbObject *mbs_colony_new ( MbObject *game );
+void mbs_colony_update ( MbsColony *colony );
 
 
 

@@ -32,6 +32,7 @@ struct _MbsWorldClass
 MbObject *mbs_world_new ( MbObject *game,
                           guint width,
                           guint height );
+void mbs_world_update ( MbsWorld *world );
 
 
 

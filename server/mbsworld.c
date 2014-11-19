@@ -2,6 +2,7 @@
  */
 
 #include "server/mbsworld.h"
+#include "server/mbssector.h"
 #include "server/mbsworld.inl"
 
 
@@ -17,4 +18,20 @@ MbObject *mbs_world_new ( MbObject *game,
                                      "width", l_int_new(width),
                                      "height", l_int_new(height),
                                      NULL));
+}
+
+
+
+/* mbs_world_update:
+ */
+void mbs_world_update ( MbsWorld *world )
+{
+  guint x, y;
+  for (y = 0; y < MB_WORLD_HEIGHT(world); y++)
+    {
+      for (x = 0; x < MB_WORLD_WIDTH(world); x++)
+        {
+          mbs_sector_update(MBS_SECTOR(MB_WORLD_SECTOR(world, x, y)));
+        }
+    }
 }
