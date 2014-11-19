@@ -30,7 +30,10 @@ struct _MbsPlayerClass
 
 
 MbObject *mbs_player_new ( MbObject *game,
-                           const gchar *name );
+                           const gchar *name,
+                           MbPlayerHandler handler,
+                           gpointer data,
+                           GDestroyNotify destroy_data );
 
 
 

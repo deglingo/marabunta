@@ -13,6 +13,7 @@
 enum
   {
     PROP_0,
+    PROP_ID,
     PROP_GAME,
     N_PROPS,
   };
@@ -37,6 +38,10 @@ static void mb_object_class_init ( LObjectClass *cls )
 {
   cls->set_property = set_property;
   cls->get_property = get_property;
+
+  pspecs[PROP_ID] =
+    l_param_spec_int("id",
+                     0);
   
   pspecs[PROP_GAME] =
     l_param_spec_object("game",
@@ -65,6 +70,11 @@ static void set_property ( LObject *obj,
 {
   switch (pspec->param_id)
     {
+    case PROP_ID:
+      /* [FIXME] use the constructor for this */
+      ASSERT(!MB_OBJECT(obj)->game);
+      MB_OBJECT(obj)->id = L_INT_VALUE(value);
+      break;
     case PROP_GAME:
       ASSERT(MB_IS_GAME(value));
       ASSERT(!MB_OBJECT(obj)->game);

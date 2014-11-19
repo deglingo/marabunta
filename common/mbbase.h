@@ -13,6 +13,8 @@ typedef guint MbObjectID;
 
 
 /* [fixme] */
+#define MB_GAME_MAX_PLAYERS 4
+#define MB_PLAYER_MAX_NAME 16
 #define MBS_TASK_MAX_NAME 16
 #define MB_RESOURCE_MAX_NAME 16
 

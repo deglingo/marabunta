@@ -8,12 +8,18 @@ libmarabunta_client_la_CFLAGS = @GLIB_CFLAGS@ @CLOG_CFLAGS@
 
 libmarabunta_client_la_SOURCES = \
 	mbcbase.c \
-	mbcapp.c
+	mbcapp.c \
+	mbcgame.c \
+	mbcplayer.c
 
 BUILT_SOURCES = \
-	mbcapp-def.h mbcapp.inl
+	mbcapp-def.h mbcapp.inl \
+	mbcgame-def.h mbcgame.inl \
+	mbcplayer-def.h mbcplayer.inl
 
 mbcapp-def.h mbcapp.inl \
+mbcgame-def.h mbcgame.inl \
+mbcplayer-def.h mbcplayer.inl \
 : mbctypes.stamp-h
 
 mbctypes.stamp-h: mbctypes.in

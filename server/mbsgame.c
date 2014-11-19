@@ -55,13 +55,22 @@ void mbs_game_setup ( MbsGame *game )
 static void _send_game_setup ( MbsGame *game,
                                MbsPlayer *player )
 {
-  CL_ERROR("[TODO]");
-  /* MbState *state = mb_state_new(); */
-  /* MbStateGameSetup *st_game; */
-  /* st_game = mb_state_next(state, MB_STATE_GAME_SETUP); */
-  /* st_game->game_id = MB_OBJECT_ID(game); */
-  /* mb_player_handle_state(player, state); */
-  /* l_object_unref(state); */
+  MbState *state = mb_state_new();
+  MbStateGameSetup *st_game;
+  GList *l;
+  guint n;
+  st_game = mb_state_next(state, MB_STATE_GAME_SETUP);
+  st_game->n_players = g_list_length(MB_GAME(game)->players);
+  for (l = MB_GAME(game)->players, n = 0; l; l = l->next, n++)
+    {
+      MbsPlayer *p = l->data;
+      ASSERT(n < MB_GAME_MAX_PLAYERS);
+      ASSERT(MB_PLAYER(p)->name->len <= MB_PLAYER_MAX_NAME);
+      st_game->players[n].id = MB_OBJECT_ID(p);
+      sprintf(st_game->players[n].name, MB_PLAYER(p)->name->str);
+    }
+  mb_player_handle_state(MB_PLAYER(player), state);
+  l_object_unref(state);
 }
 
 

@@ -41,6 +41,11 @@ struct _MbPlayerClass
 
 
 
+void mb_player_handle_state ( MbPlayer *player,
+                              MbState *state );
+
+
+
 G_END_DECLS
 
 #endif /* ifndef _MBPLAYER_H_ */

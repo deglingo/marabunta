@@ -30,6 +30,8 @@ typedef struct _MbStateTask MbStateTask;
 typedef struct _MbStatePriority MbStatePriority;
 /* new ones */
 typedef struct _MbStateGameSetup MbStateGameSetup;
+/* inner blocks */
+typedef struct _MbStatePlayer MbStatePlayer;
 
 
 
@@ -194,12 +196,23 @@ struct _MbStatePriority
 
 
 
+/* MbIStatePlayer:
+ */
+struct _MbStatePlayer
+{
+  MbObjectID id;
+  gchar name[MB_PLAYER_MAX_NAME+1];
+};
+
+
+
 /* MbStateGameSetup:
  */
 struct _MbStateGameSetup
 {
   MbStateBlock block;
-  MbObjectID game_id;
+  guint n_players;
+  MbStatePlayer players[MB_GAME_MAX_PLAYERS];
 };
 
 

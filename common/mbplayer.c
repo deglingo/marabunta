@@ -69,3 +69,13 @@ static LObject *get_property ( LObject *obj,
 {
   L_OBJECT_GET_PROPERTY_ERROR(obj, pspec);
 }
+
+
+
+/* mb_player_handle_state:
+ */
+void mb_player_handle_state ( MbPlayer *player,
+                              MbState *state )
+{
+  player->handler(player, state, player->handler_data);
+}

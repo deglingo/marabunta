@@ -3,6 +3,7 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcapp.h"
+#include "client/mbcgame.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -53,12 +54,24 @@ static void mbc_app_init ( LObject *object )
 
 
 
+static void _player_handler ( MbPlayer *player,
+                              MbState *state,
+                              gpointer app )
+{
+  mbc_game_update_state(MBC_GAME(MBC_APP(app)->game_proxy), state);
+}
+
+
+
 /* mbc_app_setup_solo_game:
  */
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
+  /* setup the proxy */
+  app->game_proxy = mbc_game_new();
+  /* setup the real game */  
   app->game = mbs_game_new();
-  app->player = mbs_player_new(app->game, "Player1");
+  app->player = mbs_player_new(app->game, "Player1", _player_handler, app, NULL);
   mb_game_add_player(MB_GAME(app->game), app->player);
 }
 

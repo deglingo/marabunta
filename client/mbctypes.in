@@ -3,6 +3,8 @@
 namespace Mb
 {
   extern class App;
+  extern class Game;
+  extern class Player;
 }
 
 namespace Mbc
@@ -11,5 +13,13 @@ namespace Mbc
   {
     void class_init ();
     void init ();
+  };
+
+  class Game : Mb::Game
+  {
+  };
+
+  class Player : Mb::Player
+  {
   };
 }
