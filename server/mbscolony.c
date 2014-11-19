@@ -38,6 +38,16 @@ MbObject *mbs_colony_new ( MbObject *game )
 
 
 
+/* mbs_colony_get_pop:
+ */
+void mbs_colony_get_pop ( MbsColony *colony,
+                          gint64 *pop )
+{
+  mbs_pop_tree_get_pop(colony->pop_tree, pop);
+}
+
+
+
 /* _update_egg:
  */
 static void _update_egg ( MbsColony *colony,
@@ -88,4 +98,3 @@ void mbs_colony_update ( MbsColony *colony )
   /* [FIXME] post update */
   mbs_pop_tree_update(colony->pop_tree, colony->adj_tree);
 }
-

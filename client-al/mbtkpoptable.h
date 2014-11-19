@@ -32,6 +32,8 @@ struct _MbtkPopTableClass
 
 
 AltkWidget *mbtk_pop_table_new ( void );
+void mbtk_pop_table_set_colony ( MbtkPopTable *table,
+                                 MbObject *colony );
 
 
 

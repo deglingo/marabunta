@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbcColony
 {
   MBC_COLONY_INSTANCE_HEADER;
+
+  gint64 pop[MB_POP_TYPE_COUNT];
 };
 
 
@@ -31,6 +33,8 @@ struct _MbcColonyClass
 
 MbObject *mbc_colony_new ( MbObject *game,
                            MbObjectID id );
+void mbc_colony_set_pop ( MbcColony *colony,
+                          gint64 *pop );
 
 
 

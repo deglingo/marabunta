@@ -33,6 +33,7 @@ typedef struct _MbStateGameSetup MbStateGameSetup;
 typedef struct _MbStateSectorSetup MbStateSectorSetup;
 typedef struct _MbStateColonySetup MbStateColonySetup;
 typedef struct _MbStateGameUpdate MbStateGameUpdate;
+typedef struct _MbStateColonyUpdate MbStateColonyUpdate;
 /* inner blocks */
 typedef struct _MbStatePlayer MbStatePlayer;
 
@@ -58,6 +59,7 @@ enum _MbStateType
     MB_STATE_SECTOR_SETUP,
     MB_STATE_COLONY_SETUP,
     MB_STATE_GAME_UPDATE,
+    MB_STATE_COLONY_UPDATE,
     MB_STATE_COUNT,
   };
 
@@ -256,6 +258,17 @@ struct _MbStateGameUpdate
 {
   MbStateBlock block;
   guint frame_count;
+};
+
+
+
+/* MbStateColonyUpdate:
+ */
+struct _MbStateColonyUpdate
+{
+  MbStateBlock block;
+  MbObjectID colony_id;
+  gint64 pop[MB_POP_TYPE_COUNT];
 };
 
 

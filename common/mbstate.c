@@ -27,6 +27,7 @@ static const guint MB_STATE_BLOCK_TYPE_SIZE[MB_STATE_COUNT] =
     [MB_STATE_SECTOR_SETUP] = sizeof(MbStateSectorSetup),
     [MB_STATE_COLONY_SETUP] = sizeof(MbStateColonySetup),
     [MB_STATE_GAME_UPDATE] = sizeof(MbStateGameUpdate),
+    [MB_STATE_COLONY_UPDATE] = sizeof(MbStateColonyUpdate),
   };
 
 

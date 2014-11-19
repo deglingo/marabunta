@@ -181,4 +181,10 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
   ASSERT(!priv->sector); /* [todo] */
   sector = MB_WORLD_SECTOR(MB_GAME_WORLD(priv->game), x, y);
   priv->sector = l_object_ref(sector);
+  if (MB_SECTOR_COLONY(sector))
+    mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                              MB_SECTOR_COLONY(sector));
+  else
+    mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                              NULL);
 }

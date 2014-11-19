@@ -114,6 +114,19 @@ static void _handle_game_update ( MbcGame *game,
 
 
 
+/* _handle_colony_update:
+ */
+static void _handle_colony_update ( MbcGame *game,
+                                    MbStateColonyUpdate *st_col )
+{
+  MbObject *colony;
+  colony = mb_game_lookup_object(MB_GAME(game), st_col->colony_id);
+  ASSERT(colony && MBC_IS_COLONY(colony));
+  mbc_colony_set_pop(MBC_COLONY(colony), st_col->pop);
+}
+
+
+
 /* mbc_game_update_state:
  */
 void mbc_game_update_state ( MbcGame *game,
@@ -138,6 +151,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_GAME_UPDATE:
           _handle_game_update(game, (MbStateGameUpdate *) block);
+          break;
+        case MB_STATE_COLONY_UPDATE:
+          _handle_colony_update(game, (MbStateColonyUpdate *) block);
           break;
         default:
           CL_ERROR("[TODO] block type %d", block->type);

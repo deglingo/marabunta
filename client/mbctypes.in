@@ -37,5 +37,6 @@ namespace Mbc
 
   class Colony : Mb::Colony
   {
+    void class_init ();
   };
 }

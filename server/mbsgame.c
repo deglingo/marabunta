@@ -189,6 +189,46 @@ static void _game_update ( MbsGame *game )
 
 
 
+static void _send_colony_update ( MbsGame *game,
+                                  PlayerData *player,
+                                  MbsColony *colony )
+{
+  MbStateColonyUpdate *st_col;
+  st_col = mb_state_next(player->state, MB_STATE_COLONY_UPDATE);
+  st_col->colony_id = MB_OBJECT_ID(colony);
+  if (MB_COLONY_OWNER(colony) == player->player)
+    {
+      mbs_colony_get_pop(colony,
+                         st_col->pop);
+    }
+}
+
+
+
+static void _send_sector_update ( MbsGame *game,
+                                  PlayerData *player,
+                                  MbsSector *sector )
+{
+  if (MB_SECTOR_COLONY(sector))
+    _send_colony_update(game, player,
+                        MBS_COLONY(MB_SECTOR_COLONY(sector)));
+}
+
+
+
+static void _send_world_update ( MbsGame *game,
+                                 PlayerData *player,
+                                 MbsWorld *world )
+{
+  guint x, y;
+  for (y = 0; y < MB_WORLD_HEIGHT(world); y++)
+    for (x = 0; x < MB_WORLD_WIDTH(world); x++)
+      _send_sector_update(game, player,
+                          MBS_SECTOR(MB_WORLD_SECTOR(world, x, y)));
+}
+
+
+
 static void _send_game_update ( MbsGame *game )
 {
   Private *priv = PRIVATE(game);
@@ -199,6 +239,7 @@ static void _send_game_update ( MbsGame *game )
       MbStateGameUpdate *st_game;
       st_game = mb_state_next(player->state, MB_STATE_GAME_UPDATE);
       st_game->frame_count = MB_GAME_FRAME_COUNT(game);
+      _send_world_update(game, player, MBS_WORLD(MB_GAME_WORLD(game)));
       mb_player_handle_state(MB_PLAYER(player->player),
                              player->state);
       L_OBJECT_CLEAR(player->state);

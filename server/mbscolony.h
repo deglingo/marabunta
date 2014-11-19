@@ -35,6 +35,8 @@ struct _MbsColonyClass
 
 MbObject *mbs_colony_new ( MbObject *game );
 void mbs_colony_update ( MbsColony *colony );
+void mbs_colony_get_pop ( MbsColony *colony,
+                          gint64 *pop );
 
 
 

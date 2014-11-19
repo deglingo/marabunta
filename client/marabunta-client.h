@@ -12,6 +12,8 @@
 
 #include "client/mbcgame.h"
 
+#include "client/mbccolony.h"
+
 
 
 #endif

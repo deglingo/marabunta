@@ -33,6 +33,7 @@ typedef struct _Total
  */
 typedef struct _Private
 {
+  MbcColony *colony;
   AltkWidget *table;
   Value values[MB_POP_TYPE_COUNT];
   GList *totals;
@@ -182,4 +183,39 @@ static void mbtk_pop_table_init ( LObject *obj )
 AltkWidget *mbtk_pop_table_new ( void )
 {
   return ALTK_WIDGET(l_object_new(MBTK_CLASS_POP_TABLE, NULL));
+}
+
+
+
+/* _on_pop_notify:
+ */
+static void _on_pop_notify ( MbObject *colony,
+                             AltkWidget *table )
+{
+  Private *priv = PRIVATE(table);
+  gint tp;
+  gchar text[MB_COUNT_CHARS+1];
+  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+    {
+      mb_count_print(MBC_COLONY(colony)->pop[tp], text);
+      altk_label_set_text(ALTK_LABEL(priv->values[tp].label), text);
+    }
+}
+
+
+
+/* mbtk_pop_table_set_colony:
+ */
+void mbtk_pop_table_set_colony ( MbtkPopTable *table,
+                                 MbObject *colony )
+{
+  Private *priv = PRIVATE(table);
+  ASSERT(MB_IS_COLONY(colony));
+  ASSERT(!priv->colony); /* [todo] */
+  priv->colony = l_object_ref(colony);
+  l_signal_connect(L_OBJECT(colony),
+                   "pop_notify", 0,
+                   (LSignalHandler) _on_pop_notify,
+                   table,
+                   NULL);
 }

@@ -27,5 +27,8 @@ gchar *mb_task_path_next ( const gchar **path,
 /* maximum chars of mb_count_print() result */
 #define MB_COUNT_CHARS 7
 
+gchar *mb_count_print ( gint64 count,
+                        gchar *dest );
+
 
 #endif

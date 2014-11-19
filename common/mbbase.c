@@ -32,3 +32,20 @@ gchar *mb_task_path_next ( const gchar **path,
     }
   return dest;
 }
+
+
+
+/* mb_count_print:
+ */
+gchar *mb_count_print ( gint64 count,
+                        gchar *dest )
+{
+  if (count < 1000)
+    sprintf(dest, "%dU", (gint) count);
+  else if (count < 1000000)
+    sprintf(dest, "%.2fK", (gdouble) count / (gdouble) 1000.0);
+  else
+    /* [FIXME] check overflow !! */
+    sprintf(dest, "%.2fM", (gdouble) count / (gdouble) 1000000.0);
+  return dest;
+}
