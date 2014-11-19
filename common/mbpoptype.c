@@ -50,3 +50,21 @@ MbPopType mb_pop_type ( MbCast pop_cast,
   CL_ERROR("invalid pop type: cast=%d, maturity=%d", pop_cast, pop_maturity);
   return -1;
 }
+
+
+
+/* mb_pop_total:
+ */
+gint64 mb_pop_total ( gint64 *pop,
+                      MbPopFlags pop_flags )
+{
+  gint tp;
+  gint64 total = 0;
+  for (tp = 0; pop_flags; tp++, pop_flags >>= 1)
+    {
+      ASSERT(tp < MB_POP_TYPE_COUNT);
+      if (pop_flags & 1)
+        total += pop[tp];
+    }
+  return total;
+}

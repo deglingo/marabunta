@@ -89,6 +89,8 @@ extern const MbCast MB_CAST_TABLE[];
 
 MbPopType mb_pop_type ( MbCast pop_cast,
                         MbMaturity pop_maturity );
+gint64 mb_pop_total ( gint64 *pop,
+                      MbPopFlags pop_flags );
 
 
 

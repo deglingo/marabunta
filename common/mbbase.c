@@ -1,6 +1,7 @@
 /* mbbase.h -
  */
 
+#include "common/private.h"
 #include "common/mbbase.h"
 
 #include <string.h>
@@ -40,12 +41,14 @@ gchar *mb_task_path_next ( const gchar **path,
 gchar *mb_count_print ( gint64 count,
                         gchar *dest )
 {
+  ASSERT(count >= 0); /* [todo] ? */
   if (count < 1000)
     sprintf(dest, "%dU", (gint) count);
   else if (count < 1000000)
     sprintf(dest, "%.2fK", (gdouble) count / (gdouble) 1000.0);
-  else
-    /* [FIXME] check overflow !! */
+  else {
+    ASSERT(count < 1000000000);
     sprintf(dest, "%.2fM", (gdouble) count / (gdouble) 1000000.0);
+  }
   return dest;
 }
