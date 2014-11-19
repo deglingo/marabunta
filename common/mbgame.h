@@ -17,7 +17,6 @@ struct _MbGame
 {
   MB_GAME_INSTANCE_HEADER;
 
-  volatile MbObjectID id_counter;
   GHashTable *object_map;
   GList *players;
   MbObject *world;
@@ -34,8 +33,6 @@ struct _MbGameClass
 
 
 
-MbObject *mb_game_new ( guint id );
-MbObjectID mb_game_next_id ( MbGame *game );
 void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,

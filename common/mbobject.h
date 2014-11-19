@@ -36,10 +36,6 @@ struct _MbObjectClass
 #define MB_OBJECT_ID(obj) (MB_OBJECT(obj)->id)
 #define MB_OBJECT_GAME(obj) (MB_OBJECT(obj)->game)
 
-MbObject *mb_object_new ( LObjectClass *cls,
-                          MbObject *game,
-                          MbObjectID id );
-
 
 
 G_END_DECLS

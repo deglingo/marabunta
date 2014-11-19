@@ -24,7 +24,7 @@ struct _MbPlayer
 {
   MB_PLAYER_INSTANCE_HEADER;
 
-  gchar *name;
+  LString *name;
   MbPlayerHandler handler;
   gpointer handler_data;
   GDestroyNotify destroy_data;
@@ -38,17 +38,6 @@ struct _MbPlayerClass
 {
   MB_PLAYER_CLASS_HEADER;
 };
-
-
-
-MbObject *mb_player_new ( MbObject *game,
-                          guint id,
-                          const gchar *name,
-                          MbPlayerHandler handler,
-                          gpointer handler_data,
-                          GDestroyNotify destroy_data );
-void mb_player_handle_state ( MbPlayer *player,
-                              MbState *state );
 
 
 

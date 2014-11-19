@@ -8,4 +8,6 @@
 
 #include "server/mbsgame.h"
 
+#include "server/mbsplayer.h"
+
 #endif

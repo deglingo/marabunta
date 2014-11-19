@@ -32,5 +32,5 @@ static void mbs_game_init ( LObject *obj )
  */
 MbObject *mbs_game_new ( void )
 {
-  return mb_object_new(MBS_CLASS_GAME, NULL, 0);
+  return MB_OBJECT(l_object_new(MBS_CLASS_GAME, NULL));
 }

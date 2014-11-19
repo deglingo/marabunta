@@ -8,6 +8,8 @@ namespace Mb
 
   class Object
   {
+    void class_init ();
+    void init ();
   };
 
   class Game : Object
@@ -17,6 +19,7 @@ namespace Mb
 
   class Player : Object
   {
+    void class_init ();
   };
 
   class World : Object

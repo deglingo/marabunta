@@ -8,24 +8,80 @@
 
 
 
-/* mb_object_new:
+/* Properties:
  */
-MbObject *mb_object_new ( LObjectClass *cls,
-                          MbObject *game,
-                          MbObjectID id )
+enum
+  {
+    PROP_0,
+    PROP_GAME,
+    N_PROPS,
+  };
+
+static LParamSpec *pspecs[N_PROPS];
+
+
+
+static volatile guint id_counter = 1;
+
+static void set_property ( LObject *obj,
+                           LParamSpec *pspec,
+                           LObject *value );
+static LObject *get_property ( LObject *obj,
+                               LParamSpec *pspec );
+
+
+
+/* mb_object_class_init:
+ */
+static void mb_object_class_init ( LObjectClass *cls )
 {
-  MbObject *obj;
-  ASSERT(l_object_issubclass(L_OBJECT(cls), L_OBJECT(MB_CLASS_OBJECT)));
-  obj = MB_OBJECT(l_object_new(cls, NULL));
-  if (game) {
-    ASSERT(MB_IS_GAME(game));
-  } else {
-    ASSERT(MB_IS_GAME(obj));
-    game = obj;
-  }
-  if (id == 0)
-    id = mb_game_next_id(MB_GAME(game));
-  obj->id = id;
-  mb_game_register_object(MB_GAME(game), obj);
-  return obj;
+  cls->set_property = set_property;
+  cls->get_property = get_property;
+  
+  pspecs[PROP_GAME] =
+    l_param_spec_object("game",
+                        cls /* [FIXME] MB_CLASS_GAME */);
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
+}
+
+
+
+/* mb_object_init:
+ */
+static void mb_object_init ( LObject *obj )
+{
+  /* [FIXME] should be a construct property */
+  MB_OBJECT(obj)->id = g_atomic_int_add(&id_counter, 1);
+}
+
+
+
+/* set_property:
+ */
+static void set_property ( LObject *obj,
+                           LParamSpec *pspec,
+                           LObject *value )
+{
+  switch (pspec->param_id)
+    {
+    case PROP_GAME:
+      ASSERT(MB_IS_GAME(value));
+      ASSERT(!MB_OBJECT(obj)->game);
+      MB_OBJECT(obj)->game = l_object_ref(value);
+      mb_game_register_object(MB_GAME(value), MB_OBJECT(obj));
+      break;
+    default:
+      L_OBJECT_SET_PROPERTY_ERROR(obj, pspec);
+    }
+}
+
+
+
+/* get_property:
+ */
+static LObject *get_property ( LObject *obj,
+                               LParamSpec *pspec )
+{
+  L_OBJECT_GET_PROPERTY_ERROR(obj, pspec);
 }

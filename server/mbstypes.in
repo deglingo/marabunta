@@ -3,6 +3,7 @@
 namespace Mb
 {
   extern class Game;
+  extern class Player;
 }
 
 namespace Mbs
@@ -10,5 +11,9 @@ namespace Mbs
   class Game : Mb::Game
   {
     void init ();
+  };
+
+  class Player : Mb::Player
+  {
   };
 }

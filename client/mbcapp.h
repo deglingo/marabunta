@@ -17,6 +17,7 @@ struct _MbcApp
 
   /* solo game (server side) */
   MbObject *game;
+  MbObject *player;
   
   /* proxy */
   MbObject *game_proxy;

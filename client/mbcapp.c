@@ -58,6 +58,8 @@ static void mbc_app_init ( LObject *object )
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
   app->game = mbs_game_new();
+  app->player = mbs_player_new(app->game, "Player1");
+  /* mbs_game_add_player(MBS_GAME(app->game), app->player); */
 }
 
 
