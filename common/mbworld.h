@@ -14,6 +14,10 @@
 struct _MbWorld
 {
   MB_WORLD_INSTANCE_HEADER;
+
+  guint width;
+  guint height;
+  MbObject ***sectors;
 };
 
 

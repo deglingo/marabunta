@@ -24,6 +24,11 @@ namespace Mb
 
   class World : Object
   {
+    void class_init ();
+  };
+
+  class Sector : Object
+  {
   };
   
   class Message
