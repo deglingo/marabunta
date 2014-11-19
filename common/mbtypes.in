@@ -31,6 +31,10 @@ namespace Mb
   class Sector : Object
   {
   };
+
+  class Colony : Object
+  {
+  };
   
   class Message
   {

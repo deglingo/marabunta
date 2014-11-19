@@ -6,6 +6,7 @@
 #include "server/mbsplayer.h"
 #include "server/mbsworld.h"
 #include "server/mbssector.h"
+#include "server/mbscolony.h"
 #include "server/mbsgame.inl"
 
 
@@ -91,7 +92,7 @@ static void add_player ( MbGame *game,
  */
 void mbs_game_setup ( MbsGame *game )
 {
-  MbObject *world;
+  MbObject *world, *colony;
   guint x, y;
   world = mbs_world_new(MB_OBJECT(game), 3, 2);
   mb_game_set_world(MB_GAME(game), world);
@@ -103,6 +104,11 @@ void mbs_game_setup ( MbsGame *game )
           mb_world_add_sector(MB_WORLD(world), sector, x, y);
         }
     }
+  /* [FIXME] */
+  colony = mbs_colony_new(MB_OBJECT(game));
+  ASSERT(MB_GAME(game)->players);
+  mb_colony_set_owner(MB_COLONY(colony), MB_GAME(game)->players->data);
+  mb_sector_set_colony(MB_SECTOR(MB_WORLD_SECTOR(world, 0, 0)), colony);
 }
 
 

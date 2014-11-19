@@ -14,6 +14,7 @@ libmarabunta_common_la_SOURCES = \
 	mbplayer.c \
 	mbworld.c \
 	mbsector.c \
+	mbcolony.c \
 	mbmessage.c \
 	mbstate.c \
 	mbpriority.c \
@@ -30,6 +31,7 @@ BUILT_SOURCES = \
 	mbplayer-def.h mbplayer.inl \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
+	mbcolony-def.h mbcolony.inl \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
 	mbpriority-def.h mbpriority.inl
@@ -40,6 +42,7 @@ mbgame-def.h mbgame.inl \
 mbplayer-def.h mbplayer.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
+mbcolony-def.h mbcolony.inl \
 mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \
