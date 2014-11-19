@@ -19,6 +19,7 @@ libmarabunta_common_la_SOURCES = \
 	mbmessage.c \
 	mbstate.c \
 	mbpriority.c \
+	mbroom.c \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
@@ -36,7 +37,8 @@ BUILT_SOURCES = \
 	mbcolony-def.h mbcolony.inl \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
-	mbpriority-def.h mbpriority.inl
+	mbpriority-def.h mbpriority.inl \
+	mbroom-def.h mbroom.inl
 
 mbapp-def.h mbapp.inl \
 mbobject-def.h mbobject.inl \
@@ -49,6 +51,7 @@ mbcolony-def.h mbcolony.inl \
 mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \
+mbroom-def.h mbroom.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in

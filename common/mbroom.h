@@ -4,19 +4,38 @@
 #ifndef _MBROOM_H_
 #define _MBROOM_H_
 
-#include "common/mbbase.h"
+#include "common/mbobject.h"
+#include "common/mbroom-def.h"
+
+G_BEGIN_DECLS
 
 
 
-/* MbRoomType:
+/* MbRoom:
  */
-typedef enum _MbRoomType
-  {
-    MB_ROOM_TYPE_ROYAL_CHAMBER,
-    MB_ROOM_TYPE_FARM,
-    MB_ROOM_TYPE_MINE,
-    MB_ROOM_TYPE_COUNT,
-  }
-  MbRoomType;
+struct _MbRoom
+{
+  MB_ROOM_INSTANCE_HEADER;
 
-#endif
+  MbRoomType type;
+  MbObject *colony;
+};
+
+
+
+/* MbRoomClass:
+ */
+struct _MbRoomClass
+{
+  MB_ROOM_CLASS_HEADER;
+};
+
+
+
+#define MB_ROOM_TYPE(room) (MB_ROOM(room)->type)
+
+
+
+G_END_DECLS
+
+#endif /* ifndef _MBROOM_H_ */

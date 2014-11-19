@@ -12,6 +12,17 @@ typedef guint MbObjectID;
 
 
 
+/* MbRoomType:
+ */
+typedef enum _MbRoomType
+{
+  MB_ROOM_TYPE_ROYAL_CHAMBER,
+  MB_ROOM_TYPE_COUNT,
+}
+  MbRoomType;
+
+
+
 /* [fixme] */
 #define MB_GAME_MAX_PLAYERS 4
 #define MB_PLAYER_MAX_NAME 16

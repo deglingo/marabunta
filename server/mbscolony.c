@@ -5,6 +5,7 @@
 #include "server/mbscolony.h"
 #include "server/mbstask.h"
 #include "server/mbspriority.h"
+#include "server/mbsroom.h"
 #include "server/mbscolony.inl"
 
 
@@ -18,6 +19,7 @@ MbObject *mbs_colony_new ( MbObject *game )
                                          NULL));
   MbObject *t_top, *t_spawn;
   MbsTaskFuncs t_spawn_funcs = { NULL, };
+  MbObject *room;
   /* create the pop trees */
   MBS_COLONY(col)->pop_tree = mbs_pop_tree_new();
   MBS_COLONY(col)->adj_tree = mbs_pop_tree_new();
@@ -32,6 +34,9 @@ MbObject *mbs_colony_new ( MbObject *game )
   mbs_pop_tree_add(MBS_COLONY(col)->pop_tree,
                    MB_POP_ADULT_QUEEN,
                    0, 1);
+  /* create the default rooms */
+  room = mbs_room_new(game, MB_ROOM_TYPE_ROYAL_CHAMBER);
+  mb_colony_add_room(MB_COLONY(col), room);
   /* create the default tasks */
   /* [fixme] is it the right place for this ? */
   t_top = mbs_task_new_group(game, "top", MB_POP_FLAG_ALL);

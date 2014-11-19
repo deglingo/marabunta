@@ -9,6 +9,7 @@ namespace Mb
   extern class Task;
   extern class Colony;
   extern class Priority;
+  extern class Room;
 }
 
 namespace Mbs
@@ -40,6 +41,10 @@ namespace Mbs
   };
 
   class Priority : Mb::Priority
+  {
+  };
+
+  class Room : Mb::Room
   {
   };
 }

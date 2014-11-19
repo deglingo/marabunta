@@ -45,6 +45,11 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class Room : Object
+  {
+    void class_init ();
+  };
   
   class Message
   {

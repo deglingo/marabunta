@@ -30,3 +30,17 @@ void mb_colony_set_top_task ( MbColony *colony,
   ASSERT(!colony->top_task);
   colony->top_task = l_object_ref(task);
 }
+
+
+
+/* mb_colony_add_room:
+ */
+void mb_colony_add_room ( MbColony *colony,
+                          MbObject *room )
+{
+  ASSERT(MB_IS_ROOM(room));
+  ASSERT(!MB_ROOM(room)->colony);
+  ASSERT(!colony->rooms[MB_ROOM_TYPE(room)]);
+  colony->rooms[MB_ROOM_TYPE(room)] = l_object_ref(room);
+  MB_ROOM(room)->colony = MB_OBJECT(colony);
+}

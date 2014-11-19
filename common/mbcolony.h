@@ -23,6 +23,8 @@ struct _MbColony
   MbObject *owner;
   /* top task group */
   MbObject *top_task;
+  /* rooms */
+  MbObject *rooms[MB_ROOM_TYPE_COUNT];
 };
 
 
@@ -43,6 +45,8 @@ void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );
 void mb_colony_set_top_task ( MbColony *colony,
                               MbObject *task );
+void mb_colony_add_room ( MbColony *colony,
+                          MbObject *room );
 
 
 
