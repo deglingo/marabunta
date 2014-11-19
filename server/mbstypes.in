@@ -6,6 +6,7 @@ namespace Mb
   extern class Player;
   extern class World;
   extern class Sector;
+  extern class Task;
   extern class Colony;
 }
 
@@ -29,6 +30,10 @@ namespace Mbs
   {
   };
 
+  class Task : Mb::Task
+  {
+  };
+  
   class Colony : Mb::Colony
   {
   };

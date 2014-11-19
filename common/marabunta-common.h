@@ -17,6 +17,8 @@
 
 #include "common/mbsector.h"
 
+#include "common/mbtask.h"
+
 #include "common/mbcolony.h"
 
 #include "common/mbmessage.h"

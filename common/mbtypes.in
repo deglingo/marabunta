@@ -32,6 +32,10 @@ namespace Mb
   {
   };
 
+  class Task : Object
+  {
+  };
+
   class Colony : Object
   {
   };

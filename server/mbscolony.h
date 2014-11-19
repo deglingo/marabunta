@@ -5,6 +5,7 @@
 #define _MBSCOLONY_H_
 
 #include "server/mbsbase.h"
+#include "server/mbspoptree.h"
 #include "server/mbscolony-def.h"
 
 G_BEGIN_DECLS
@@ -16,6 +17,8 @@ G_BEGIN_DECLS
 struct _MbsColony
 {
   MBS_COLONY_INSTANCE_HEADER;
+
+  MbsPopTree *pop_tree;
 };
 
 
