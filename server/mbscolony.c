@@ -57,27 +57,23 @@ void mbs_colony_get_pop ( MbsColony *colony,
 
 
 static MbCast _select_hatch_cast ( MbsColony *colony,
-                                   MbObject **prio,
-                                   gint64 **score )
+                                   MbObject **prio )
 {
-  if (colony->hatch_score_queen <= colony->hatch_score_worker &&
-      colony->hatch_score_queen <= colony->hatch_score_soldier)
+  if (MB_PRIORITY_SCORE(colony->hatch_priority_queen) <= MB_PRIORITY_SCORE(colony->hatch_priority_worker) &&
+      MB_PRIORITY_SCORE(colony->hatch_priority_queen) <= MB_PRIORITY_SCORE(colony->hatch_priority_soldier))
     {
       *prio = colony->hatch_priority_queen;
-      *score = &colony->hatch_score_queen;
       return MB_CAST_QUEEN;
     }
-  else if (colony->hatch_score_worker <= colony->hatch_score_queen &&
-           colony->hatch_score_worker <= colony->hatch_score_soldier)
+  else if (MB_PRIORITY_SCORE(colony->hatch_priority_worker) <= MB_PRIORITY_SCORE(colony->hatch_priority_queen) &&
+           MB_PRIORITY_SCORE(colony->hatch_priority_worker) <= MB_PRIORITY_SCORE(colony->hatch_priority_soldier))
     {
       *prio = colony->hatch_priority_worker;
-      *score = &colony->hatch_score_worker;
       return MB_CAST_WORKER;
     }
   else
     {
       *prio = colony->hatch_priority_soldier;
-      *score = &colony->hatch_score_soldier;
       return MB_CAST_SOLDIER;
     }
 }
@@ -94,12 +90,12 @@ static void _update_egg ( MbsColony *colony,
   if (age > 50)
     {
       MbObject *priority;
-      gint64 *score;
-      MbCast pop_cast = _select_hatch_cast(colony, &priority, &score);
+      MbCast pop_cast = _select_hatch_cast(colony, &priority);
       MbPopType pop_type = mb_pop_type(pop_cast, MB_MATURITY_LARVAE);
       mbs_pop_tree_add(colony->adj_tree, unit->type, unit->birthdate, -unit->count);
       mbs_pop_tree_add(colony->adj_tree, pop_type, unit->birthdate, unit->count);
-      *score += unit->count * MB_PRIORITY_SCORE_FACTOR(priority);
+      mb_priority_adjust_score(MB_PRIORITY(priority),
+                               unit->count);
     }
 }
 

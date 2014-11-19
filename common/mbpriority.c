@@ -87,9 +87,12 @@ void mb_priority_set_value ( MbPriority *priority,
 
 
 
-/* mb_priority_get_score_factor:
+/* mb_priority_adjust_score:
  */
-gint mb_priority_get_score_factor ( MbPriority *priority )
+void mb_priority_adjust_score ( MbPriority *priority,
+                                gint64 workers )
 {
-  return 10 - priority->value;
+  /* score <- score + workers / priority.value */
+  priority->score.score += (workers + priority->score.remainder) / priority->value;
+  priority->score.remainder = (workers + priority->score.remainder) % priority->value;
 }

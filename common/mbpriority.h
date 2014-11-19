@@ -11,6 +11,17 @@ G_BEGIN_DECLS
 
 
 
+/* MbScore:
+ */
+typedef struct _MbScore
+{
+  gint64 score;
+  gint64 remainder;
+}
+  MbScore;
+
+
+
 /* MbPriority:
  */
 struct _MbPriority
@@ -18,6 +29,7 @@ struct _MbPriority
   MB_PRIORITY_INSTANCE_HEADER;
 
   MbPriorityValue value;
+  MbScore score;
 };
 
 
@@ -31,11 +43,12 @@ struct _MbPriorityClass
 
 
 
-#define MB_PRIORITY_SCORE_FACTOR(p) (mb_priority_get_score_factor(MB_PRIORITY(p)))
+#define MB_PRIORITY_SCORE(p) (MB_PRIORITY(p)->score.score)
 
 void mb_priority_set_value ( MbPriority *priority,
                              MbPriorityValue value );
-gint mb_priority_get_score_factor ( MbPriority *priority );
+void mb_priority_adjust_score ( MbPriority *priority,
+                                gint64 workers );
 
 
 
