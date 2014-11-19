@@ -112,3 +112,23 @@ static LObject *get_property ( LObject *obj,
 {
   L_OBJECT_GET_PROPERTY_ERROR(obj, pspec);
 }
+
+
+
+/* mb_world_add_sector:
+ */
+void mb_world_add_sector ( MbWorld *world,
+                           MbObject *sector,
+                           guint x,
+                           guint y )
+{
+  ASSERT(MB_IS_SECTOR(sector));
+  ASSERT(x < world->width);
+  ASSERT(y < world->height);
+  ASSERT(!world->sectors[y][x]);
+  ASSERT(!MB_SECTOR(sector)->world);
+  world->sectors[y][x] = l_object_ref(sector);
+  MB_SECTOR(sector)->world = MB_OBJECT(world); /* [fixme] weakref ? */
+  MB_SECTOR(sector)->x = x;
+  MB_SECTOR(sector)->y = y;
+}

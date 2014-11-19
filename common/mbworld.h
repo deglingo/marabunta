@@ -33,6 +33,10 @@ struct _MbWorldClass
 
 MbObject *mb_world_new ( MbObject *game,
                          MbObjectID id );
+void mb_world_add_sector ( MbWorld *world,
+                           MbObject *sector,
+                           guint x,
+                           guint y );
 
 
 

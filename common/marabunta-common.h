@@ -15,6 +15,8 @@
 
 #include "common/mbplayer.h"
 
+#include "common/mbsector.h"
+
 #include "common/mbmessage.h"
 
 #include "common/mbstate.h"

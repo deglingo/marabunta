@@ -16,6 +16,11 @@ G_BEGIN_DECLS
 struct _MbSector
 {
   MB_SECTOR_INSTANCE_HEADER;
+
+  /* set by MbWorld */
+  MbObject *world;
+  guint x;
+  guint y;
 };
 
 

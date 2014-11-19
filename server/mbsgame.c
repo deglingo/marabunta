@@ -5,6 +5,7 @@
 #include "server/mbsgame.h"
 #include "server/mbsplayer.h"
 #include "server/mbsworld.h"
+#include "server/mbssector.h"
 #include "server/mbsgame.inl"
 
 
@@ -44,8 +45,17 @@ MbObject *mbs_game_new ( void )
 void mbs_game_setup ( MbsGame *game )
 {
   MbObject *world;
+  guint x, y;
   world = mbs_world_new(MB_OBJECT(game), 3, 2);
   mb_game_set_world(MB_GAME(game), world);
+  for (y = 0; y < MB_WORLD(world)->height; y++)
+    {
+      for (x = 0; x < MB_WORLD(world)->width; x++)
+        {
+          MbObject *sector = mbs_sector_new(MB_OBJECT(game));
+          mb_world_add_sector(MB_WORLD(world), sector, x, y);
+        }
+    }
 }
 
 
