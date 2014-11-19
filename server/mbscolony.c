@@ -222,7 +222,16 @@ static void _update_pop_unit ( MbsPopUnit *unit,
  */
 void mbs_colony_update ( MbsColony *colony )
 {
+  gint64 min_score;
   mbs_pop_tree_traverse(colony->pop_tree, _update_pop_unit, colony);
+  /* adjust hatch scores */
+  min_score = MIN(MB_PRIORITY_SCORE(colony->hatch_priority_queen),
+                  MB_PRIORITY_SCORE(colony->hatch_priority_worker));
+  min_score = MIN(min_score,
+                  MB_PRIORITY_SCORE(colony->hatch_priority_soldier));
+  MB_PRIORITY(colony->hatch_priority_queen)->score.score -= min_score;
+  MB_PRIORITY(colony->hatch_priority_worker)->score.score -= min_score;
+  MB_PRIORITY(colony->hatch_priority_soldier)->score.score -= min_score;
   /* [FIXME] post update */
   mbs_pop_tree_update(colony->pop_tree, colony->adj_tree);
 }
