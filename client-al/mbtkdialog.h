@@ -33,6 +33,9 @@ struct _MbtkDialogClass
 AltkWidget *mbtk_dialog_new ( AltkDisplay *display );
 void mbtk_dialog_setup ( MbtkDialog *dialog,
                          MbObject *game );
+void mbtk_dialog_set_sector ( MbtkDialog *dialog,
+                              guint x,
+                              guint y );
 
 
 

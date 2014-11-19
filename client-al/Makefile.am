@@ -14,14 +14,17 @@ marabunta_al_LDFLAGS = \
 
 marabunta_al_SOURCES = \
 	mbtkdialog.c \
+	mbtkmapview.c \
 	mbalapp.c \
 	mbalmain.c
 
 BUILT_SOURCES = \
 	mbtkdialog-def.h mbtkdialog.inl \
+	mbtkmapview-def.h mbtkmapview.inl \
 	mbalapp-def.h mbalapp.inl
 
 mbtkdialog-def.h mbtkdialog.inl \
+mbtkmapview-def.h mbtkmapview.inl \
 mbalapp-def.h mbalapp.inl \
 : mbaltypes.stamp-h
 

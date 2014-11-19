@@ -3,6 +3,7 @@
 namespace Altk
 {
   extern class Dialog;
+  extern class Frame;
 }
 
 namespace Mbc
@@ -23,5 +24,9 @@ namespace Mbtk
   class Dialog : Altk::Dialog
   {
     void init ();
+  };
+
+  class MapView : Altk::Frame
+  {
   };
 }

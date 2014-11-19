@@ -3,6 +3,7 @@
 
 #include "client-al/alprivate.h"
 #include "client-al/mbtkdialog.h"
+#include "client-al/mbtkmapview.h"
 #include "client-al/mbtkdialog.inl"
 
 
@@ -12,7 +13,9 @@
 typedef struct _Private
 {
   MbObject *game;
+  MbObject *sector;
   AltkWidget *frame_count_label;
+  AltkWidget *map_view;
 }
   Private;
 
@@ -29,23 +32,80 @@ static void mbtk_dialog_init ( LObject *obj )
 
 
 
-/* _create_dialog:
+/* _create_header:
  */
-static void _create_dialog ( AltkWidget *dlg )
+static AltkWidget *_create_header ( AltkWidget *dlg )
 {
   Private *priv = PRIVATE(dlg);
   AltkWidget *box, *label;
-  l_trash_push();
-  box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_HORIZONTAL));
-  ALTK_CONTAINER_ADD(dlg, box);
+  box = altk_box_new(ALTK_HORIZONTAL);
   label = L_TRASH_OBJECT
     (altk_label_new("Time:"));
   ALTK_BOX_ADD(box, label, 0);
   priv->frame_count_label = L_TRASH_OBJECT
     (altk_label_new("0"));
   ALTK_BOX_ADD(box, priv->frame_count_label, 0);
-  l_trash_pop();
+  return box;
+}
+
+
+
+/* _create_side_panel:
+ */
+static AltkWidget *_create_side_panel ( AltkWidget *dlg )
+{
+  Private *priv = PRIVATE(dlg);
+  AltkWidget *frame, *box;
+  frame = altk_frame_new("");
+  /* top box */
+  box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(frame, box);
+  /* map view */
+  priv->map_view = L_TRASH_OBJECT(mbtk_map_view_new());
+  ALTK_BOX_ADD(box,
+               priv->map_view,
+               ALTK_PACK_ANCHOR_LEFT);
+  return frame;
+}
+
+
+
+/* _create_body:
+ */
+static AltkWidget *_create_body ( AltkWidget *dlg )
+{
+  /* Private *priv = PRIVATE(dlg); */
+  AltkWidget *box;
+  /* top box */
+  box = altk_box_new(ALTK_HORIZONTAL);
+  /* side panel */
+  ALTK_BOX_ADD(box,
+               L_TRASH_OBJECT(_create_side_panel(dlg)),
+               ALTK_PACK_VEXPAND_FILL);
+  return box;
+}
+
+
+
+/* _create_dialog:
+ */
+static void _create_dialog ( AltkWidget *dlg )
+{
+  /* Private *priv = PRIVATE(dlg); */
+  AltkWidget *box;
+  /* top box */
+  box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(dlg, box);
+  /* header */
+  ALTK_BOX_ADD(box,
+               L_TRASH_OBJECT(_create_header(dlg)),
+               ALTK_PACK_HEXPAND);
+  /* body */
+  ALTK_BOX_ADD(box,
+               L_TRASH_OBJECT(_create_body(dlg)),
+               ALTK_PACK_EXPAND_FILL);
 }
 
 
@@ -54,13 +114,14 @@ static void _create_dialog ( AltkWidget *dlg )
  */
 AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
 {
-  AltkWidget *dlg = ALTK_WIDGET(l_object_new(MBTK_CLASS_DIALOG, NULL));
-  /* Private *priv; */
-  /* [fixme] instance init */
-  /* MBTK_DIALOG(dlg)->private = priv = g_new0(Private, 1); */
+  AltkWidget *dlg;
+  dlg = ALTK_WIDGET(l_object_new(MBTK_CLASS_DIALOG, NULL));
   altk_dialog_set_display(ALTK_DIALOG(dlg), display);
   altk_dialog_set_size_hints(ALTK_DIALOG(dlg), ALTK_SIZE_HINT_MAXIMIZED);
+  /* create the dialog */
+  l_trash_push();
   _create_dialog(dlg);
+  l_trash_pop();
   return dlg;
 }
 
@@ -93,4 +154,22 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
                    (LSignalHandler) _on_frame_count_notify,
                    dialog,
                    NULL);
+  mbtk_dialog_set_sector(dialog, 0, 0);
+}
+
+
+
+/* mbtk_dialog_set_sector:
+ */
+void mbtk_dialog_set_sector ( MbtkDialog *dialog,
+                              guint x,
+                              guint y )
+{
+  Private *priv = PRIVATE(dialog);
+  MbObject *sector;
+  ASSERT(x < MB_WORLD_WIDTH(MB_GAME_WORLD(priv->game)));
+  ASSERT(y < MB_WORLD_HEIGHT(MB_GAME_WORLD(priv->game)));
+  ASSERT(!priv->sector); /* [todo] */
+  sector = MB_WORLD_SECTOR(MB_GAME_WORLD(priv->game), x, y);
+  priv->sector = l_object_ref(sector);
 }
