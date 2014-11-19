@@ -86,6 +86,16 @@ static void _handle_sector_setup ( MbcGame *game,
 
 
 
+/* _handle_game_update:
+ */
+static void _handle_game_update ( MbcGame *game,
+                                  MbStateGameUpdate *st_game )
+{
+  mb_game_set_frame_count(MB_GAME(game), st_game->frame_count);
+}
+
+
+
 /* mbc_game_update_state:
  */
 void mbc_game_update_state ( MbcGame *game,
@@ -104,6 +114,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_SECTOR_SETUP:
           _handle_sector_setup(game, (MbStateSectorSetup *) block);
+          break;
+        case MB_STATE_GAME_UPDATE:
+          _handle_game_update(game, (MbStateGameUpdate *) block);
           break;
         default:
           CL_ERROR("[TODO] block type %d", block->type);

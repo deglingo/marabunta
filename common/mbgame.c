@@ -23,6 +23,11 @@ static LParamSpec *pspecs[N_PROPS];
 
 
 
+static void add_player ( MbGame *game,
+                         MbObject *player );
+
+
+
 /* mb_game_class_init:
  */
 static void mb_game_class_init ( LObjectClass *cls )
@@ -31,6 +36,8 @@ static void mb_game_class_init ( LObjectClass *cls )
   /* cls->set_property = set_property; */
   /* cls->get_property = get_property; */
 
+  MB_GAME_CLASS(cls)->add_player = add_player;
+  
   pspecs[PROP_FRAME_COUNT] =
     l_param_spec_int("frame_count",
                      0);
@@ -82,14 +89,23 @@ MbObject *mb_game_lookup_object ( MbGame *game,
 
 /* mb_game_add_player:
  */
-MbObject *mb_game_add_player ( MbGame *game,
-                               MbObject *player )
+void mb_game_add_player ( MbGame *game,
+                          MbObject *player )
 {
   ASSERT(MB_OBJECT_GAME(player) == MB_OBJECT(game));
   ASSERT(MB_IS_PLAYER(player));
-  /* note: game already owns the ref */
+  MB_GAME_GET_CLASS(game)->add_player(game, player);
+}
+
+
+
+/* add_player:
+ */
+static void add_player ( MbGame *game,
+                         MbObject *player )
+{
+  /* note: game already owns the ref !? */
   game->players = g_list_append(game->players, player);
-  return player;
 }
 
 

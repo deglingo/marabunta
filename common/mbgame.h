@@ -30,6 +30,9 @@ struct _MbGame
 struct _MbGameClass
 {
   MB_GAME_CLASS_HEADER;
+
+  void (* add_player) ( MbGame *game,
+                        MbObject *player );
 };
 
 
@@ -41,8 +44,8 @@ void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,
                                   MbObjectID id );
-MbObject *mb_game_add_player ( MbGame *game,
-                               MbObject *player );
+void mb_game_add_player ( MbGame *game,
+                          MbObject *player );
 void mb_game_set_world ( MbGame *game,
                          MbObject *world );
 void mb_game_set_frame_count ( MbGame *game,

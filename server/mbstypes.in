@@ -12,6 +12,7 @@ namespace Mbs
 {
   class Game : Mb::Game
   {
+    void class_init ();
     void init ();
   };
 

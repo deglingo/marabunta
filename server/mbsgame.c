@@ -18,6 +18,7 @@
  */
 typedef struct _Private
 {
+  GList *players; /* list < PlayerData > */
   /* update timer */
   GTimer *timer;
   gdouble next_frame;
@@ -25,6 +26,31 @@ typedef struct _Private
   Private;
 
 #define PRIVATE(game) ((Private *)(MBS_GAME(game)->private))
+
+
+
+/* PlayerData:
+ */
+typedef struct _PlayerData
+{
+  MbObject *player;
+  MbState *state;
+}
+  PlayerData;
+
+
+
+static void add_player ( MbGame *game,
+                         MbObject *player );
+
+
+
+/* mbs_game_class_init:
+ */
+static void mbs_game_class_init ( LObjectClass *cls )
+{
+  MB_GAME_CLASS(cls)->add_player = add_player;
+}
 
 
 
@@ -43,6 +69,20 @@ static void mbs_game_init ( LObject *obj )
 MbObject *mbs_game_new ( void )
 {
   return MB_OBJECT(l_object_new(MBS_CLASS_GAME, NULL));
+}
+
+
+
+/* add_player:
+ */
+static void add_player ( MbGame *game,
+                         MbObject *player )
+{
+  PlayerData *data;
+  MB_GAME_CLASS(parent_class)->add_player(game, player);
+  data = g_new0(PlayerData, 1);
+  data->player = player; /* ref owned by MbGame */
+  PRIVATE(game)->players = g_list_append(PRIVATE(game)->players, data);
 }
 
 
@@ -119,9 +159,26 @@ static void _send_game_setup ( MbsGame *game,
 
 static void _game_update ( MbsGame *game )
 {
-  CL_DEBUG("update");
   mb_game_set_frame_count(MB_GAME(game),
                           MB_GAME_FRAME_COUNT(game) + 1);
+}
+
+
+
+static void _send_game_update ( MbsGame *game )
+{
+  Private *priv = PRIVATE(game);
+  GList *l;
+  for (l = priv->players; l; l = l->next)
+    {
+      PlayerData *player = l->data;
+      MbStateGameUpdate *st_game;
+      st_game = mb_state_next(player->state, MB_STATE_GAME_UPDATE);
+      st_game->frame_count = MB_GAME_FRAME_COUNT(game);
+      mb_player_handle_state(MB_PLAYER(player->player),
+                             player->state);
+      L_OBJECT_CLEAR(player->state);
+    }
 }
 
 
@@ -130,11 +187,19 @@ static gboolean _game_timer ( MbsGame *game )
 {
   Private *priv = PRIVATE(game);
   gdouble elapsed = g_timer_elapsed(priv->timer, NULL);
+  GList *l;
+  /* prepare the players states */
+  for (l = priv->players; l; l = l->next)
+    {
+      PlayerData *player = l->data;
+      player->state = mb_state_new();
+    }
   while (elapsed >= priv->next_frame)
     {
       _game_update(game);
       priv->next_frame = ((gdouble) MB_GAME_FRAME_COUNT(game)) / MBS_GAME_FPS;
     }
+  _send_game_update(game);
   return G_SOURCE_CONTINUE;
 }
 
