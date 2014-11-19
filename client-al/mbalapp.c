@@ -31,6 +31,16 @@ MbApp *mbal_app_new ( void )
 
 
 
+/* _on_game_started:
+ */
+static void _on_game_started ( MbObject *game,
+                               MbalApp *app )
+{
+  mbtk_dialog_setup(MBTK_DIALOG(app->dialog), game);
+}
+
+
+
 /* run:
  */
 static gint run ( MbApp *app )
@@ -42,6 +52,11 @@ static gint run ( MbApp *app )
   altk_display_open(MBAL_APP(app)->display);
   /* setup and start the game */
   mbc_app_setup_solo_game(MBC_APP(app));
+  l_signal_connect(L_OBJECT(MBC_APP(app)->game_proxy),
+                   "started", 0,
+                   (LSignalHandler) _on_game_started,
+                   app,
+                   NULL);
   mbs_game_start(MBS_GAME(MBC_APP(app)->game));
   /* go */
   return MB_APP_CLASS(parent_class)->run(app);

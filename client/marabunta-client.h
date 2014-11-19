@@ -10,6 +10,8 @@
 
 #include "client/mbcapp.h"
 
+#include "client/mbcgame.h"
+
 
 
 #endif
