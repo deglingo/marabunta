@@ -28,5 +28,6 @@ namespace Mbtk
 
   class MapView : Altk::Frame
   {
+    void init ();
   };
 }

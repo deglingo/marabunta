@@ -154,6 +154,8 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
                    (LSignalHandler) _on_frame_count_notify,
                    dialog,
                    NULL);
+  mbtk_map_view_set_world(MBTK_MAP_VIEW(priv->map_view),
+                          MB_GAME_WORLD(game));
   mbtk_dialog_set_sector(dialog, 0, 0);
 }
 

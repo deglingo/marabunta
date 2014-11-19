@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkMapView
 {
   MBTK_MAP_VIEW_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
@@ -30,6 +32,8 @@ struct _MbtkMapViewClass
 
 
 AltkWidget *mbtk_map_view_new ( void );
+void mbtk_map_view_set_world ( MbtkMapView *view,
+                               MbObject *world );
 
 
 
