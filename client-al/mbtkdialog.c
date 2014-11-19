@@ -5,6 +5,7 @@
 #include "client-al/mbtkdialog.h"
 #include "client-al/mbtkmapview.h"
 #include "client-al/mbtkpoptable.h"
+#include "client-al/mbtkcolonyview.h"
 #include "client-al/mbtkdialog.inl"
 
 
@@ -18,6 +19,7 @@ typedef struct _Private
   AltkWidget *frame_count_label;
   AltkWidget *map_view;
   AltkWidget *pop_table;
+  AltkWidget *colony_view;
 }
   Private;
 
@@ -82,14 +84,21 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
  */
 static AltkWidget *_create_body ( AltkWidget *dlg )
 {
-  /* Private *priv = PRIVATE(dlg); */
-  AltkWidget *box;
+  Private *priv = PRIVATE(dlg);
+  AltkWidget *box, *frame;
   /* top box */
   box = altk_box_new(ALTK_HORIZONTAL);
   /* side panel */
   ALTK_BOX_ADD(box,
                L_TRASH_OBJECT(_create_side_panel(dlg)),
                ALTK_PACK_VEXPAND_FILL);
+  /* colony view */
+  frame = L_TRASH_OBJECT
+    (altk_frame_new(""));
+  ALTK_BOX_ADD(box, frame, ALTK_PACK_EXPAND_FILL);
+  priv->colony_view = L_TRASH_OBJECT
+    (mbtk_colony_view_new());
+  ALTK_CONTAINER_ADD(frame, priv->colony_view);
   return box;
 }
 
