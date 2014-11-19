@@ -10,6 +10,28 @@
 
 
 
+/* Signals:
+ */
+enum
+  {
+    SIG_STARTED,
+    SIG_COUNT,
+  };
+
+static LSignalID signals[SIG_COUNT];
+
+
+
+/* mbc_game_class_init:
+ */
+static void mbc_game_class_init ( LObjectClass *cls )
+{
+  signals[SIG_STARTED] = l_signal_new(cls,
+                                      "started");
+}
+
+
+
 /* mbc_game_new:
  */
 MbObject *mbc_game_new ( void )
@@ -87,6 +109,7 @@ void mbc_game_update_state ( MbcGame *game,
           CL_ERROR("[TODO] block type %d", block->type);
         }
     }
-  if (started)
-    l_signal_emit(L_OBJECT(game), "started", 0);
+  if (started) {
+    l_signal_emit(L_OBJECT(game), signals[SIG_STARTED], 0);
+  }
 }

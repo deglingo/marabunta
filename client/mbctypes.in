@@ -19,6 +19,7 @@ namespace Mbc
 
   class Game : Mb::Game
   {
+    void class_init ();
   };
 
   class Player : Mb::Player
