@@ -105,6 +105,55 @@ static void _update_egg ( MbsColony *colony,
 
 
 
+/* _update_lq:
+ */
+static void _update_lq ( MbsColony *colony,
+                         MbsPopUnit *unit )
+{
+  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+  guint age = date - unit->birthdate;
+  if (age > 100)
+    {
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_QUEEN, unit->birthdate, -unit->count);
+      /* no new queens for now */
+      /* mbs_pop_tree_add(colony->adj_tree, MB_POP_ADULT_QUEEN, unit->birthdate, unit->count); */
+    }
+}
+
+
+
+/* _update_lw:
+ */
+static void _update_lw ( MbsColony *colony,
+                         MbsPopUnit *unit )
+{
+  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+  guint age = date - unit->birthdate;
+  if (age > 100)
+    {
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_WORKER, unit->birthdate, -unit->count);
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_ADULT_WORKER, unit->birthdate, unit->count);
+    }
+}
+
+
+
+/* _update_ls:
+ */
+static void _update_ls ( MbsColony *colony,
+                         MbsPopUnit *unit )
+{
+  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+  guint age = date - unit->birthdate;
+  if (age > 100)
+    {
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_SOLDIER, unit->birthdate, -unit->count);
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_ADULT_SOLDIER, unit->birthdate, unit->count);
+    }
+}
+
+
+
 /* _update_aq:
  */
 static void _update_aq ( MbsColony *colony,
@@ -113,6 +162,26 @@ static void _update_aq ( MbsColony *colony,
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   gint count = g_random_int_range(0, 10 * unit->count);
   mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
+}
+
+
+
+/* _update_aw:
+ */
+static void _update_aw ( MbsColony *colony,
+                         MbsPopUnit *unit )
+{
+  /* [TODO] */
+}
+
+
+
+/* _update_as:
+ */
+static void _update_as ( MbsColony *colony,
+                         MbsPopUnit *unit )
+{
+  /* [TODO] */
 }
 
 
@@ -128,8 +197,23 @@ static void _update_pop_unit ( MbsPopUnit *unit,
     case MB_POP_EGG:
       _update_egg(colony, unit);
       break;
+    case MB_POP_LARVAE_QUEEN:
+      _update_lq(colony, unit);
+      break;
+    case MB_POP_LARVAE_WORKER:
+      _update_lw(colony, unit);
+      break;
+    case MB_POP_LARVAE_SOLDIER:
+      _update_ls(colony, unit);
+      break;
     case MB_POP_ADULT_QUEEN:
       _update_aq(colony, unit);
+      break;
+    case MB_POP_ADULT_WORKER:
+      _update_aw(colony, unit);
+      break;
+    case MB_POP_ADULT_SOLDIER:
+      _update_as(colony, unit);
       break;
     default:
       CL_DEBUG("[TODO] type %d", unit->type);
