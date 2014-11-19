@@ -33,6 +33,7 @@ struct _MbRoomClass
 
 
 #define MB_ROOM_TYPE(room) (MB_ROOM(room)->type)
+#define MB_ROOM_COLONY(room) (MB_ROOM(room)->colony)
 
 
 

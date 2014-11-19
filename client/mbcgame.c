@@ -7,6 +7,7 @@
 #include "client/mbcworld.h"
 #include "client/mbcsector.h"
 #include "client/mbccolony.h"
+#include "client/mbcroom.h"
 #include "client/mbcgame.inl"
 
 
@@ -127,6 +128,20 @@ static void _handle_colony_update ( MbcGame *game,
 
 
 
+/* _handle_room_setup:
+ */
+static void _handle_room_setup ( MbcGame *game,
+                                 MbStateRoomSetup *st_room )
+{
+  MbObject *colony, *room;
+  colony = mb_game_lookup_object(MB_GAME(game), st_room->colony_id);
+  ASSERT(colony && MBC_IS_COLONY(colony));
+  room = mbc_room_new(MB_OBJECT(game), st_room->room_id, st_room->type);
+  mb_colony_add_room(MB_COLONY(colony), room);
+}
+
+
+
 /* mbc_game_update_state:
  */
 void mbc_game_update_state ( MbcGame *game,
@@ -148,6 +163,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_COLONY_SETUP:
           _handle_colony_setup(game, (MbStateColonySetup *) block);
+          break;
+        case MB_STATE_ROOM_SETUP:
+          _handle_room_setup(game, (MbStateRoomSetup *) block);
           break;
         case MB_STATE_GAME_UPDATE:
           _handle_game_update(game, (MbStateGameUpdate *) block);

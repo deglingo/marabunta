@@ -120,10 +120,22 @@ static void _send_colony_setup ( MbsGame *game,
                                  MbObject *colony )
 {
   MbStateColonySetup *st_col;
+  gint tp;
   st_col = mb_state_next(state, MB_STATE_COLONY_SETUP);
   st_col->colony_id = MB_OBJECT_ID(colony);
   st_col->sector_id = MB_OBJECT_ID(MB_COLONY_SECTOR(colony));
   st_col->owner_id = MB_OBJECT_ID(MB_COLONY_OWNER(colony));
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      MbObject *room = MB_COLONY_ROOM(colony, tp);
+      MbStateRoomSetup *st_room;
+      if (!room)
+        continue;
+      st_room = mb_state_next(state, MB_STATE_ROOM_SETUP);
+      st_room->room_id = MB_OBJECT_ID(room);
+      st_room->colony_id = MB_OBJECT_ID(MB_ROOM_COLONY(room));
+      st_room->type = MB_ROOM_TYPE(room);
+    }
 }
 
 

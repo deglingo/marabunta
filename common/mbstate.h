@@ -32,6 +32,7 @@ typedef struct _MbStatePriority MbStatePriority;
 typedef struct _MbStateGameSetup MbStateGameSetup;
 typedef struct _MbStateSectorSetup MbStateSectorSetup;
 typedef struct _MbStateColonySetup MbStateColonySetup;
+typedef struct _MbStateRoomSetup MbStateRoomSetup;
 typedef struct _MbStateGameUpdate MbStateGameUpdate;
 typedef struct _MbStateColonyUpdate MbStateColonyUpdate;
 /* inner blocks */
@@ -58,6 +59,7 @@ enum _MbStateType
     MB_STATE_GAME_SETUP,
     MB_STATE_SECTOR_SETUP,
     MB_STATE_COLONY_SETUP,
+    MB_STATE_ROOM_SETUP,
     MB_STATE_GAME_UPDATE,
     MB_STATE_COLONY_UPDATE,
     MB_STATE_COUNT,
@@ -248,6 +250,18 @@ struct _MbStateColonySetup
   MbObjectID colony_id;
   MbObjectID sector_id;
   MbObjectID owner_id;
+};
+
+
+
+/* MbStateRoomSetup;
+ */
+struct _MbStateRoomSetup
+{
+  MbStateBlock block;
+  MbObjectID room_id;
+  MbObjectID colony_id;
+  MbRoomType type;
 };
 
 

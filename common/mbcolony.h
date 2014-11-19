@@ -40,6 +40,7 @@ struct _MbColonyClass
 
 #define MB_COLONY_SECTOR(c) (MB_COLONY(c)->sector)
 #define MB_COLONY_OWNER(c) (MB_COLONY(c)->owner)
+#define MB_COLONY_ROOM(c, tp) (MB_COLONY(c)->rooms[tp])
 
 void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );

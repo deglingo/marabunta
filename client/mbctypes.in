@@ -8,6 +8,7 @@ namespace Mb
   extern class World;
   extern class Sector;
   extern class Colony;
+  extern class Room;
 }
 
 namespace Mbc
@@ -38,5 +39,9 @@ namespace Mbc
   class Colony : Mb::Colony
   {
     void class_init ();
+  };
+
+  class Room : Mb::Room
+  {
   };
 }
