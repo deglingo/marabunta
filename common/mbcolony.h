@@ -21,6 +21,8 @@ struct _MbColony
   MbObject *sector;
   /* owner player */
   MbObject *owner;
+  /* top task group */
+  MbObject *top_task;
 };
 
 
@@ -39,6 +41,8 @@ struct _MbColonyClass
 
 void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );
+void mb_colony_set_top_task ( MbColony *colony,
+                              MbObject *task );
 
 
 

@@ -5,6 +5,7 @@
 #define _MBTASK_H_
 
 #include "common/mbobject.h"
+#include "common/mbpoptype.h"
 #include "common/mbtask-def.h"
 
 G_BEGIN_DECLS
@@ -16,6 +17,12 @@ G_BEGIN_DECLS
 struct _MbTask
 {
   MB_TASK_INSTANCE_HEADER;
+
+  const gchar *name;
+  gboolean group;
+  MbPopFlags pop_flags;
+  MbTask *parent;
+  GList *children;
 };
 
 
@@ -31,6 +38,8 @@ struct _MbTaskClass
 
 void mb_task_add_workers ( MbTask *task,
                            gint64 count );
+void mb_task_add ( MbTask *task,
+                   MbObject *child );
 
 
 
