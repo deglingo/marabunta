@@ -10,6 +10,36 @@
 
 
 
+/* Properties:
+ */
+enum
+  {
+    PROP_0,
+    PROP_FRAME_COUNT,
+    N_PROPS,
+  };
+
+static LParamSpec *pspecs[N_PROPS];
+
+
+
+/* mb_game_class_init:
+ */
+static void mb_game_class_init ( LObjectClass *cls )
+{
+  /* [TODO] */
+  /* cls->set_property = set_property; */
+  /* cls->get_property = get_property; */
+
+  pspecs[PROP_FRAME_COUNT] =
+    l_param_spec_int("frame_count",
+                     0);
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
+}
+
+
+
 /* mb_game_init:
  */
 static void mb_game_init ( LObject *obj )
@@ -74,4 +104,19 @@ void mb_game_set_world ( MbGame *game,
   ASSERT(!game->world);
   /* note: game already owns the ref !? */
   game->world = world;
+}
+
+
+
+/* mb_game_set_frame_count:
+ */
+void mb_game_set_frame_count ( MbGame *game,
+                               guint frame_count )
+{
+  if (frame_count != game->frame_count)
+    {
+      game->frame_count = frame_count;
+      l_object_notify(L_OBJECT(game),
+                      pspecs[PROP_FRAME_COUNT]);
+    }
 }

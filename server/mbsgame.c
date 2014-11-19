@@ -10,11 +10,17 @@
 
 
 
+#define MBS_GAME_FPS ((gdouble) 5.0)
+
+
+
 /* Private:
  */
 typedef struct _Private
 {
-  int dummy;
+  /* update timer */
+  GTimer *timer;
+  gdouble next_frame;
 }
   Private;
 
@@ -27,6 +33,7 @@ typedef struct _Private
 static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->timer = g_timer_new();
 }
 
 
@@ -110,14 +117,46 @@ static void _send_game_setup ( MbsGame *game,
 
 
 
+static void _game_update ( MbsGame *game )
+{
+  CL_DEBUG("update");
+  mb_game_set_frame_count(MB_GAME(game),
+                          MB_GAME_FRAME_COUNT(game) + 1);
+}
+
+
+
+static gboolean _game_timer ( MbsGame *game )
+{
+  Private *priv = PRIVATE(game);
+  gdouble elapsed = g_timer_elapsed(priv->timer, NULL);
+  while (elapsed >= priv->next_frame)
+    {
+      _game_update(game);
+      priv->next_frame = ((gdouble) MB_GAME_FRAME_COUNT(game)) / MBS_GAME_FPS;
+    }
+  return G_SOURCE_CONTINUE;
+}
+
+
+
 /* mbs_game_start:
  */
 void mbs_game_start ( MbsGame *game )
 {
+  Private *priv = PRIVATE(game);
   GList *l;
   for (l = MB_GAME(game)->players; l; l = l->next)
     {
       MbsPlayer *player = l->data;
       _send_game_setup(game, player);
     }
+  /* install the game timer */
+  g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
+                     10,
+                     (GSourceFunc) _game_timer,
+                     game,
+                     NULL);
+  priv->next_frame = 0;
+  g_timer_start(priv->timer);
 }

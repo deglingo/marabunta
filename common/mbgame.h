@@ -20,6 +20,7 @@ struct _MbGame
   GHashTable *object_map;
   GList *players;
   MbObject *world;
+  guint frame_count;
 };
 
 
@@ -34,6 +35,7 @@ struct _MbGameClass
 
 
 #define MB_GAME_WORLD(g) (MB_GAME(g)->world)
+#define MB_GAME_FRAME_COUNT(g) (MB_GAME(g)->frame_count)
 
 void mb_game_register_object ( MbGame *game,
                                MbObject *object );
@@ -43,6 +45,8 @@ MbObject *mb_game_add_player ( MbGame *game,
                                MbObject *player );
 void mb_game_set_world ( MbGame *game,
                          MbObject *world );
+void mb_game_set_frame_count ( MbGame *game,
+                               guint frame_count );
 
 
 
