@@ -324,7 +324,7 @@ void mbs_pop_tree_get_pop ( MbsPopTree *tree,
 void mbs_pop_unit_affect_task ( MbsPopUnit *unit,
                                 MbObject *task )
 {
-  ASSERT(MBS_IS_TASK(task));
+  ASSERT((!task) || MBS_IS_TASK(task));
   if (task == unit->task)
     return;
   if (unit->task) {

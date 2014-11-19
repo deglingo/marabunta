@@ -40,16 +40,17 @@ namespace Mb
   class Colony : Object
   {
   };
+
+  class Priority : Object
+  {
+    void class_init ();
+  };
   
   class Message
   {
   };
 
   class State
-  {
-  };
-
-  class Priority
   {
   };
 }

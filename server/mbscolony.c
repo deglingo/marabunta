@@ -4,6 +4,7 @@
 #include "server/srvprivate.h"
 #include "server/mbscolony.h"
 #include "server/mbstask.h"
+#include "server/mbspriority.h"
 #include "server/mbscolony.inl"
 
 
@@ -20,6 +21,13 @@ MbObject *mbs_colony_new ( MbObject *game )
   /* create the pop trees */
   MBS_COLONY(col)->pop_tree = mbs_pop_tree_new();
   MBS_COLONY(col)->adj_tree = mbs_pop_tree_new();
+  /* hatch priorities */
+  MBS_COLONY(col)->hatch_priority_queen =
+    mbs_priority_new(game, 1);
+  MBS_COLONY(col)->hatch_priority_worker =
+    mbs_priority_new(game, 7);
+  MBS_COLONY(col)->hatch_priority_soldier =
+    mbs_priority_new(game, 2);
   /* [FIXME] */
   mbs_pop_tree_add(MBS_COLONY(col)->pop_tree,
                    MB_POP_ADULT_QUEEN,
@@ -48,12 +56,51 @@ void mbs_colony_get_pop ( MbsColony *colony,
 
 
 
+static MbCast _select_hatch_cast ( MbsColony *colony,
+                                   MbObject **prio,
+                                   gint64 **score )
+{
+  if (colony->hatch_score_queen <= colony->hatch_score_worker &&
+      colony->hatch_score_queen <= colony->hatch_score_soldier)
+    {
+      *prio = colony->hatch_priority_queen;
+      *score = &colony->hatch_score_queen;
+      return MB_CAST_QUEEN;
+    }
+  else if (colony->hatch_score_worker <= colony->hatch_score_queen &&
+           colony->hatch_score_worker <= colony->hatch_score_soldier)
+    {
+      *prio = colony->hatch_priority_worker;
+      *score = &colony->hatch_score_worker;
+      return MB_CAST_WORKER;
+    }
+  else
+    {
+      *prio = colony->hatch_priority_soldier;
+      *score = &colony->hatch_score_soldier;
+      return MB_CAST_SOLDIER;
+    }
+}
+
+
+
 /* _update_egg:
  */
 static void _update_egg ( MbsColony *colony,
                           MbsPopUnit *unit )
 {
-  /* [TODO] */
+  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+  guint age = date - unit->birthdate;
+  if (age > 50)
+    {
+      MbObject *priority;
+      gint64 *score;
+      MbCast pop_cast = _select_hatch_cast(colony, &priority, &score);
+      MbPopType pop_type = mb_pop_type(pop_cast, MB_MATURITY_LARVAE);
+      mbs_pop_tree_add(colony->adj_tree, unit->type, unit->birthdate, -unit->count);
+      mbs_pop_tree_add(colony->adj_tree, pop_type, unit->birthdate, unit->count);
+      *score += unit->count * MB_PRIORITY_SCORE_FACTOR(priority);
+    }
 }
 
 
@@ -64,7 +111,8 @@ static void _update_aq ( MbsColony *colony,
                          MbsPopUnit *unit )
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
-  mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, 10);
+  gint count = g_random_int_range(0, 10 * unit->count);
+  mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
 }
 
 
@@ -84,7 +132,7 @@ static void _update_pop_unit ( MbsPopUnit *unit,
       _update_aq(colony, unit);
       break;
     default:
-      CL_ERROR("[TODO] type %d", unit->type);
+      CL_DEBUG("[TODO] type %d", unit->type);
     }
 }
 

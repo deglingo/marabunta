@@ -20,6 +20,13 @@ struct _MbsColony
 
   MbsPopTree *pop_tree;
   MbsPopTree *adj_tree;
+  /* hatch selection */
+  MbObject *hatch_priority_queen;
+  MbObject *hatch_priority_worker;
+  MbObject *hatch_priority_soldier;
+  gint64 hatch_score_queen;
+  gint64 hatch_score_worker;
+  gint64 hatch_score_soldier;
 };
 
 

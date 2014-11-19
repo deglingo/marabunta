@@ -4,7 +4,7 @@
 #ifndef _MBPRIORITY_H_
 #define _MBPRIORITY_H_
 
-#include "common/mbbase.h"
+#include "common/mbobject.h"
 #include "common/mbpriority-def.h"
 
 G_BEGIN_DECLS
@@ -17,7 +17,7 @@ struct _MbPriority
 {
   MB_PRIORITY_INSTANCE_HEADER;
 
-  gint level;
+  MbPriorityValue value;
 };
 
 
@@ -31,7 +31,11 @@ struct _MbPriorityClass
 
 
 
-MbPriority *mb_priority_new ( gint level );
+#define MB_PRIORITY_SCORE_FACTOR(p) (mb_priority_get_score_factor(MB_PRIORITY(p)))
+
+void mb_priority_set_value ( MbPriority *priority,
+                             MbPriorityValue value );
+gint mb_priority_get_score_factor ( MbPriority *priority );
 
 
 

@@ -8,6 +8,7 @@ namespace Mb
   extern class Sector;
   extern class Task;
   extern class Colony;
+  extern class Priority;
 }
 
 namespace Mbs
@@ -35,6 +36,10 @@ namespace Mbs
   };
   
   class Colony : Mb::Colony
+  {
+  };
+
+  class Priority : Mb::Priority
   {
   };
 }
