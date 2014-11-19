@@ -31,6 +31,8 @@ struct _MbtkColonyViewClass
 
 
 AltkWidget *mbtk_colony_view_new ( void );
+void mbtk_colony_view_set_colony ( MbtkColonyView *view,
+                                   MbObject *colony );
 
 
 
