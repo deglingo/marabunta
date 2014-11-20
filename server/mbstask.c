@@ -106,7 +106,7 @@ static void _inc_ready ( MbsTask *task,
                          MbPopFlags flags )
 {
   gint tp;
-  MbPopFlags set_flags;
+  MbPopFlags set_flags = 0;
   for (tp = 0; flags; tp++, flags >>= 1)
     {
       ASSERT(tp < MB_POP_TYPE_COUNT);
