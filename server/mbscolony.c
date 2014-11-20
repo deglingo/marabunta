@@ -17,9 +17,11 @@ MbObject *mbs_colony_new ( MbObject *game )
   MbObject *col = MB_OBJECT(l_object_new(MBS_CLASS_COLONY,
                                          "game", game,
                                          NULL));
-  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food;
+  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
   MbsTaskFuncs t_spawn_funcs = { NULL, };
   MbsTaskFuncs t_food_funcs = { NULL, };
+  MbsTaskFuncs t_mine1_funcs = { NULL, };
+  MbsTaskFuncs t_mine2_funcs = { NULL, };
   MbObject *room;
   /* create the pop trees */
   MBS_COLONY(col)->pop_tree = mbs_pop_tree_new();
@@ -66,6 +68,18 @@ MbObject *mbs_colony_new ( MbObject *game )
   t_food = mbs_task_new(game, "farm", MB_POP_FLAG_ADULT_WORKER, &t_food_funcs);
   mb_task_add(MB_TASK(t_farm), t_food);
   l_object_unref(t_food);
+  /* mine */
+  t_mine = mbs_task_new_group(game, "mine");
+  mb_task_add(MB_TASK(t_work), t_mine);
+  l_object_unref(t_mine);
+  /* mine1 */
+  t_mine1 = mbs_task_new(game, "mine1", MB_POP_FLAG_ADULT_WORKER, &t_mine1_funcs);
+  mb_task_add(MB_TASK(t_mine), t_mine1);
+  l_object_unref(t_mine1);
+  /* mine2 */
+  t_mine2 = mbs_task_new(game, "mine2", MB_POP_FLAG_ADULT_WORKER, &t_mine2_funcs);
+  mb_task_add(MB_TASK(t_mine), t_mine2);
+  l_object_unref(t_mine2);
   return col;
 }
 
