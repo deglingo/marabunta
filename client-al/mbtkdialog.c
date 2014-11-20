@@ -203,6 +203,8 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
                                 MB_SECTOR_COLONY(sector));
       mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
                                   MB_SECTOR_COLONY(sector));
+      mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
+                                 MB_SECTOR_COLONY(sector));
     }
   else
     {
@@ -210,5 +212,7 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
                                 NULL);
       mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
                                   NULL);
+      mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
+                                 NULL);
     }
 }
