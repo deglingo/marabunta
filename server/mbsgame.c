@@ -7,6 +7,7 @@
 #include "server/mbsworld.h"
 #include "server/mbssector.h"
 #include "server/mbscolony.h"
+#include "server/mbstask.h"
 #include "server/mbsgame.inl"
 
 
@@ -228,6 +229,27 @@ static void _game_update ( MbsGame *game )
 
 
 
+static void _send_task_update ( MbsGame *game,
+                                PlayerData *player,
+                                MbsTask *task )
+{
+  if (MB_TASK_ISGROUP(task))
+    {
+      GList *l;
+      for (l = MB_TASK_CHILDREN(task); l; l = l->next)
+        _send_task_update(game, player, l->data);
+    }
+  else
+    {
+      MbStateTaskUpdate *st_task;
+      st_task = mb_state_next(player->state, MB_STATE_TASK_UPDATE);
+      st_task->task_id = MB_OBJECT_ID(task);
+      st_task->workers = MB_TASK_WORKERS(task);
+    }
+}
+
+
+
 static void _send_colony_update ( MbsGame *game,
                                   PlayerData *player,
                                   MbsColony *colony )
@@ -239,6 +261,7 @@ static void _send_colony_update ( MbsGame *game,
     {
       mbs_colony_get_pop(colony,
                          st_col->pop);
+      _send_task_update(game, player, MBS_TASK(MB_COLONY_TOP_TASK(colony)));
     }
 }
 

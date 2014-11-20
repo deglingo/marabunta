@@ -36,6 +36,7 @@ typedef struct _MbStateTaskSetup MbStateTaskSetup;
 typedef struct _MbStateRoomSetup MbStateRoomSetup;
 typedef struct _MbStateGameUpdate MbStateGameUpdate;
 typedef struct _MbStateColonyUpdate MbStateColonyUpdate;
+typedef struct _MbStateTaskUpdate MbStateTaskUpdate;
 /* inner blocks */
 typedef struct _MbStatePlayer MbStatePlayer;
 
@@ -64,6 +65,7 @@ enum _MbStateType
     MB_STATE_ROOM_SETUP,
     MB_STATE_GAME_UPDATE,
     MB_STATE_COLONY_UPDATE,
+    MB_STATE_TASK_UPDATE,
     MB_STATE_COUNT,
   };
 
@@ -299,6 +301,17 @@ struct _MbStateColonyUpdate
   MbStateBlock block;
   MbObjectID colony_id;
   gint64 pop[MB_POP_TYPE_COUNT];
+};
+
+
+
+/* MbStateTaskUpdate:
+ */
+struct _MbStateTaskUpdate
+{
+  MbStateBlock block;
+  MbObjectID task_id;
+  gint64 workers;
 };
 
 

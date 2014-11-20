@@ -16,6 +16,7 @@ enum
     PROP_NAME,
     PROP_ISGROUP,
     PROP_PRIORITY,
+    PROP_WORKERS,
     N_PROPS,
   };
 
@@ -57,6 +58,11 @@ static void mb_task_class_init ( LObjectClass *cls )
   pspecs[PROP_PRIORITY] =
     l_param_spec_object("priority",
                         MB_CLASS_PRIORITY);
+  
+  pspecs[PROP_WORKERS] =
+    /* [FIXME] int64 !! */
+    l_param_spec_int("workers",
+                     0);
   
   l_object_class_install_properties(cls, N_PROPS, pspecs);
 }
@@ -180,8 +186,11 @@ void mb_task_add_workers ( MbTask *task,
 static void add_workers ( MbTask *task,
                           gint64 workers )
 {
+  if (workers == 0)
+    return;
   task->workers += workers;
   ASSERT(task->workers >= 0); /* ?? */
+  l_object_notify(L_OBJECT(task), pspecs[PROP_WORKERS]);
   if (MB_TASK_PARENT(task))
     add_workers(MB_TASK_PARENT(task), workers);
 }

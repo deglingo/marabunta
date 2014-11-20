@@ -223,8 +223,8 @@ static void size_allocate ( AltkWidget *widget,
       Room *room = &priv->rooms[tp];
       if (!room->room)
         continue;
-      CL_DEBUG("alloc task view %d : %d, %d, %d, %d",
-               tp, room->task_alloc.x, room->task_alloc.y, room->task_alloc.width, room->task_alloc.height);
+      /* CL_DEBUG("alloc task view %d : %d, %d, %d, %d", */
+      /*          tp, room->task_alloc.x, room->task_alloc.y, room->task_alloc.width, room->task_alloc.height); */
       altk_widget_size_allocate(room->task_view, &room->task_alloc);
     }
 }

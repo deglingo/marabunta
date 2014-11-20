@@ -30,6 +30,7 @@ static const guint MB_STATE_BLOCK_TYPE_SIZE[MB_STATE_COUNT] =
     [MB_STATE_ROOM_SETUP] = sizeof(MbStateRoomSetup),
     [MB_STATE_GAME_UPDATE] = sizeof(MbStateGameUpdate),
     [MB_STATE_COLONY_UPDATE] = sizeof(MbStateColonyUpdate),
+    [MB_STATE_TASK_UPDATE] = sizeof(MbStateTaskUpdate),
   };
 
 

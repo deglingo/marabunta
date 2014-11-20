@@ -158,6 +158,22 @@ static void _handle_task_setup ( MbcGame *game,
 
 
 
+/* _handle_task_update:
+ */
+static void _handle_task_update ( MbcGame *game,
+                                  MbStateTaskUpdate *st_task )
+{
+  MbObject *task;
+  task = mb_game_lookup_object(MB_GAME(game), st_task->task_id);
+  ASSERT(task && MBC_IS_TASK(task));
+  ASSERT(!MB_TASK_ISGROUP(task)); /* [fixme] */
+  mb_task_add_workers(MB_TASK(task), st_task->workers - MB_TASK_WORKERS(task));
+  /* CL_DEBUG("task update: %s +%" G_GINT64_FORMAT " -> %" G_GINT64_FORMAT, */
+  /*          MB_TASK_NAME(task), st_task->workers, MB_TASK_WORKERS(task)); */
+}
+
+
+
 /* _handle_room_setup:
  */
 static void _handle_room_setup ( MbcGame *game,
@@ -205,6 +221,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_COLONY_UPDATE:
           _handle_colony_update(game, (MbStateColonyUpdate *) block);
+          break;
+        case MB_STATE_TASK_UPDATE:
+          _handle_task_update(game, (MbStateTaskUpdate *) block);
           break;
         default:
           CL_ERROR("[TODO] block type %d", block->type);

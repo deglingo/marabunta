@@ -176,6 +176,8 @@ static void _update_aq ( MbsColony *colony,
   mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
   task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN);
   mbs_pop_unit_affect_task(unit, task);
+  /* CL_DEBUG("affect aq: %p (%s) -> %" G_GINT64_FORMAT, */
+  /*          task, (task ? MB_TASK_NAME(task) : ""), (task ? MB_TASK_WORKERS(task) : 0)); */
 }
 
 

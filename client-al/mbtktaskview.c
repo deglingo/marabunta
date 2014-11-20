@@ -54,6 +54,19 @@ static void _create_view ( AltkWidget *view )
 
 
 
+/* _on_workers_notify:
+ */
+static void _on_workers_notify ( MbObject *task,
+                                 AltkWidget *view )
+{
+  Private *priv = PRIVATE(view);
+  gchar text[MB_COUNT_CHARS+1];
+  mb_count_print(MB_TASK_WORKERS(task), text);
+  altk_label_set_text(ALTK_LABEL(priv->workers), text);
+}
+
+
+
 /* _set_task:
  */
 static void _set_task ( AltkWidget *view,
@@ -64,6 +77,10 @@ static void _set_task ( AltkWidget *view,
   ASSERT(!priv->task); /* [todo] */
   priv->task = l_object_ref(task);
   altk_label_set_text(ALTK_LABEL(priv->title), MB_TASK_NAME(task));
+  l_signal_connect(L_OBJECT(task),
+                   "notify", g_quark_from_string("workers"),
+                   (LSignalHandler) _on_workers_notify,
+                   view, NULL);
 }
 
 
