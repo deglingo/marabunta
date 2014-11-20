@@ -65,7 +65,7 @@ MbObject *mbs_colony_new ( MbObject *game )
   mb_task_add(MB_TASK(t_work), t_farm);
   l_object_unref(t_farm);
   /* food */
-  t_food = mbs_task_new(game, "farm", MB_POP_FLAG_ADULT_WORKER, &t_food_funcs);
+  t_food = mbs_task_new(game, "food", MB_POP_FLAG_ADULT_WORKER, &t_food_funcs);
   mb_task_add(MB_TASK(t_farm), t_food);
   l_object_unref(t_food);
   /* mine */
