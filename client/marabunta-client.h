@@ -14,6 +14,8 @@
 
 #include "client/mbccolony.h"
 
+#include "client/mbcpriority.h"
+
 
 
 #endif

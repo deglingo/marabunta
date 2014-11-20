@@ -7,6 +7,7 @@
 #include "server/mbsworld.h"
 #include "server/mbssector.h"
 #include "server/mbscolony.h"
+#include "server/mbspriority.h"
 #include "server/mbstask.h"
 #include "server/mbsgame.inl"
 
@@ -356,4 +357,41 @@ void mbs_game_start ( MbsGame *game )
                      NULL);
   priv->next_frame = 0;
   g_timer_start(priv->timer);
+}
+
+
+
+/* mbs_game_handle_request:
+ */
+void mbs_game_handle_request ( MbsGame *game,
+                               MbObject *player,
+                               MbState *state )
+{
+  guint offset = 0;
+  MbStateBlock *block;
+  while ((block = mb_state_read(state, &offset)))
+    {
+      switch (block->type)
+        {
+        case MB_STATE_REQUEST_PRIORITY_VALUE:
+          {
+            MbStateRequestPriorityValue *st_prio = (gpointer) block;
+            MbObject *prio;
+            MbState *answer_state;
+            MbStatePriorityUpdate *st_answer;
+            prio = mb_game_lookup_object(MB_GAME(game), st_prio->priority_id);
+            ASSERT(prio && MBS_IS_PRIORITY(prio));
+            mb_priority_set_value(MB_PRIORITY(prio), st_prio->value);
+            answer_state = mb_state_new();
+            st_answer = mb_state_next(answer_state, MB_STATE_PRIORITY_UPDATE);
+            st_answer->priority_id = MB_OBJECT_ID(prio);
+            st_answer->value = MB_PRIORITY_VALUE(prio);
+            mb_player_handle_state(MB_PLAYER(player), answer_state);
+            l_object_unref(answer_state);
+          }
+          break;
+        default:
+          CL_ERROR("[TODO] block type %d", block->type);
+        }
+    }
 }

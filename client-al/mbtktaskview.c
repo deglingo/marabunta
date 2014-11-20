@@ -98,5 +98,7 @@ AltkWidget *mbtk_task_view_new ( MbObject *task )
   AltkWidget *view = ALTK_WIDGET(l_object_new(MBTK_CLASS_TASK_VIEW, NULL));
   _create_view(view);
   _set_task(view, task);
+  mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(PRIVATE(view)->priority_view),
+                                  MB_TASK_PRIORITY(PRIVATE(view)->task));
   return view;
 }

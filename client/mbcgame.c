@@ -38,9 +38,15 @@ static void mbc_game_class_init ( LObjectClass *cls )
 
 /* mbc_game_new:
  */
-MbObject *mbc_game_new ( void )
+MbObject *mbc_game_new ( MbStateHandler handler,
+                         gpointer handler_data,
+                         GDestroyNotify destroy_data )
 {
-  return MB_OBJECT(l_object_new(MBC_CLASS_GAME, NULL));
+  MbcGame *game = MBC_GAME(l_object_new(MBC_CLASS_GAME, NULL));
+  game->handler = handler;
+  game->handler_data = handler_data;
+  game->destroy_data = destroy_data;
+  return MB_OBJECT(game);
 }
 
 
@@ -173,6 +179,19 @@ static void _handle_task_setup ( MbcGame *game,
 
 
 
+/* _handle_priority_update:
+ */
+static void _handle_priority_update ( MbcGame *game,
+                                      MbStatePriorityUpdate *st_prio )
+{
+  MbObject *priority;
+  priority = mb_game_lookup_object(MB_GAME(game), st_prio->priority_id);
+  ASSERT(priority && MBC_IS_PRIORITY(priority));
+  mb_priority_set_value(MB_PRIORITY(priority), st_prio->value);
+}
+
+
+
 /* _handle_task_update:
  */
 static void _handle_task_update ( MbcGame *game,
@@ -240,6 +259,9 @@ void mbc_game_update_state ( MbcGame *game,
         case MB_STATE_COLONY_UPDATE:
           _handle_colony_update(game, (MbStateColonyUpdate *) block);
           break;
+        case MB_STATE_PRIORITY_UPDATE:
+          _handle_priority_update(game, (MbStatePriorityUpdate *) block);
+          break;
         case MB_STATE_TASK_UPDATE:
           _handle_task_update(game, (MbStateTaskUpdate *) block);
           break;
@@ -250,4 +272,14 @@ void mbc_game_update_state ( MbcGame *game,
   if (started) {
     l_signal_emit(L_OBJECT(game), signals[SIG_STARTED], 0);
   }
+}
+
+
+
+/* mbc_game_send_state:
+ */
+void mbc_game_send_state ( MbcGame *game,
+                           MbState *state )
+{
+  game->handler(state, game->handler_data);
 }

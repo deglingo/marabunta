@@ -63,12 +63,21 @@ static void _player_handler ( MbPlayer *player,
 
 
 
+static void _solo_state_handler ( MbState *state,
+                                  gpointer data )
+{
+  MbcApp *app = data;
+  mbs_game_handle_request(MBS_GAME(app->game), app->player, state);
+}
+
+
+
 /* mbc_app_setup_solo_game:
  */
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
   /* setup the proxy */
-  app->game_proxy = mbc_game_new();
+  app->game_proxy = mbc_game_new(_solo_state_handler, app, NULL);
   /* setup the real game */  
   app->game = mbs_game_new();
   app->player = mbs_player_new(app->game, "Player1", _player_handler, app, NULL);

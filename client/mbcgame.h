@@ -16,6 +16,10 @@ G_BEGIN_DECLS
 struct _MbcGame
 {
   MBC_GAME_INSTANCE_HEADER;
+
+  MbStateHandler handler;
+  gpointer handler_data;
+  GDestroyNotify destroy_data;
 };
 
 
@@ -28,9 +32,13 @@ struct _MbcGameClass
 };
 
 
-MbObject *mbc_game_new ( void );
+MbObject *mbc_game_new ( MbStateHandler handler,
+                         gpointer handler_data,
+                         GDestroyNotify destroy_data );
 void mbc_game_update_state ( MbcGame *game,
                              MbState *state );
+void mbc_game_send_state ( MbcGame *game,
+                           MbState *state );
 
 
 

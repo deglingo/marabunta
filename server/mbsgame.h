@@ -32,6 +32,9 @@ struct _MbsGameClass
 MbObject *mbs_game_new ( void );
 void mbs_game_setup ( MbsGame *game );
 void mbs_game_start ( MbsGame *game );
+void mbs_game_handle_request ( MbsGame *game,
+                               MbObject *player,
+                               MbState *state );
 
 
 

@@ -32,6 +32,8 @@ struct _MbtkPriorityViewClass
 
 
 AltkWidget *mbtk_priority_view_new ( void );
+void mbtk_priority_view_set_priority ( MbtkPriorityView *view,
+                                       MbObject *priority );
 
 
 

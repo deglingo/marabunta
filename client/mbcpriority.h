@@ -32,6 +32,8 @@ struct _MbcPriorityClass
 MbObject *mbc_priority_new ( MbObject *game,
                              MbObjectID id,
                              MbPriorityValue value );
+void mbc_priority_request_set_value ( MbcPriority *priority,
+                                      MbPriorityValue value );
 
 
 

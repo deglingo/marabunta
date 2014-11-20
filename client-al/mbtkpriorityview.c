@@ -1,8 +1,8 @@
 /* mbtkpriorityview.c -
  */
 
+#include "client-al/alprivate.h"
 #include "client-al/mbtkpriorityview.h"
-/* #include "client-al/mbcpriority.h" */
 #include "client-al/mbtkpriorityview.inl"
 
 
@@ -31,13 +31,32 @@ static void mbtk_priority_view_init ( LObject *obj )
 
 
 
+static void _update_value_label ( MbtkPriorityView *view )
+{
+  Private *priv = PRIVATE(view);
+  gchar text[2];
+  if (priv->priority)
+    {
+      ASSERT(MB_PRIORITY_VALUE(priv->priority) >= 0 &&
+             MB_PRIORITY_VALUE(priv->priority) < 10);
+      sprintf(text, "%d", MB_PRIORITY_VALUE(priv->priority));
+    }
+  else
+    {
+      sprintf(text, "?");
+    }
+  altk_label_set_text(ALTK_LABEL(priv->value_label), text);
+}
+
+
+
 static void _on_inc_clicked ( AltkWidget *button,
                               AltkWidget *view )
 {
-  CL_DEBUG("[TODO]");
-  /* Private *priv = PRIVATE(view); */
-  /* mbc_priority_request_set_value(MBC_PRIORITY(priv->priority), */
-  /*                                MB_PRIORITY_VALUE(priv->priority) + 1); */
+  Private *priv = PRIVATE(view);
+  if (priv->priority)
+    mbc_priority_request_set_value(MBC_PRIORITY(priv->priority),
+                                   MB_PRIORITY_VALUE(priv->priority) + 1);
 }
 
 
@@ -45,10 +64,10 @@ static void _on_inc_clicked ( AltkWidget *button,
 static void _on_dec_clicked ( AltkWidget *button,
                               AltkWidget *view )
 {
-  CL_DEBUG("[TODO]");
-  /* Private *priv = PRIVATE(view); */
-  /* mbc_priority_request_set_value(MBC_PRIORITY(priv->priority), */
-  /*                                MB_PRIORITY_VALUE(priv->priority) - 1); */
+  Private *priv = PRIVATE(view);
+  if (priv->priority)
+    mbc_priority_request_set_value(MBC_PRIORITY(priv->priority),
+                                   MB_PRIORITY_VALUE(priv->priority) - 1);
 }
 
 
@@ -85,6 +104,8 @@ static void _create_view ( AltkWidget *view )
                    (LSignalHandler) _on_dec_clicked,
                    view,
                    NULL);
+  /* set value */
+  _update_value_label(MBTK_PRIORITY_VIEW(view));
 }
 
 
@@ -99,4 +120,30 @@ AltkWidget *mbtk_priority_view_new ( void )
   _create_view(view);
   l_trash_pop();
   return view;
+}
+
+
+
+static void _on_priority_value_notify ( MbObject *priority,
+                                        MbtkPriorityView *view )
+{
+  _update_value_label(view);
+}
+
+
+
+/* mbtk_priority_view_set_priority:
+ */
+void mbtk_priority_view_set_priority ( MbtkPriorityView *view,
+                                       MbObject *priority )
+{
+  Private *priv = PRIVATE(view);
+  ASSERT(!priv->priority); /* [todo] */
+  priv->priority = l_object_ref(priority);
+  _update_value_label(view);
+  l_signal_connect(L_OBJECT(priority),
+                   "notify:value",
+                   (LSignalHandler) _on_priority_value_notify,
+                   view,
+                   NULL);
 }
