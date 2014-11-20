@@ -17,6 +17,8 @@ typedef guint MbObjectID;
 typedef enum _MbRoomType
 {
   MB_ROOM_TYPE_ROYAL_CHAMBER,
+  MB_ROOM_TYPE_FARM,
+  MB_ROOM_TYPE_MINE,
   MB_ROOM_TYPE_COUNT,
 }
   MbRoomType;

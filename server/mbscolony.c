@@ -37,6 +37,13 @@ MbObject *mbs_colony_new ( MbObject *game )
   /* create the default rooms */
   room = mbs_room_new(game, MB_ROOM_TYPE_ROYAL_CHAMBER);
   mb_colony_add_room(MB_COLONY(col), room);
+  l_object_unref(room);
+  room = mbs_room_new(game, MB_ROOM_TYPE_FARM);
+  mb_colony_add_room(MB_COLONY(col), room);
+  l_object_unref(room);
+  room = mbs_room_new(game, MB_ROOM_TYPE_MINE);
+  mb_colony_add_room(MB_COLONY(col), room);
+  l_object_unref(room);
   /* create the default tasks */
   /* [fixme] is it the right place for this ? */
   t_top = mbs_task_new_group(game, "top");

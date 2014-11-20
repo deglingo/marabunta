@@ -55,6 +55,8 @@ typedef struct _Private
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
     [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn", 0.5, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_FARM]          = { "Farm",          NULL,    0.25, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_MINE]          = { "Mine",          NULL,    0.5, 0.25, 0.1, 0.1 },
   };
 
 
@@ -117,10 +119,9 @@ static void forall ( AltkWidget *widget,
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       Room *room = &priv->rooms[tp];
-      if (!room->room)
-        continue;
-      if (func(room->task_view, data) == ALTK_FOREACH_STOP)
-        return;
+      if (room->task_view)
+        if (func(room->task_view, data) == ALTK_FOREACH_STOP)
+          return;
     }
 }
 
@@ -147,10 +148,13 @@ static void _rooms_layout ( MbtkColonyView *view )
       room->h = height * info->h;
       room->x = room->cx - room->w / 2;
       room->y = room->cy - room->h / 2;
-      room->task_alloc.width = room->task_req.width;
-      room->task_alloc.height = room->task_req.height;
-      room->task_alloc.x = ALTK_WIDGET(view)->x + room->cx - room->task_alloc.width / 2;
-      room->task_alloc.y = ALTK_WIDGET(view)->y + room->y + room->h + 2;
+      if (room->task_view)
+        {
+          room->task_alloc.width = room->task_req.width;
+          room->task_alloc.height = room->task_req.height;
+          room->task_alloc.x = ALTK_WIDGET(view)->x + room->cx - room->task_alloc.width / 2;
+          room->task_alloc.y = ALTK_WIDGET(view)->y + room->y + room->h + 2;
+        }
     }
 }
 
@@ -176,13 +180,16 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
       room = &priv->rooms[tp];
       info = &ROOM_INFO[tp];
       room->room = l_object_ref(mb_room);
-      room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
-                                info->task_path);
-      ASSERT(room->task);
-      l_object_ref(room->task);
-      room->task_view = mbtk_task_view_new(room->task);
-      _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
-      altk_widget_show_all(room->task_view);
+      if (info->task_path)
+        {
+          room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                                    info->task_path);
+          ASSERT(room->task);
+          l_object_ref(room->task);
+          room->task_view = mbtk_task_view_new(room->task);
+          _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+          altk_widget_show_all(room->task_view);
+        }
     }
   _rooms_layout(view);
 }
@@ -199,9 +206,8 @@ static void size_request ( AltkWidget *widget,
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       Room *room = &priv->rooms[tp];
-      if (!room->room)
-        continue;
-      altk_widget_size_request(room->task_view, &room->task_req);
+      if (room->task_view)
+        altk_widget_size_request(room->task_view, &room->task_req);
     }
   req->width = 8;
   req->height = 8;
@@ -221,11 +227,8 @@ static void size_allocate ( AltkWidget *widget,
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       Room *room = &priv->rooms[tp];
-      if (!room->room)
-        continue;
-      /* CL_DEBUG("alloc task view %d : %d, %d, %d, %d", */
-      /*          tp, room->task_alloc.x, room->task_alloc.y, room->task_alloc.width, room->task_alloc.height); */
-      altk_widget_size_allocate(room->task_view, &room->task_alloc);
+      if (room->task_view)
+        altk_widget_size_allocate(room->task_view, &room->task_alloc);
     }
 }
 
