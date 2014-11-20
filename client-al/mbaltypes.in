@@ -45,5 +45,6 @@ namespace Mbtk
 
   class TaskView : Altk::Frame
   {
+    void init ();
   };
 }

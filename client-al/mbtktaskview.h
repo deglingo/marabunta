@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkTaskView
 {
   MBTK_TASK_VIEW_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
