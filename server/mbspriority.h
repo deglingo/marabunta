@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbsPriority
 {
   MBS_PRIORITY_INSTANCE_HEADER;
+
+  MbScore score;
 };
 
 
@@ -29,8 +31,16 @@ struct _MbsPriorityClass
 
 
 
+#define MBS_PRIORITY_SCORE(prio) (MBS_PRIORITY(prio)->score.score)
+
 MbObject *mbs_priority_new ( MbObject *game,
                              MbPriorityValue value );
+void mbs_priority_update_score ( MbsPriority *priority,
+                                 gint64 workers );
+void mbs_priority_adjust_score ( MbsPriority *priority,
+                                 gint64 score );
+gint64 mbs_priority_next_score ( MbsPriority *priority,
+                                 gint64 workers );
 
 
 

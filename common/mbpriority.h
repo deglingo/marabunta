@@ -29,7 +29,6 @@ struct _MbPriority
   MB_PRIORITY_INSTANCE_HEADER;
 
   MbPriorityValue value;
-  MbScore score;
 };
 
 
@@ -43,14 +42,10 @@ struct _MbPriorityClass
 
 
 
-#define MB_PRIORITY_SCORE(p) (MB_PRIORITY(p)->score.score)
+#define MB_PRIORITY_VALUE(prio) (MB_PRIORITY(prio)->value)
 
 void mb_priority_set_value ( MbPriority *priority,
                              MbPriorityValue value );
-void mb_priority_adjust_score ( MbPriority *priority,
-                                gint64 workers );
-gint64 mb_priority_get_next_score ( MbPriority *priority,
-                                    gint64 workers );
 
 
 

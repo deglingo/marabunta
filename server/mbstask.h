@@ -47,6 +47,8 @@ struct _MbsTaskClass
 
 
 
+#define MBS_TASK_SCORE(task) (MBS_PRIORITY_SCORE(MB_TASK_PRIORITY(task)))
+
 MbObject *mbs_task_new_group ( MbObject *game,
                                const gchar *name );
 MbObject *mbs_task_new ( MbObject *game,
@@ -56,11 +58,13 @@ MbObject *mbs_task_new ( MbObject *game,
 void mbs_task_check ( MbsTask *task );
 gboolean mbs_task_accept ( MbsTask *task,
                            MbPopType pop_type );
-gint64 mbs_task_get_next_score ( MbsTask *task );
+gint64 mbs_task_next_score ( MbsTask *task );
 MbObject *mbs_task_select ( MbsTask *task,
                             MbPopType pop_type );
 void mbs_task_set_ready ( MbsTask *task,
                           MbPopFlags flags );
+gboolean mbs_task_ready ( MbsTask *task );
+void mbs_task_process ( MbsTask *task );
 
 
 

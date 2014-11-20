@@ -167,6 +167,15 @@ void mbs_task_set_ready ( MbsTask *task,
 
 
 
+/* mbs_task_ready:
+ */
+gboolean mbs_task_ready ( MbsTask *task )
+{
+  return task->ready_sum;
+}
+
+
+
 /* mbs_task_accept:
  */
 gboolean mbs_task_accept ( MbsTask *task,
@@ -177,12 +186,12 @@ gboolean mbs_task_accept ( MbsTask *task,
 
 
 
-/* mbs_task_get_next_score:
+/* mbs_task_next_score:
  */
-gint64 mbs_task_get_next_score ( MbsTask *task )
+gint64 mbs_task_next_score ( MbsTask *task )
 {
-  return mb_priority_get_next_score(MB_PRIORITY(MB_TASK_PRIORITY(task)),
-                                    MB_TASK_WORKERS(task));
+  return mbs_priority_next_score(MBS_PRIORITY(MB_TASK_PRIORITY(task)),
+                                 MB_TASK_WORKERS(task));
 }
 
 
@@ -198,7 +207,7 @@ static MbObject *_select ( MbsTask *task,
       MbsTask *child = l->data;
       if (mbs_task_accept(child, pop_type))
         {
-          gint64 score = mbs_task_get_next_score(child);
+          gint64 score = mbs_task_next_score(child);
           if ((!found) || score < found_score)
             {
               found = child;
@@ -224,4 +233,63 @@ MbObject *mbs_task_select ( MbsTask *task,
   if (!(mbs_task_accept(task, pop_type)))
     return NULL;
   return _select(task, pop_type);
+}
+
+
+
+/* _process:
+ */
+static void _process ( MbsTask *task )
+{
+  if (MB_TASK_ISGROUP(task))
+    {
+      GList *l;
+      gint64 min_score = -1;
+      for (l = MB_TASK_CHILDREN(task); l; l = l->next)
+        {
+          MbsTask *child = l->data;
+          _process(child);
+          if (mbs_task_ready(child))
+            {
+              gint64 score = MBS_TASK_SCORE(child);
+              ASSERT(score >= 0);
+              if (min_score < 0)
+                min_score = score;
+              else
+                min_score = MIN(min_score, score);
+            }
+        }
+      if (min_score > 0)
+        {
+          for (l = MB_TASK_CHILDREN(task); l; l = l->next)
+            {
+              MbsTask *child = l->data;
+              if (mbs_task_ready(child))
+                mbs_priority_adjust_score(MBS_PRIORITY(MB_TASK_PRIORITY(child)),
+                                          -min_score);
+            }
+        }
+    }
+  else
+    {
+      if (task->funcs.process)
+        task->funcs.process(task);
+    }
+  mbs_task_check(task);
+  mbs_priority_update_score(MBS_PRIORITY(MB_TASK_PRIORITY(task)),
+                            MB_TASK_WORKERS(task));
+}
+
+
+
+/* mbs_task_process:
+ */
+void mbs_task_process ( MbsTask *task )
+{
+  ASSERT(MB_TASK_ISGROUP(task));
+  ASSERT(!MB_TASK_PARENT(task));
+  _process(task);
+  /* [FIXME] */
+  mbs_priority_adjust_score(MBS_PRIORITY(MB_TASK_PRIORITY(task)),
+                            -MBS_TASK_SCORE(task));
 }

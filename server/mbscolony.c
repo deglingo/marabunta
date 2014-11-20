@@ -108,14 +108,14 @@ MbObject *mbs_colony_select_task ( MbsColony *colony,
 static MbCast _select_hatch_cast ( MbsColony *colony,
                                    MbObject **prio )
 {
-  if (MB_PRIORITY_SCORE(colony->hatch_priority_queen) <= MB_PRIORITY_SCORE(colony->hatch_priority_worker) &&
-      MB_PRIORITY_SCORE(colony->hatch_priority_queen) <= MB_PRIORITY_SCORE(colony->hatch_priority_soldier))
+  if (MBS_PRIORITY_SCORE(colony->hatch_priority_queen) <= MBS_PRIORITY_SCORE(colony->hatch_priority_worker) &&
+      MBS_PRIORITY_SCORE(colony->hatch_priority_queen) <= MBS_PRIORITY_SCORE(colony->hatch_priority_soldier))
     {
       *prio = colony->hatch_priority_queen;
       return MB_CAST_QUEEN;
     }
-  else if (MB_PRIORITY_SCORE(colony->hatch_priority_worker) <= MB_PRIORITY_SCORE(colony->hatch_priority_queen) &&
-           MB_PRIORITY_SCORE(colony->hatch_priority_worker) <= MB_PRIORITY_SCORE(colony->hatch_priority_soldier))
+  else if (MBS_PRIORITY_SCORE(colony->hatch_priority_worker) <= MBS_PRIORITY_SCORE(colony->hatch_priority_queen) &&
+           MBS_PRIORITY_SCORE(colony->hatch_priority_worker) <= MBS_PRIORITY_SCORE(colony->hatch_priority_soldier))
     {
       *prio = colony->hatch_priority_worker;
       return MB_CAST_WORKER;
@@ -143,8 +143,8 @@ static void _update_egg ( MbsColony *colony,
       MbPopType pop_type = mb_pop_type(pop_cast, MB_MATURITY_LARVAE);
       mbs_pop_tree_add(colony->adj_tree, unit->type, unit->birthdate, -unit->count);
       mbs_pop_tree_add(colony->adj_tree, pop_type, unit->birthdate, unit->count);
-      mb_priority_adjust_score(MB_PRIORITY(priority),
-                               unit->count);
+      mbs_priority_update_score(MBS_PRIORITY(priority),
+                                unit->count);
     }
 }
 
@@ -284,15 +284,17 @@ void mbs_colony_update ( MbsColony *colony )
   /* update pop units */
   mbs_pop_tree_traverse(colony->pop_tree, _update_pop_unit, colony);
   /* adjust hatch scores */
-  min_score = MIN(MB_PRIORITY_SCORE(colony->hatch_priority_queen),
-                  MB_PRIORITY_SCORE(colony->hatch_priority_worker));
+  min_score = MIN(MBS_PRIORITY_SCORE(colony->hatch_priority_queen),
+                  MBS_PRIORITY_SCORE(colony->hatch_priority_worker));
   min_score = MIN(min_score,
-                  MB_PRIORITY_SCORE(colony->hatch_priority_soldier));
-  MB_PRIORITY(colony->hatch_priority_queen)->score.score -= min_score;
-  MB_PRIORITY(colony->hatch_priority_worker)->score.score -= min_score;
-  MB_PRIORITY(colony->hatch_priority_soldier)->score.score -= min_score;
+                  MBS_PRIORITY_SCORE(colony->hatch_priority_soldier));
+  MBS_PRIORITY(colony->hatch_priority_queen)->score.score -= min_score;
+  MBS_PRIORITY(colony->hatch_priority_worker)->score.score -= min_score;
+  MBS_PRIORITY(colony->hatch_priority_soldier)->score.score -= min_score;
   /* [FIXME] post update */
   mbs_pop_tree_update(colony->pop_tree, colony->adj_tree);
+  /* process all tasks */
+  mbs_task_process(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
   /* [FIXME] debug only */
   mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
 }

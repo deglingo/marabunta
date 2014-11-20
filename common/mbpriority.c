@@ -84,25 +84,3 @@ void mb_priority_set_value ( MbPriority *priority,
       l_object_notify(L_OBJECT(priority), pspecs[PROP_VALUE]);
     }
 }
-
-
-
-/* mb_priority_adjust_score:
- */
-void mb_priority_adjust_score ( MbPriority *priority,
-                                gint64 workers )
-{
-  /* score <- score + workers / priority.value */
-  priority->score.score += (workers + priority->score.remainder) / priority->value;
-  priority->score.remainder = (workers + priority->score.remainder) % priority->value;
-}
-
-
-
-/* mb_priority_get_next_score:
- */
-gint64 mb_priority_get_next_score ( MbPriority *priority,
-                                    gint64 workers )
-{
-  return (workers + priority->score.remainder) / priority->value;
-}
