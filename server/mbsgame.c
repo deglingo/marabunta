@@ -120,9 +120,14 @@ static void _send_task_setup ( MbsGame *game,
                                MbState *state,
                                MbObject *task )
 {
+  MbStatePrioritySetup *st_prio;
   MbStateTaskSetup *st_task;
+  st_prio = mb_state_next(state, MB_STATE_PRIORITY_SETUP);
+  st_prio->priority_id = MB_OBJECT_ID(MB_TASK_PRIORITY(task));
+  st_prio->value = MB_PRIORITY_VALUE(MB_TASK_PRIORITY(task));
   st_task = mb_state_next(state, MB_STATE_TASK_SETUP);
   st_task->task_id = MB_OBJECT_ID(task);
+  st_task->priority_id = MB_OBJECT_ID(MB_TASK_PRIORITY(task));
   st_task->colony_id = MB_OBJECT_ID(MB_TASK_COLONY(task));
   st_task->parent_id = MB_TASK_PARENT(task) ? MB_OBJECT_ID(MB_TASK_PARENT(task)) : 0;
   ASSERT(strlen(MB_TASK_NAME(task)) <= MB_TASK_MAX_NAME);

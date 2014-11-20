@@ -7,6 +7,7 @@
 #include "client/mbcworld.h"
 #include "client/mbcsector.h"
 #include "client/mbccolony.h"
+#include "client/mbcpriority.h"
 #include "client/mbctask.h"
 #include "client/mbcroom.h"
 #include "client/mbcgame.inl"
@@ -129,18 +130,32 @@ static void _handle_colony_update ( MbcGame *game,
 
 
 
+/* _handle_priority_setup:
+ */
+static void _handle_priority_setup ( MbcGame *game,
+                                     MbStatePrioritySetup *st_prio )
+{
+  MbObject *priority;
+  priority = mbc_priority_new(MB_OBJECT(game), st_prio->priority_id, st_prio->value);
+  l_object_unref(priority);
+}
+
+
+
 /* _handle_task_setup:
  */
 static void _handle_task_setup ( MbcGame *game,
                                  MbStateTaskSetup *st_task )
 {
-  MbObject *parent, *colony, *task;
+  MbObject *parent, *colony, *priority, *task;
   colony = mb_game_lookup_object(MB_GAME(game), st_task->colony_id);
   ASSERT(colony && MBC_IS_COLONY(colony));
+  priority = mb_game_lookup_object(MB_GAME(game), st_task->priority_id);
+  ASSERT(priority && MBC_IS_PRIORITY(priority));
   if (st_task->isgroup)
-    task = mbc_task_new_group(MB_OBJECT(game), st_task->task_id, st_task->name);
+    task = mbc_task_new_group(MB_OBJECT(game), st_task->task_id, st_task->name, priority);
   else
-    task = mbc_task_new(MB_OBJECT(game), st_task->task_id, st_task->name);
+    task = mbc_task_new(MB_OBJECT(game), st_task->task_id, st_task->name, priority);
   if (st_task->parent_id)
     {
       parent = mb_game_lookup_object(MB_GAME(game), st_task->parent_id);
@@ -209,6 +224,9 @@ void mbc_game_update_state ( MbcGame *game,
           break;
         case MB_STATE_COLONY_SETUP:
           _handle_colony_setup(game, (MbStateColonySetup *) block);
+          break;
+        case MB_STATE_PRIORITY_SETUP:
+          _handle_priority_setup(game, (MbStatePrioritySetup *) block);
           break;
         case MB_STATE_TASK_SETUP:
           _handle_task_setup(game, (MbStateTaskSetup *) block);

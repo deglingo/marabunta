@@ -31,10 +31,12 @@ struct _MbcTaskClass
 
 MbObject *mbc_task_new_group ( MbObject *game,
                                MbObjectID id,
-                               const gchar *name );
+                               const gchar *name,
+                               MbObject *priority );
 MbObject *mbc_task_new ( MbObject *game,
                          MbObjectID id,
-                         const gchar *name );
+                         const gchar *name,
+                         MbObject *priority );
 
 
 
