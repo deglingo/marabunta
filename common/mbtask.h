@@ -21,9 +21,10 @@ struct _MbTask
   MbObject *colony;
   const gchar *name;
   gboolean isgroup;
-  MbPopFlags pop_flags;
   MbTask *parent;
   GList *children;
+  gint64 workers;
+  MbObject *priority;
 };
 
 
@@ -33,6 +34,12 @@ struct _MbTask
 struct _MbTaskClass
 {
   MB_TASK_CLASS_HEADER;
+
+  void (* add) ( MbTask *task,
+                 MbObject *child );
+
+  void (* add_workers) ( MbTask *task,
+                         gint64 workers );
 };
 
 
@@ -42,15 +49,17 @@ struct _MbTaskClass
 #define MB_TASK_COLONY(task) (MB_TASK(task)->colony)
 #define MB_TASK_NAME(task) (MB_TASK(task)->name)
 #define MB_TASK_ISGROUP(task) (MB_TASK(task)->isgroup)
+#define MB_TASK_WORKERS(task) (MB_TASK(task)->workers)
+#define MB_TASK_PRIORITY(task) (MB_TASK(task)->priority)
 
-void mb_task_add_workers ( MbTask *task,
-                           gint64 count );
 void mb_task_add ( MbTask *task,
                    MbObject *child );
 MbObject *mb_task_get_child ( MbTask *task,
                               const gchar *name );
 MbObject *mb_task_find ( MbTask *task,
                          const gchar *path );
+void mb_task_add_workers ( MbTask *task,
+                           gint64 workers );
 
 
 

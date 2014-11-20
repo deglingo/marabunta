@@ -96,3 +96,13 @@ void mb_priority_adjust_score ( MbPriority *priority,
   priority->score.score += (workers + priority->score.remainder) / priority->value;
   priority->score.remainder = (workers + priority->score.remainder) % priority->value;
 }
+
+
+
+/* mb_priority_get_next_score:
+ */
+gint64 mb_priority_get_next_score ( MbPriority *priority,
+                                    gint64 workers )
+{
+  return (workers + priority->score.remainder) / priority->value;
+}

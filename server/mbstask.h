@@ -32,6 +32,8 @@ struct _MbsTask
   MBS_TASK_INSTANCE_HEADER;
 
   MbsTaskFuncs funcs;
+  guint ready_count[MB_POP_TYPE_COUNT];
+  guint ready_sum;
 };
 
 
@@ -46,12 +48,19 @@ struct _MbsTaskClass
 
 
 MbObject *mbs_task_new_group ( MbObject *game,
-                               const gchar *name,
-                               MbPopFlags pop_flags );
+                               const gchar *name );
 MbObject *mbs_task_new ( MbObject *game,
                          const gchar *name,
                          MbPopFlags pop_flags,
                          MbsTaskFuncs *funcs );
+void mbs_task_check ( MbsTask *task );
+gboolean mbs_task_accept ( MbsTask *task,
+                           MbPopType pop_type );
+gint64 mbs_task_get_next_score ( MbsTask *task );
+MbObject *mbs_task_select ( MbsTask *task,
+                            MbPopType pop_type );
+void mbs_task_set_ready ( MbsTask *task,
+                          MbPopFlags flags );
 
 
 

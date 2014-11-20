@@ -39,7 +39,7 @@ MbObject *mbs_colony_new ( MbObject *game )
   mb_colony_add_room(MB_COLONY(col), room);
   /* create the default tasks */
   /* [fixme] is it the right place for this ? */
-  t_top = mbs_task_new_group(game, "top", MB_POP_FLAG_ALL);
+  t_top = mbs_task_new_group(game, "top");
   mb_colony_set_top_task(MB_COLONY(col), t_top);
   l_object_unref(t_top);
   /* spawn */
@@ -57,6 +57,16 @@ void mbs_colony_get_pop ( MbsColony *colony,
                           gint64 *pop )
 {
   mbs_pop_tree_get_pop(colony->pop_tree, pop);
+}
+
+
+
+/* mbs_colony_select_task:
+ */
+MbObject *mbs_colony_select_task ( MbsColony *colony,
+                                   MbPopType pop_type )
+{
+  return mbs_task_select(MBS_TASK(MB_COLONY_TOP_TASK(colony)), pop_type);
 }
 
 
@@ -162,7 +172,10 @@ static void _update_aq ( MbsColony *colony,
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   gint count = g_random_int_range(0, 10 * unit->count);
+  MbObject *task;
   mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
+  task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN);
+  mbs_pop_unit_affect_task(unit, task);
 }
 
 
@@ -228,6 +241,9 @@ static void _update_pop_unit ( MbsPopUnit *unit,
 void mbs_colony_update ( MbsColony *colony )
 {
   gint64 min_score;
+  /* [FIXME] debug only */
+  mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
+  /* update pop units */
   mbs_pop_tree_traverse(colony->pop_tree, _update_pop_unit, colony);
   /* adjust hatch scores */
   min_score = MIN(MB_PRIORITY_SCORE(colony->hatch_priority_queen),
@@ -239,4 +255,6 @@ void mbs_colony_update ( MbsColony *colony )
   MB_PRIORITY(colony->hatch_priority_soldier)->score.score -= min_score;
   /* [FIXME] post update */
   mbs_pop_tree_update(colony->pop_tree, colony->adj_tree);
+  /* [FIXME] debug only */
+  mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
 }

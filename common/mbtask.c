@@ -3,6 +3,7 @@
 
 #include "common/private.h"
 #include "common/mbtask.h"
+#include "common/mbpriority.h"
 #include "common/mbtask.inl"
 
 
@@ -14,7 +15,7 @@ enum
     PROP_0,
     PROP_NAME,
     PROP_ISGROUP,
-    PROP_POP_FLAGS,
+    PROP_PRIORITY,
     N_PROPS,
   };
 
@@ -27,6 +28,10 @@ static void set_property ( LObject *obj,
                            LObject *value );
 static LObject *get_property ( LObject *obj,
                                LParamSpec *pspec );
+static void add ( MbTask *task,
+                  MbObject *child );
+static void add_workers ( MbTask *task,
+                          gint64 workers );
 
 
 
@@ -36,7 +41,10 @@ static void mb_task_class_init ( LObjectClass *cls )
 {
   cls->set_property = set_property;
   cls->get_property = get_property;
-
+  
+  MB_TASK_CLASS(cls)->add = add;
+  MB_TASK_CLASS(cls)->add_workers = add_workers;
+  
   pspecs[PROP_NAME] =
     l_param_spec_string("name",
                         "");
@@ -46,10 +54,10 @@ static void mb_task_class_init ( LObjectClass *cls )
     l_param_spec_int("isgroup",
                      0);
   
-  pspecs[PROP_POP_FLAGS] =
-    l_param_spec_int("pop_flags",
-                     0);
-
+  pspecs[PROP_PRIORITY] =
+    l_param_spec_object("priority",
+                        MB_CLASS_PRIORITY);
+  
   l_object_class_install_properties(cls, N_PROPS, pspecs);
 }
 
@@ -70,8 +78,9 @@ static void set_property ( LObject *obj,
     case PROP_ISGROUP:
       MB_TASK(obj)->isgroup = L_INT_VALUE(value) ? TRUE : FALSE;
       break;
-    case PROP_POP_FLAGS:
-      MB_TASK(obj)->pop_flags = L_INT_VALUE(value);
+    case PROP_PRIORITY:
+      ASSERT(!MB_TASK_PRIORITY(obj));
+      MB_TASK(obj)->priority = l_object_ref(value);
       break;
     default:
       L_OBJECT_SET_PROPERTY_ERROR(obj, pspec);
@@ -90,16 +99,6 @@ static LObject *get_property ( LObject *obj,
 
 
 
-/* mb_task_add_workers:
- */
-void mb_task_add_workers ( MbTask *task,
-                           gint64 count )
-{
-  CL_ERROR("[TODO]");
-}
-
-
-
 /* mb_task_add:
  */
 void mb_task_add ( MbTask *task,
@@ -110,6 +109,16 @@ void mb_task_add ( MbTask *task,
   ASSERT(!MB_TASK(child)->parent);
   ASSERT(!MB_TASK_COLONY(child));
   ASSERT(MB_TASK_COLONY(task));
+  MB_TASK_GET_CLASS(task)->add(task, child);
+}
+
+
+
+/* add:
+ */
+static void add ( MbTask *task,
+                  MbObject *child )
+{
   l_object_ref(child);
   task->children = g_list_append(task->children, child);
   MB_TASK(child)->parent = task;
@@ -151,4 +160,28 @@ MbObject *mb_task_find ( MbTask *task,
         return NULL;
     }
   return t;
+}
+
+
+
+/* mb_task_add_workers:
+ */
+void mb_task_add_workers ( MbTask *task,
+                           gint64 workers )
+{
+  ASSERT(!MB_TASK_ISGROUP(task));
+  MB_TASK_GET_CLASS(task)->add_workers(task, workers);
+}
+
+
+
+/* add_workers:
+ */
+static void add_workers ( MbTask *task,
+                          gint64 workers )
+{
+  task->workers += workers;
+  ASSERT(task->workers >= 0); /* ?? */
+  if (MB_TASK_PARENT(task))
+    add_workers(MB_TASK_PARENT(task), workers);
 }

@@ -41,6 +41,8 @@ MbObject *mbs_colony_new ( MbObject *game );
 void mbs_colony_update ( MbsColony *colony );
 void mbs_colony_get_pop ( MbsColony *colony,
                           gint64 *pop );
+MbObject *mbs_colony_select_task ( MbsColony *colony,
+                                   MbPopType pop_type );
 
 
 
