@@ -17,18 +17,7 @@ G_BEGIN_DECLS
 
 typedef enum _MbStateType MbStateType;
 typedef struct _MbStateBlock MbStateBlock;
-typedef struct _MbStateReset MbStateReset;
-typedef struct _MbStateFrame MbStateFrame;
-typedef struct _MbStateSector MbStateSector;
-typedef struct _MbStateColony MbStateColony;
-typedef struct _MbStateNewPriority MbStateNewPriority;
-typedef struct _MbStateNewTask MbStateNewTask;
-typedef struct _MbStateNewRoom MbStateNewRoom;
-typedef struct _MbStateNewResource MbStateNewResource;
-typedef struct _MbStatePop MbStatePop;
-typedef struct _MbStateTask MbStateTask;
-typedef struct _MbStatePriority MbStatePriority;
-/* new ones */
+/* server */
 typedef struct _MbStateGameSetup MbStateGameSetup;
 typedef struct _MbStateSectorSetup MbStateSectorSetup;
 typedef struct _MbStateColonySetup MbStateColonySetup;
@@ -53,18 +42,7 @@ typedef void (* MbStateHandler) ( MbState *state,
  */
 enum _MbStateType
   {
-    MB_STATE_RESET,
-    MB_STATE_FRAME,
-    MB_STATE_SECTOR,
-    MB_STATE_COLONY,
-    MB_STATE_NEW_TASK,
-    MB_STATE_NEW_ROOM,
-    MB_STATE_NEW_RESOURCE,
-    MB_STATE_POP,
-    MB_STATE_NEW_PRIORITY,
-    MB_STATE_TASK,
-    MB_STATE_PRIORITY,
-    /* new ones */
+    /* server */
     MB_STATE_GAME_SETUP,
     MB_STATE_SECTOR_SETUP,
     MB_STATE_COLONY_SETUP,
@@ -91,137 +69,7 @@ struct _MbStateBlock
 
 
 
-/* MbStateReset:
- */
-struct _MbStateReset
-{
-  MbStateBlock block;
-  guint game_id;
-  guint world_id;
-  guint world_width;
-  guint world_height;
-};
-
-
-
-/* MbStateFrame:
- */
-struct _MbStateFrame
-{
-  MbStateBlock block;
-  guint sim_time;
-};
-
-
-
-/* MbStateSector:
- */
-struct _MbStateSector
-{
-  MbStateBlock block;
-  guint sector_id;
-  guint x;
-  guint y;
-};
-
-
-
-/* MbStateColony:
- */
-struct _MbStateColony
-{
-  MbStateBlock block;
-  guint colony_id;
-  guint sector_id;
-  gint owner;
-};
-
-
-
-/* MbStateNewPriority:
- */
-struct _MbStateNewPriority
-{
-  MbStateBlock block;
-  guint priority_id;
-  MbPriorityValue value;
-};
-
-
-
-/* MbStateNewTask:
- */
-struct _MbStateNewTask
-{
-  MbStateBlock block;
-  guint task_id;
-  guint colony_id;
-  guint parent_id;
-  gboolean isgroup;
-  gchar name[MB_TASK_MAX_NAME+1];
-  guint priority_id;
-  gint64 workers;
-};
-
-
-
-/* MbStateNewRoom:
- */
-struct _MbStateNewRoom
-{
-  MbStateBlock block;
-  guint room_id;
-  MbRoomType type;
-  guint colony_id;
-};
-
-
-
-/* MbStateNewResource:
- */
-struct _MbStateNewResource
-{
-  MbStateBlock block;
-  guint resource_id;
-  gchar name[MB_RESOURCE_MAX_NAME+1];
-};
-
-
-
-/* MbStatePop:
- */
-struct _MbStatePop
-{
-  MbStateBlock block;
-  guint colony_id;
-  gint64 pop[MB_POP_TYPE_COUNT];
-};
-
-
-
-/* MbStateTask:
- */
-struct _MbStateTask
-{
-  MbStateBlock block;
-  guint task_id;
-  gint64 workers;
-};
-
-
-
-/* MbStatePriority:
- */
-struct _MbStatePriority
-{
-  MbStateBlock block;
-  guint priority_id;
-  MbPriorityValue value;
-};
-
-
-
-/* MbIStatePlayer:
+/* MbStatePlayer:
  */
 struct _MbStatePlayer
 {
