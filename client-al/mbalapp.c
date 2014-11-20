@@ -53,7 +53,7 @@ static gint run ( MbApp *app )
   /* setup and start the game */
   mbc_app_setup_solo_game(MBC_APP(app));
   l_signal_connect(L_OBJECT(MBC_APP(app)->game_proxy),
-                   "started", 0,
+                   "started",
                    (LSignalHandler) _on_game_started,
                    app,
                    NULL);

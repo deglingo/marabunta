@@ -95,7 +95,7 @@ static Page *_create_page ( AltkWidget *panel,
     (altk_button_new_with_label(but_label));
   ALTK_BOX_ADD(priv->button_box, but, 0);
   l_signal_connect(L_OBJECT(but),
-                   "clicked", 0,
+                   "clicked",
                    (LSignalHandler) _on_page_button_clicked,
                    page,
                    NULL);

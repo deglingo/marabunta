@@ -39,7 +39,7 @@ static void _create_view ( AltkWidget *view )
   l_trash_push();
   /* top box */
   top_box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_VERTICAL));
+    (altk_box_new(ALTK_HORIZONTAL));
   ALTK_CONTAINER_ADD(view, top_box);
   /* title label */
   priv->title = L_TRASH_OBJECT
@@ -78,7 +78,7 @@ static void _set_task ( AltkWidget *view,
   priv->task = l_object_ref(task);
   altk_label_set_text(ALTK_LABEL(priv->title), MB_TASK_NAME(task));
   l_signal_connect(L_OBJECT(task),
-                   "notify", g_quark_from_string("workers"),
+                   "notify:workers",
                    (LSignalHandler) _on_workers_notify,
                    view, NULL);
 }

@@ -172,8 +172,7 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
   ASSERT(!priv->game); /* [todo] reset */
   priv->game = l_object_ref(game);
   l_signal_connect(L_OBJECT(game),
-                   "notify",
-                   g_quark_from_string("frame_count"),
+                   "notify:frame_count",
                    (LSignalHandler) _on_frame_count_notify,
                    dialog,
                    NULL);

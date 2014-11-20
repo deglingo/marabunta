@@ -221,7 +221,7 @@ void mbtk_pop_table_set_colony ( MbtkPopTable *table,
   ASSERT(!priv->colony); /* [todo] */
   priv->colony = l_object_ref(colony);
   l_signal_connect(L_OBJECT(colony),
-                   "pop_notify", 0,
+                   "pop_notify",
                    (LSignalHandler) _on_pop_notify,
                    table,
                    NULL);
