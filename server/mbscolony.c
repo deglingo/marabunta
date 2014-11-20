@@ -207,7 +207,9 @@ static void _update_aq ( MbsColony *colony,
 static void _update_aw ( MbsColony *colony,
                          MbsPopUnit *unit )
 {
-  /* [TODO] */
+  MbObject *task;
+  task = mbs_colony_select_task(colony, MB_POP_ADULT_WORKER);
+  mbs_pop_unit_affect_task(unit, task);
 }
 
 
