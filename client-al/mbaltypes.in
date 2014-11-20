@@ -43,6 +43,11 @@ namespace Mbtk
     void init ();
   };
 
+  class PriorityView : Altk::Frame
+  {
+    void init ();
+  };
+
   class TaskView : Altk::Frame
   {
     void init ();

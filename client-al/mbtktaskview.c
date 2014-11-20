@@ -3,6 +3,7 @@
 
 #include "client-al/alprivate.h"
 #include "client-al/mbtktaskview.h"
+#include "client-al/mbtkpriorityview.h"
 #include "client-al/mbtktaskview.inl"
 
 
@@ -13,6 +14,7 @@ typedef struct _Private
 {
   MbObject *task;
   AltkWidget *title;
+  AltkWidget *priority_view;
   AltkWidget *workers;
 }
   Private;
@@ -45,6 +47,10 @@ static void _create_view ( AltkWidget *view )
   priv->title = L_TRASH_OBJECT
     (altk_label_new(""));
   ALTK_BOX_ADD(top_box, priv->title, 0);
+  /* priority */
+  priv->priority_view = L_TRASH_OBJECT
+    (mbtk_priority_view_new());
+  ALTK_BOX_ADD(top_box, priv->priority_view, 0);
   /* workers label */
   priv->workers = L_TRASH_OBJECT
     (altk_label_new("0"));

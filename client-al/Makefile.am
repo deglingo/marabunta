@@ -17,6 +17,7 @@ marabunta_al_SOURCES = \
 	mbtkmapview.c \
 	mbtkpoptable.c \
 	mbtkcolonyview.c \
+	mbtkpriorityview.c \
 	mbtktaskview.c \
 	mbtkinfopanel.c \
 	mbalapp.c \
@@ -27,6 +28,7 @@ BUILT_SOURCES = \
 	mbtkmapview-def.h mbtkmapview.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl \
 	mbtkcolonyview-def.h mbtkcolonyview.inl \
+	mbtkpriorityview-def.h mbtkpriorityview.inl \
 	mbtktaskview-def.h mbtktaskview.inl \
 	mbtkinfopanel-def.h mbtkinfopanel.inl \
 	mbalapp-def.h mbalapp.inl
@@ -35,6 +37,7 @@ mbtkdialog-def.h mbtkdialog.inl \
 mbtkmapview-def.h mbtkmapview.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
 mbtkcolonyview-def.h mbtkcolonyview.inl \
+mbtkpriorityview-def.h mbtkpriorityview.inl \
 mbtktaskview-def.h mbtktaskview.inl \
 mbtkinfopanel-def.h mbtkinfopanel.inl \
 mbalapp-def.h mbalapp.inl \
