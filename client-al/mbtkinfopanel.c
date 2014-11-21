@@ -138,14 +138,14 @@ static void _init_food_page ( Page *page )
   task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(priv->colony)), "work/farm");
   ASSERT(task);
   tview = L_TRASH_OBJECT
-    (mbtk_task_view_new(task));
+    (mbtk_task_view_new(ALTK_HORIZONTAL, task));
   ALTK_BOX_ADD(top_box, tview, 0);
   /* sub tasks */
   for (l = MB_TASK_CHILDREN(task); l; l = l->next)
     {
       task = l->data;
       tview = L_TRASH_OBJECT
-        (mbtk_task_view_new(task));
+        (mbtk_task_view_new(ALTK_HORIZONTAL, task));
       ALTK_BOX_ADD(top_box, tview, 0);
     }
   altk_widget_show_all(page->body);
@@ -178,14 +178,14 @@ static void _init_mine_page ( Page *page )
   task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(priv->colony)), "work/mine");
   ASSERT(task);
   tview = L_TRASH_OBJECT
-    (mbtk_task_view_new(task));
+    (mbtk_task_view_new(ALTK_HORIZONTAL, task));
   ALTK_BOX_ADD(top_box, tview, 0);
   /* sub tasks */
   for (l = MB_TASK_CHILDREN(task); l; l = l->next)
     {
       task = l->data;
       tview = L_TRASH_OBJECT
-        (mbtk_task_view_new(task));
+        (mbtk_task_view_new(ALTK_HORIZONTAL, task));
       ALTK_BOX_ADD(top_box, tview, 0);
     }
   altk_widget_show_all(page->body);

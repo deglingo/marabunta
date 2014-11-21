@@ -12,6 +12,7 @@
  */
 typedef struct _Private
 {
+  AltkOrientation orientation;
   MbObject *task;
   AltkWidget *title;
   AltkWidget *priority_view;
@@ -41,7 +42,7 @@ static void _create_view ( AltkWidget *view )
   l_trash_push();
   /* top box */
   top_box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_HORIZONTAL));
+    (altk_box_new(priv->orientation));
   ALTK_CONTAINER_ADD(view, top_box);
   /* title label */
   priv->title = L_TRASH_OBJECT
@@ -93,12 +94,26 @@ static void _set_task ( AltkWidget *view,
 
 /* mbtk_task_view_new:
  */
-AltkWidget *mbtk_task_view_new ( MbObject *task )
+AltkWidget *mbtk_task_view_new ( AltkOrientation orientation,
+                                 MbObject *task )
 {
   AltkWidget *view = ALTK_WIDGET(l_object_new(MBTK_CLASS_TASK_VIEW, NULL));
+  Private *priv = PRIVATE(view);
+  priv->orientation = orientation;
   _create_view(view);
   _set_task(view, task);
   mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(PRIVATE(view)->priority_view),
                                   MB_TASK_PRIORITY(PRIVATE(view)->task));
   return view;
+}
+
+
+
+/* mbtk_task_view_hide_title:
+ */
+void mbtk_task_view_hide_title ( MbtkTaskView *view )
+{
+  Private *priv = PRIVATE(view);
+  altk_widget_set_enable_show_all(priv->title, FALSE);
+  altk_widget_hide(priv->title);
 }

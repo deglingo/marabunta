@@ -55,7 +55,7 @@ typedef struct _Private
 static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
   {
     [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn",      0.5, 0.5, 0.1, 0.1 },
-    [MB_ROOM_TYPE_FARM]          = { "Farm",          "work/farm",  0.25, 0.5, 0.1, 0.1 },
+    [MB_ROOM_TYPE_FARM]          = { "Farm",          "work/farm",  0.15, 0.5, 0.1, 0.1 },
     [MB_ROOM_TYPE_MINE]          = { "Mine",          "work/mine",  0.5, 0.25, 0.1, 0.1 },
   };
 
@@ -186,8 +186,9 @@ void mbtk_colony_view_set_colony ( MbtkColonyView *view,
                                     info->task_path);
           ASSERT(room->task);
           l_object_ref(room->task);
-          room->task_view = mbtk_task_view_new(room->task);
+          room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
           _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+          mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
           altk_widget_show_all(room->task_view);
         }
     }
