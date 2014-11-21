@@ -35,9 +35,6 @@ void mbs_game_start ( MbsGame *game );
 void mbs_game_handle_request ( MbsGame *game,
                                MbObject *player,
                                MbState *state );
-void mbs_game_register_resource ( MbsGame *game,
-                                  const gchar *name,
-                                  MbResourceFlags flags );
 
 
 

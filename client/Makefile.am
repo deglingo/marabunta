@@ -11,6 +11,7 @@ libmarabunta_client_la_SOURCES = \
 	mbcapp.c \
 	mbcgame.c \
 	mbcplayer.c \
+	mbcresource.c \
 	mbcworld.c \
 	mbcsector.c \
 	mbccolony.c \
@@ -22,6 +23,7 @@ BUILT_SOURCES = \
 	mbcapp-def.h mbcapp.inl \
 	mbcgame-def.h mbcgame.inl \
 	mbcplayer-def.h mbcplayer.inl \
+	mbcresource-def.h mbcresource.inl \
 	mbcworld-def.h mbcworld.inl \
 	mbcsector-def.h mbcsector.inl \
 	mbccolony-def.h mbccolony.inl \
@@ -32,6 +34,7 @@ BUILT_SOURCES = \
 mbcapp-def.h mbcapp.inl \
 mbcgame-def.h mbcgame.inl \
 mbcplayer-def.h mbcplayer.inl \
+mbcresource-def.h mbcresource.inl \
 mbcworld-def.h mbcworld.inl \
 mbcsector-def.h mbcsector.inl \
 mbccolony-def.h mbccolony.inl \

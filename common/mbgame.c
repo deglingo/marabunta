@@ -4,6 +4,7 @@
 #include "common/private.h"
 #include "common/mbgame.h"
 #include "common/mbplayer.h"
+#include "common/mbresource.h"
 #include "common/mbworld.h"
 #include "common/mbstate.h"
 #include "common/mbgame.inl"
@@ -56,6 +57,11 @@ static void mb_game_init ( LObject *obj )
                           NULL,
                           NULL,
                           (GDestroyNotify) l_object_unref);
+  MB_GAME(obj)->resources =
+    g_hash_table_new_full(g_str_hash,
+                          g_str_equal,
+                          NULL,
+                          (GDestroyNotify) l_object_unref);
 }
 
 
@@ -106,6 +112,31 @@ static void add_player ( MbGame *game,
 {
   /* note: game already owns the ref !? */
   game->players = g_list_append(game->players, player);
+}
+
+
+
+/* mb_game_register_resource:
+ */
+void mb_game_register_resource ( MbGame *game,
+                                 MbObject *resource )
+{
+  ASSERT(MB_IS_RESOURCE(resource));
+  ASSERT(MB_OBJECT_GAME(resource) == MB_OBJECT(game));
+  ASSERT(!mb_game_lookup_resource(game, MB_RESOURCE_NAME(resource)));
+  g_hash_table_insert(game->resources,
+                      MB_RESOURCE_NAME(resource),
+                      l_object_ref(resource));
+}
+
+
+
+/* mb_game_lookup_resource:
+ */
+MbObject *mb_game_lookup_resource ( MbGame *game,
+                                    const gchar *name )
+{
+  return g_hash_table_lookup(game->resources, name);
 }
 
 

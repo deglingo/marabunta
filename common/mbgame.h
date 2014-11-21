@@ -21,6 +21,8 @@ struct _MbGame
   GList *players;
   MbObject *world;
   guint frame_count;
+  /* resources : map < gchar *name, MbObject *rsc > */
+  GHashTable *resources;
 };
 
 
@@ -44,6 +46,10 @@ void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,
                                   MbObjectID id );
+void mb_game_register_resource ( MbGame *game,
+                                 MbObject *resource );
+MbObject *mb_game_lookup_resource ( MbGame *game,
+                                    const gchar *name );
 void mb_game_add_player ( MbGame *game,
                           MbObject *player );
 void mb_game_set_world ( MbGame *game,

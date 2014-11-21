@@ -3,6 +3,7 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcgame.h"
+#include "client/mbcresource.h"
 #include "client/mbcplayer.h"
 #include "client/mbcworld.h"
 #include "client/mbcsector.h"
@@ -75,6 +76,22 @@ static void _handle_game_setup ( MbcGame *game,
                         st_game->world_height);
   mb_game_set_world(MB_GAME(game), world);
   l_object_unref(world);
+}
+
+
+
+/* _handle_resource_setup:
+ */
+static void _handle_resource_setup ( MbcGame *game,
+                                     MbStateResourceSetup *st_rsc )
+{
+  MbObject *rsc;
+  rsc = mbc_resource_new(MB_OBJECT(game),
+                         st_rsc->resource_id,
+                         st_rsc->name,
+                         st_rsc->flags);
+  mb_game_register_resource(MB_GAME(game), rsc);
+  l_object_unref(rsc);
 }
 
 
@@ -237,6 +254,9 @@ void mbc_game_update_state ( MbcGame *game,
         case MB_STATE_GAME_SETUP:
           _handle_game_setup(game, (MbStateGameSetup *) block);
           started = TRUE;
+          break;
+        case MB_STATE_RESOURCE_SETUP:
+          _handle_resource_setup(game, (MbStateResourceSetup *) block);
           break;
         case MB_STATE_SECTOR_SETUP:
           _handle_sector_setup(game, (MbStateSectorSetup *) block);

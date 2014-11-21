@@ -19,6 +19,7 @@ typedef enum _MbStateType MbStateType;
 typedef struct _MbStateBlock MbStateBlock;
 /* server */
 typedef struct _MbStateGameSetup MbStateGameSetup;
+typedef struct _MbStateResourceSetup MbStateResourceSetup;
 typedef struct _MbStateSectorSetup MbStateSectorSetup;
 typedef struct _MbStateColonySetup MbStateColonySetup;
 typedef struct _MbStatePrioritySetup MbStatePrioritySetup;
@@ -44,6 +45,7 @@ enum _MbStateType
   {
     /* server */
     MB_STATE_GAME_SETUP,
+    MB_STATE_RESOURCE_SETUP,
     MB_STATE_SECTOR_SETUP,
     MB_STATE_COLONY_SETUP,
     MB_STATE_PRIORITY_SETUP,
@@ -89,6 +91,18 @@ struct _MbStateGameSetup
   MbObjectID world_id;
   guint world_width;
   guint world_height;
+};
+
+
+
+/* MbStateResourceSetup:
+ */
+struct _MbStateResourceSetup
+{
+  MbStateBlock block;
+  MbObjectID resource_id;
+  gchar name[MB_RESOURCE_MAX_NAME+1];
+  MbResourceFlags flags;
 };
 
 

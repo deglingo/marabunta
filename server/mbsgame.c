@@ -26,8 +26,6 @@ typedef struct _Private
   /* update timer */
   GTimer *timer;
   gdouble next_frame;
-  /* resources : map < gchar *name, MbObject *rsc > */
-  GHashTable *resources;
 }
   Private;
 
@@ -66,10 +64,6 @@ static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
   PRIVATE(obj)->timer = g_timer_new();
-  PRIVATE(obj)->resources = g_hash_table_new_full(g_str_hash,
-                                                  g_str_equal,
-                                                  NULL,
-                                                  (GDestroyNotify) l_object_unref);
 }
 
 
@@ -97,18 +91,16 @@ static void add_player ( MbGame *game,
 
 
 
-/* mbs_game_register_resource:
+/* _register_resource:
  */
-void mbs_game_register_resource ( MbsGame *game,
-                                  const gchar *name,
-                                  MbResourceFlags flags )
+static void _register_resource ( MbsGame *game,
+                                 const gchar *name,
+                                 MbResourceFlags flags )
 {
-  Private *priv = PRIVATE(game);
   MbObject *resource;
   resource = mbs_resource_new(MB_OBJECT(game), name, flags);
-  g_hash_table_insert(priv->resources,
-                      MB_RESOURCE_NAME(resource),
-                      resource);
+  mb_game_register_resource(MB_GAME(game), resource);
+  l_object_unref(resource);
 }
 
 
@@ -130,11 +122,9 @@ void mbs_game_setup ( MbsGame *game )
         }
     }
   /* resources */
-  l_trash_push();
   {
-    mbs_game_register_resource(game, "food", MB_RESOURCE_FOOD);
+    _register_resource(game, "food", MB_RESOURCE_FOOD);
   }
-  l_trash_pop();
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);
@@ -220,6 +210,27 @@ static void _send_sector_setup ( MbsGame *game,
 
 
 
+/* _send_resources_setup:
+ */
+static void _send_resources_setup ( MbsGame *game,
+                                    MbState *state )
+{
+  GHashTableIter iter;
+  MbStateResourceSetup *st_rsc;
+  gpointer key, rsc;
+  g_hash_table_iter_init(&iter, MB_GAME(game)->resources);
+  while (g_hash_table_iter_next(&iter, &key, &rsc))
+    {
+      st_rsc = mb_state_next(state, MB_STATE_RESOURCE_SETUP);
+      st_rsc->resource_id = MB_OBJECT_ID(rsc);
+      ASSERT(strlen(MB_RESOURCE_NAME(rsc)) <= MB_RESOURCE_MAX_NAME);
+      sprintf(st_rsc->name, MB_RESOURCE_NAME(rsc));
+      st_rsc->flags = MB_RESOURCE_FLAGS(rsc);
+    }
+}
+
+
+
 /* _send_game_setup:
  */
 static void _send_game_setup ( MbsGame *game,
@@ -241,6 +252,8 @@ static void _send_game_setup ( MbsGame *game,
       st_game->players[n].id = MB_OBJECT_ID(p);
       sprintf(st_game->players[n].name, MB_PLAYER(p)->name->str);
     }
+  /* resources */
+  _send_resources_setup(game, state);
   /* world */
   st_game->world_id = MB_OBJECT_ID(MB_GAME_WORLD(game));
   st_game->world_width = MB_WORLD_WIDTH(MB_GAME_WORLD(game));
