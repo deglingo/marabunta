@@ -43,6 +43,7 @@ MbObject *mbs_task_new_group ( MbObject *game,
 MbObject *mbs_task_new ( MbObject *game,
                          const gchar *name,
                          MbPopFlags pop_flags,
+                         MbObject *resource,
                          MbsTaskFuncs *funcs )
 {
   MbObject *task = MB_OBJECT(l_object_new_give(MBS_CLASS_TASK,
@@ -50,6 +51,7 @@ MbObject *mbs_task_new ( MbObject *game,
                                                "name", l_string_new(name),
                                                "isgroup", l_int_new(0),
                                                "priority", mbs_priority_new(game, 5),
+                                               "resource", (resource ? l_object_ref(resource) : l_none_ref()),
                                                NULL));
   MBS_TASK(task)->funcs = *funcs;
   mbs_task_set_ready(MBS_TASK(task), pop_flags);

@@ -150,6 +150,7 @@ static void _send_task_setup ( MbsGame *game,
   st_task->priority_id = MB_OBJECT_ID(MB_TASK_PRIORITY(task));
   st_task->colony_id = MB_OBJECT_ID(MB_TASK_COLONY(task));
   st_task->parent_id = MB_TASK_PARENT(task) ? MB_OBJECT_ID(MB_TASK_PARENT(task)) : 0;
+  st_task->resource_id = MB_TASK_RESOURCE(task) ? MB_OBJECT_ID(MB_TASK_RESOURCE(task)) : 0;
   ASSERT(strlen(MB_TASK_NAME(task)) <= MB_TASK_MAX_NAME);
   sprintf(st_task->name, MB_TASK_NAME(task));
   st_task->isgroup = MB_TASK_ISGROUP(task);
@@ -225,7 +226,6 @@ static void _send_resources_setup ( MbsGame *game,
       st_rsc->resource_id = MB_OBJECT_ID(rsc);
       ASSERT(strlen(MB_RESOURCE_NAME(rsc)) <= MB_RESOURCE_MAX_NAME);
       sprintf(st_rsc->name, MB_RESOURCE_NAME(rsc));
-      st_rsc->index = MB_RESOURCE_INDEX(rsc);
       st_rsc->flags = MB_RESOURCE_FLAGS(rsc);
     }
 }
@@ -308,12 +308,20 @@ static void _send_colony_update ( MbsGame *game,
   st_col->colony_id = MB_OBJECT_ID(colony);
   if (MB_COLONY_OWNER(colony) == player->player)
     {
+      MbColonyStockIter iter;
+      MbObject *rsc;
+      gint64 qtty;
       gint i;
       mbs_colony_get_pop(colony,
                          st_col->pop);
-      ASSERT(MB_COLONY(colony)->stock->len < MB_RESOURCE_MAX_TYPES);
-      for (i = 0; i < MB_COLONY(colony)->stock->len; i++)
-        st_col->stock[i] = mb_colony_get_stock(MB_COLONY(colony), i);
+      ASSERT(mb_colony_stock_size(MB_COLONY(colony)) < MB_RESOURCE_MAX_TYPES);
+      st_col->stock_size = mb_colony_stock_size(MB_COLONY(colony));
+      mb_colony_stock_iter_init(&iter, MB_COLONY(colony));
+      for (i = 0; mb_colony_stock_iter_next(&iter, &rsc, &qtty); i++)
+        {
+          st_col->stock[i].resource_id = MB_OBJECT_ID(rsc);
+          st_col->stock[i].qtty = qtty;
+        }
       _send_task_update(game, player, MBS_TASK(MB_COLONY_TOP_TASK(colony)));
     }
 }

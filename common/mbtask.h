@@ -25,6 +25,7 @@ struct _MbTask
   GList *children;
   gint64 workers;
   MbObject *priority;
+  MbObject *resource;
 };
 
 
@@ -51,6 +52,7 @@ struct _MbTaskClass
 #define MB_TASK_ISGROUP(task) (MB_TASK(task)->isgroup)
 #define MB_TASK_WORKERS(task) (MB_TASK(task)->workers)
 #define MB_TASK_PRIORITY(task) (MB_TASK(task)->priority)
+#define MB_TASK_RESOURCE(task) (MB_TASK(task)->resource)
 
 void mb_task_add ( MbTask *task,
                    MbObject *child );

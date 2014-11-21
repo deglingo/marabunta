@@ -33,6 +33,7 @@ typedef struct _MbStateTaskUpdate MbStateTaskUpdate;
 typedef struct _MbStateRequestPriorityValue MbStateRequestPriorityValue;
 /* inner blocks */
 typedef struct _MbStatePlayer MbStatePlayer;
+typedef struct _MbStateStock MbStateStock;
 
 typedef void (* MbStateHandler) ( MbState *state,
                                   gpointer data );
@@ -101,7 +102,6 @@ struct _MbStateResourceSetup
 {
   MbStateBlock block;
   MbObjectID resource_id;
-  gint index;
   gchar name[MB_RESOURCE_MAX_NAME+1];
   MbResourceFlags flags;
 };
@@ -152,6 +152,7 @@ struct _MbStateTaskSetup
   MbObjectID priority_id;
   MbObjectID colony_id;
   MbObjectID parent_id;
+  MbObjectID resource_id;
   gchar name[MB_TASK_MAX_NAME+1];
   gboolean isgroup;
 };
@@ -180,6 +181,17 @@ struct _MbStateGameUpdate
 
 
 
+/* MbStateStock:
+ */
+struct _MbStateStock
+{
+  /* not a block */
+  MbObjectID resource_id;
+  gint64 qtty;
+};
+
+
+
 /* MbStateColonyUpdate:
  */
 struct _MbStateColonyUpdate
@@ -187,7 +199,8 @@ struct _MbStateColonyUpdate
   MbStateBlock block;
   MbObjectID colony_id;
   gint64 pop[MB_POP_TYPE_COUNT];
-  gint64 stock[MB_RESOURCE_MAX_TYPES];
+  gint stock_size;
+  MbStateStock stock[MB_RESOURCE_MAX_TYPES];
 };
 
 

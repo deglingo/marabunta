@@ -36,6 +36,7 @@ MbObject *mbc_task_new_group ( MbObject *game,
 MbObject *mbc_task_new ( MbObject *game,
                          MbObjectID id,
                          const gchar *name,
+                         MbObject *resource,
                          MbObject *priority );
 
 

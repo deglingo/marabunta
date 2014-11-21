@@ -4,6 +4,7 @@
 #include "common/private.h"
 #include "common/mbtask.h"
 #include "common/mbpriority.h"
+#include "common/mbresource.h"
 #include "common/mbtask.inl"
 
 
@@ -16,6 +17,7 @@ enum
     PROP_NAME,
     PROP_ISGROUP,
     PROP_PRIORITY,
+    PROP_RESOURCE,
     PROP_WORKERS,
     N_PROPS,
   };
@@ -59,12 +61,24 @@ static void mb_task_class_init ( LObjectClass *cls )
     l_param_spec_object("priority",
                         MB_CLASS_PRIORITY);
   
+  pspecs[PROP_RESOURCE] =
+    l_param_spec_object("resource",
+                        MB_CLASS_RESOURCE);
+  
   pspecs[PROP_WORKERS] =
     /* [FIXME] int64 !! */
     l_param_spec_int("workers",
                      0);
   
   l_object_class_install_properties(cls, N_PROPS, pspecs);
+}
+
+
+
+/* mb_task_init:
+ */
+static void mb_task_init ( LObject *obj )
+{
 }
 
 
@@ -87,6 +101,12 @@ static void set_property ( LObject *obj,
     case PROP_PRIORITY:
       ASSERT(!MB_TASK_PRIORITY(obj));
       MB_TASK(obj)->priority = l_object_ref(value);
+      break;
+    case PROP_RESOURCE:
+      ASSERT(!MB_TASK_RESOURCE(obj));
+      ASSERT(L_IS_NONE(value) || MB_IS_RESOURCE(value));
+      if (!L_IS_NONE(value))
+        MB_TASK(obj)->resource = l_object_ref(value);
       break;
     default:
       L_OBJECT_SET_PROPERTY_ERROR(obj, pspec);

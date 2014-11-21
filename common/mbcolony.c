@@ -23,12 +23,31 @@ static LSignalID signals[SIG_COUNT];
 
 
 
+/* StockNode:
+ */
+typedef struct _StockNode
+{
+  MbObject *rsc;
+  gint64 qtty;
+}
+  StockNode;
+
+
+
+static void stock_node_free ( StockNode *node )
+{
+  g_free(node);
+}
+
+
+
 /* mb_colony_class_init:
  */
 static void mb_colony_class_init ( LObjectClass *cls )
 {
-  l_signal_new(cls,
-               "stock_notify");
+  signals[SIG_STOCK_NOTIFY] =
+    l_signal_new(cls,
+                 "stock_notify");
 }
 
 
@@ -37,7 +56,11 @@ static void mb_colony_class_init ( LObjectClass *cls )
  */
 static void mb_colony_init ( LObject *obj )
 {
-  MB_COLONY(obj)->stock = g_ptr_array_new();
+  MB_COLONY(obj)->stock =
+    g_hash_table_new_full(NULL,
+                          NULL,
+                          NULL,
+                          (GDestroyNotify) stock_node_free);
 }
 
 
@@ -85,23 +108,28 @@ void mb_colony_add_room ( MbColony *colony,
 /* mb_colony_set_stock:
  */
 void mb_colony_set_stock ( MbColony *colony,
-                           gint rsc_index,
+                           MbObjectID rscid,
                            gint64 qtty )
 {
-  MbObject *rsc;
-  ASSERT(rsc_index >= 0);
-  if (mb_colony_get_stock(colony, rsc_index) == qtty)
-    return;
-  rsc = mb_game_get_resource(MB_GAME(MB_OBJECT_GAME(colony)), rsc_index);
-  ASSERT(rsc);
-  if (colony->stock->len <= rsc_index)
-    g_ptr_array_set_size(colony->stock, rsc_index+1);
-  if (!colony->stock->pdata[rsc_index])
-    colony->stock->pdata[rsc_index] = g_new(gint64, 1);
-  *((gint64 *)(colony->stock->pdata[rsc_index])) = qtty;
+  StockNode *node;
+  if ((node = g_hash_table_lookup(colony->stock, GUINT_TO_POINTER(rscid))))
+    {
+      if (node->qtty == qtty)
+        return;
+    }
+  else
+    {
+      if (qtty == 0)
+        return;
+      node = g_new(StockNode, 1);
+      node->rsc = mb_game_lookup_object(MB_GAME(MB_OBJECT_GAME(colony)), rscid); /* [fixme] ref ? */
+      ASSERT(node->rsc && MB_IS_RESOURCE(node->rsc));
+      g_hash_table_insert(colony->stock, GUINT_TO_POINTER(rscid), node);
+    }
+  node->qtty = qtty;
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_STOCK_NOTIFY],
-                MB_RESOURCE_QNAME(rsc));
+                MB_RESOURCE_QNAME(node->rsc));
 }
 
 
@@ -109,12 +137,13 @@ void mb_colony_set_stock ( MbColony *colony,
 /* mb_colony_add_stock:
  */
 void mb_colony_add_stock ( MbColony *colony,
-                           gint rsc_index,
+                           MbObjectID rscid,
                            gint64 qtty )
 {
-  ASSERT(rsc_index >= 0);
-  mb_colony_set_stock(colony, rsc_index,
-                      mb_colony_get_stock(colony, rsc_index) + qtty);
+  /* [FIXME] */
+  mb_colony_set_stock(colony,
+                      rscid,
+                      mb_colony_get_stock(colony, rscid) + qtty);
 }
 
 
@@ -122,11 +151,55 @@ void mb_colony_add_stock ( MbColony *colony,
 /* mb_colony_get_stock:
  */
 gint64 mb_colony_get_stock ( MbColony *colony,
-                             gint rsc_index )
+                             MbObjectID rscid )
 {
-  ASSERT(rsc_index >= 0);
-  if (rsc_index < colony->stock->len && colony->stock->pdata[rsc_index])
-    return *((gint64 *)(colony->stock->pdata[rsc_index]));
+  StockNode *node;
+  if ((node = g_hash_table_lookup(colony->stock, GUINT_TO_POINTER(rscid))))
+    {
+      return node->qtty;
+    }
   else
-    return 0;
+    {
+      return 0;
+    }
+}
+
+
+
+/* mb_colony_stock_iter_init:
+ */
+void mb_colony_stock_iter_init ( MbColonyStockIter *iter,
+                                 MbColony *colony )
+{
+  g_hash_table_iter_init(&iter->hash_iter, colony->stock);
+}
+
+
+
+/* mb_colony_stock_iter_next:
+ */
+gboolean mb_colony_stock_iter_next ( MbColonyStockIter *iter,
+                                     MbObject **resource,
+                                     gint64 *qtty )
+{
+  gpointer key, value;
+  if (g_hash_table_iter_next(&iter->hash_iter, &key, &value))
+    {
+      *resource = ((StockNode *) value)->rsc;
+      *qtty = ((StockNode *) value)->qtty;
+      return TRUE;
+    }
+  else
+    {
+      return FALSE;
+    }
+}
+
+
+
+/* mb_colony_stock_size:
+ */
+gint mb_colony_stock_size ( MbColony *colony )
+{
+  return g_hash_table_size(colony->stock);
 }

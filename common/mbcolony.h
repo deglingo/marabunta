@@ -11,6 +11,16 @@ G_BEGIN_DECLS
 
 
 
+/* MbColonyStockIter:
+ */
+typedef struct _MbColonyStockIter
+{
+  GHashTableIter hash_iter;
+}
+  MbColonyStockIter;
+
+
+
 /* MbColony:
  */
 struct _MbColony
@@ -26,7 +36,7 @@ struct _MbColony
   /* rooms */
   MbObject *rooms[MB_ROOM_TYPE_COUNT];
   /* stock */
-  GPtrArray *stock;
+  GHashTable *stock;
 };
 
 
@@ -52,13 +62,19 @@ void mb_colony_set_top_task ( MbColony *colony,
 void mb_colony_add_room ( MbColony *colony,
                           MbObject *room );
 void mb_colony_set_stock ( MbColony *colony,
-                           gint rsc_index,
+                           MbObjectID rscid,
                            gint64 qtty );
 void mb_colony_add_stock ( MbColony *colony,
-                           gint rsc_index,
+                           MbObjectID rscid,
                            gint64 qtty );
 gint64 mb_colony_get_stock ( MbColony *colony,
-                             gint rsc_index );
+                             MbObjectID rscid );
+void mb_colony_stock_iter_init ( MbColonyStockIter *iter,
+                                 MbColony *colony );
+gboolean mb_colony_stock_iter_next ( MbColonyStockIter *iter,
+                                     MbObject **resource,
+                                     gint64 *qtty );
+gint mb_colony_stock_size ( MbColony *colony );
 
 
 

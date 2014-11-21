@@ -56,6 +56,7 @@ MbObject *mbs_task_new_group ( MbObject *game,
 MbObject *mbs_task_new ( MbObject *game,
                          const gchar *name,
                          MbPopFlags pop_flags,
+                         MbObject *resource,
                          MbsTaskFuncs *funcs );
 void mbs_task_check ( MbsTask *task );
 gboolean mbs_task_accept ( MbsTask *task,

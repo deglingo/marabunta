@@ -88,7 +88,6 @@ static void _handle_resource_setup ( MbcGame *game,
   MbObject *rsc;
   rsc = mbc_resource_new(MB_OBJECT(game),
                          st_rsc->resource_id,
-                         st_rsc->index,
                          st_rsc->name,
                          st_rsc->flags);
   mb_game_register_resource(MB_GAME(game), rsc);
@@ -151,9 +150,11 @@ static void _handle_colony_update ( MbcGame *game,
   colony = mb_game_lookup_object(MB_GAME(game), st_col->colony_id);
   ASSERT(colony && MBC_IS_COLONY(colony));
   mbc_colony_set_pop(MBC_COLONY(colony), st_col->pop);
-  for (i = 0; i < MB_RESOURCE_MAX_TYPES; i++)
+  for (i = 0; i < st_col->stock_size; i++)
     {
-      mb_colony_set_stock(MB_COLONY(colony), i, st_col->stock[i]);
+      mb_colony_set_stock(MB_COLONY(colony),
+                          st_col->stock[i].resource_id,
+                          st_col->stock[i].qtty);
     }
 }
 
@@ -176,15 +177,21 @@ static void _handle_priority_setup ( MbcGame *game,
 static void _handle_task_setup ( MbcGame *game,
                                  MbStateTaskSetup *st_task )
 {
-  MbObject *parent, *colony, *priority, *task;
+  MbObject *parent, *colony, *priority, *resource, *task;
   colony = mb_game_lookup_object(MB_GAME(game), st_task->colony_id);
   ASSERT(colony && MBC_IS_COLONY(colony));
   priority = mb_game_lookup_object(MB_GAME(game), st_task->priority_id);
   ASSERT(priority && MBC_IS_PRIORITY(priority));
+  if (st_task->resource_id) {
+    resource = mb_game_lookup_object(MB_GAME(game), st_task->resource_id);
+    ASSERT(resource && MBC_IS_RESOURCE(resource));
+  } else {
+    resource = NULL;
+  }
   if (st_task->isgroup)
     task = mbc_task_new_group(MB_OBJECT(game), st_task->task_id, st_task->name, priority);
   else
-    task = mbc_task_new(MB_OBJECT(game), st_task->task_id, st_task->name, priority);
+    task = mbc_task_new(MB_OBJECT(game), st_task->task_id, st_task->name, resource, priority);
   if (st_task->parent_id)
     {
       parent = mb_game_lookup_object(MB_GAME(game), st_task->parent_id);

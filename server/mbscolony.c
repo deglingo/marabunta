@@ -25,7 +25,7 @@ static void t_spawn_process ( MbsTask *task )
 
 typedef struct _FoodData
 {
-  gint food_idx;
+  MbObject *rsc_food;
 }
   FoodData;
 
@@ -33,9 +33,9 @@ typedef struct _FoodData
 
 static void t_food_init ( MbsTask *task )
 {
-  MbGame *game = MB_GAME(MB_OBJECT_GAME(task));
-  task->data = g_new0(FoodData, 1);
-  ((FoodData *) task->data)->food_idx = MB_RESOURCE_INDEX(mb_game_lookup_resource(game, "food"));
+  FoodData *data;
+  data = task->data = g_new0(FoodData, 1);
+  data->rsc_food = mb_game_lookup_resource(MB_GAME(MB_OBJECT_GAME(task)), "food");
 }
 
 
@@ -45,7 +45,7 @@ static void t_food_process ( MbsTask *task )
   if (MB_TASK_WORKERS(task) > 0)
     {
       mb_colony_add_stock(MB_COLONY(MB_TASK_COLONY(task)),
-                          ((FoodData *) task->data)->food_idx,
+                          MB_OBJECT_ID(((FoodData *) task->data)->rsc_food),
                           MB_TASK_WORKERS(task) * 5);
     }
 }
@@ -95,7 +95,7 @@ MbObject *mbs_colony_new ( MbObject *game )
   mb_colony_set_top_task(MB_COLONY(col), t_top);
   l_object_unref(t_top);
   /* spawn */
-  t_spawn = mbs_task_new(game, "spawn", MB_POP_FLAG_ADULT_QUEEN, &t_spawn_funcs);
+  t_spawn = mbs_task_new(game, "spawn", MB_POP_FLAG_ADULT_QUEEN, NULL, &t_spawn_funcs);
   mb_task_add(MB_TASK(t_top), t_spawn);
   l_object_unref(t_spawn);
   /* work */
@@ -107,7 +107,9 @@ MbObject *mbs_colony_new ( MbObject *game )
   mb_task_add(MB_TASK(t_work), t_farm);
   l_object_unref(t_farm);
   /* food */
-  t_food = mbs_task_new(game, "food", MB_POP_FLAG_ADULT_WORKER, &t_food_funcs);
+  t_food = mbs_task_new(game, "food", MB_POP_FLAG_ADULT_WORKER,
+                        mb_game_lookup_resource(MB_GAME(game), "food"),
+                        &t_food_funcs);
   mb_task_add(MB_TASK(t_farm), t_food);
   l_object_unref(t_food);
   /* mine */
@@ -115,11 +117,11 @@ MbObject *mbs_colony_new ( MbObject *game )
   mb_task_add(MB_TASK(t_work), t_mine);
   l_object_unref(t_mine);
   /* mine1 */
-  t_mine1 = mbs_task_new(game, "mine1", MB_POP_FLAG_ADULT_WORKER, &t_mine1_funcs);
+  t_mine1 = mbs_task_new(game, "mine1", MB_POP_FLAG_ADULT_WORKER, NULL, &t_mine1_funcs);
   mb_task_add(MB_TASK(t_mine), t_mine1);
   l_object_unref(t_mine1);
   /* mine2 */
-  t_mine2 = mbs_task_new(game, "mine2", MB_POP_FLAG_ADULT_WORKER, &t_mine2_funcs);
+  t_mine2 = mbs_task_new(game, "mine2", MB_POP_FLAG_ADULT_WORKER, NULL, &t_mine2_funcs);
   mb_task_add(MB_TASK(t_mine), t_mine2);
   l_object_unref(t_mine2);
   return col;

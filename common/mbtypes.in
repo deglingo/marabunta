@@ -41,6 +41,7 @@ namespace Mb
   class Task : Object
   {
     void class_init ();
+    void init ();
   };
 
   class Colony : Object
