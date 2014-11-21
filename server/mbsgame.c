@@ -14,7 +14,7 @@
 
 
 
-#define MBS_GAME_FPS ((gdouble) 5.0)
+#define MBS_GAME_FPS ((gdouble) 120.0)
 
 
 
