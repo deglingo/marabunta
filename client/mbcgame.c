@@ -147,9 +147,14 @@ static void _handle_colony_update ( MbcGame *game,
                                     MbStateColonyUpdate *st_col )
 {
   MbObject *colony;
+  gint i;
   colony = mb_game_lookup_object(MB_GAME(game), st_col->colony_id);
   ASSERT(colony && MBC_IS_COLONY(colony));
   mbc_colony_set_pop(MBC_COLONY(colony), st_col->pop);
+  for (i = 0; i < MB_RESOURCE_MAX_TYPES; i++)
+    {
+      mb_colony_set_stock(MB_COLONY(colony), i, st_col->stock[i]);
+    }
 }
 
 

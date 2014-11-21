@@ -79,6 +79,7 @@ static void set_property ( LObject *obj,
     case PROP_NAME:
       ASSERT(!MB_RESOURCE_NAME(obj));
       MB_RESOURCE(obj)->name = g_strdup(L_STRING(value)->str);
+      MB_RESOURCE(obj)->qname = g_quark_from_string(MB_RESOURCE_NAME(obj));
       break;
     case PROP_FLAGS:
       MB_RESOURCE(obj)->flags = L_INT_VALUE(value);

@@ -18,6 +18,7 @@ struct _MbResource
   MB_RESOURCE_INSTANCE_HEADER;
 
   gchar *name;
+  GQuark qname;
   MbResourceFlags flags;
   gint index; /* set by MbGame */
 };
@@ -34,6 +35,7 @@ struct _MbResourceClass
 
 
 #define MB_RESOURCE_NAME(rsc) (MB_RESOURCE(rsc)->name)
+#define MB_RESOURCE_QNAME(rsc) (MB_RESOURCE(rsc)->qname)
 #define MB_RESOURCE_FLAGS(rsc) (MB_RESOURCE(rsc)->flags)
 #define MB_RESOURCE_INDEX(rsc) (MB_RESOURCE(rsc)->index)
 

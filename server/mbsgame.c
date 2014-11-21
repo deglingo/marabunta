@@ -308,8 +308,12 @@ static void _send_colony_update ( MbsGame *game,
   st_col->colony_id = MB_OBJECT_ID(colony);
   if (MB_COLONY_OWNER(colony) == player->player)
     {
+      gint i;
       mbs_colony_get_pop(colony,
                          st_col->pop);
+      ASSERT(MB_COLONY(colony)->stock->len < MB_RESOURCE_MAX_TYPES);
+      for (i = 0; i < MB_COLONY(colony)->stock->len; i++)
+        st_col->stock[i] = mb_colony_get_stock(MB_COLONY(colony), i);
       _send_task_update(game, player, MBS_TASK(MB_COLONY_TOP_TASK(colony)));
     }
 }

@@ -187,6 +187,7 @@ struct _MbStateColonyUpdate
   MbStateBlock block;
   MbObjectID colony_id;
   gint64 pop[MB_POP_TYPE_COUNT];
+  gint64 stock[MB_RESOURCE_MAX_TYPES];
 };
 
 

@@ -45,6 +45,7 @@ namespace Mb
 
   class Colony : Object
   {
+    void class_init ();
     void init ();
   };
 

@@ -40,6 +40,7 @@ typedef enum _MbRoomType
 #define MB_PLAYER_MAX_NAME 16
 #define MB_TASK_MAX_NAME 16
 #define MB_RESOURCE_MAX_NAME 16
+#define MB_RESOURCE_MAX_TYPES 16
 
 /* [fixme] */
 typedef gint MbPriorityValue;

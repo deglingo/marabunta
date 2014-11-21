@@ -3,9 +3,33 @@
 
 #include "common/private.h"
 #include "common/mbcolony.h"
+#include "common/mbgame.h"
 #include "common/mbplayer.h"
+#include "common/mbresource.h"
 #include "common/mbtask.h"
 #include "common/mbcolony.inl"
+
+
+
+/* Signals:
+ */
+enum
+  {
+    SIG_STOCK_NOTIFY,
+    SIG_COUNT,
+  };
+
+static LSignalID signals[SIG_COUNT];
+
+
+
+/* mb_colony_class_init:
+ */
+static void mb_colony_class_init ( LObjectClass *cls )
+{
+  l_signal_new(cls,
+               "stock_notify");
+}
 
 
 
@@ -64,12 +88,20 @@ void mb_colony_set_stock ( MbColony *colony,
                            gint rsc_index,
                            gint64 qtty )
 {
+  MbObject *rsc;
   ASSERT(rsc_index >= 0);
+  if (mb_colony_get_stock(colony, rsc_index) == qtty)
+    return;
+  rsc = mb_game_get_resource(MB_GAME(MB_OBJECT_GAME(colony)), rsc_index);
+  ASSERT(rsc);
   if (colony->stock->len <= rsc_index)
     g_ptr_array_set_size(colony->stock, rsc_index+1);
   if (!colony->stock->pdata[rsc_index])
     colony->stock->pdata[rsc_index] = g_new(gint64, 1);
   *((gint64 *)(colony->stock->pdata[rsc_index])) = qtty;
+  l_signal_emit(L_OBJECT(colony),
+                signals[SIG_STOCK_NOTIFY],
+                MB_RESOURCE_QNAME(rsc));
 }
 
 
