@@ -34,6 +34,8 @@ struct _MbsTask
   MbsTaskFuncs funcs;
   guint ready_count[MB_POP_TYPE_COUNT];
   guint ready_sum;
+  /* user data */
+  gpointer data;
 };
 
 

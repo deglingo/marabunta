@@ -53,6 +53,8 @@ MbObject *mbs_task_new ( MbObject *game,
                                                NULL));
   MBS_TASK(task)->funcs = *funcs;
   mbs_task_set_ready(MBS_TASK(task), pop_flags);
+  if (funcs->init)
+    funcs->init(MBS_TASK(task));
   return task;
 }
 

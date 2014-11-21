@@ -25,6 +25,8 @@ struct _MbColony
   MbObject *top_task;
   /* rooms */
   MbObject *rooms[MB_ROOM_TYPE_COUNT];
+  /* stock */
+  GPtrArray *stock;
 };
 
 
@@ -49,6 +51,14 @@ void mb_colony_set_top_task ( MbColony *colony,
                               MbObject *task );
 void mb_colony_add_room ( MbColony *colony,
                           MbObject *room );
+void mb_colony_set_stock ( MbColony *colony,
+                           gint rsc_index,
+                           gint64 qtty );
+void mb_colony_add_stock ( MbColony *colony,
+                           gint rsc_index,
+                           gint64 qtty );
+gint64 mb_colony_get_stock ( MbColony *colony,
+                             gint rsc_index );
 
 
 

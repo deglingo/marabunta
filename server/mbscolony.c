@@ -23,6 +23,35 @@ static void t_spawn_process ( MbsTask *task )
 
 
 
+typedef struct _FoodData
+{
+  gint food_idx;
+}
+  FoodData;
+
+
+
+static void t_food_init ( MbsTask *task )
+{
+  MbGame *game = MB_GAME(MB_OBJECT_GAME(task));
+  task->data = g_new0(FoodData, 1);
+  ((FoodData *) task->data)->food_idx = MB_RESOURCE_INDEX(mb_game_lookup_resource(game, "food"));
+}
+
+
+
+static void t_food_process ( MbsTask *task )
+{
+  if (MB_TASK_WORKERS(task) > 0)
+    {
+      mb_colony_add_stock(MB_COLONY(MB_TASK_COLONY(task)),
+                          ((FoodData *) task->data)->food_idx,
+                          MB_TASK_WORKERS(task) * 5);
+    }
+}
+
+
+
 /* mbs_colony_new:
  */
 MbObject *mbs_colony_new ( MbObject *game )
@@ -32,7 +61,7 @@ MbObject *mbs_colony_new ( MbObject *game )
                                          NULL));
   MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
   MbsTaskFuncs t_spawn_funcs = { NULL, NULL, t_spawn_process };
-  MbsTaskFuncs t_food_funcs = { NULL, };
+  MbsTaskFuncs t_food_funcs = { t_food_init, NULL, t_food_process };
   MbsTaskFuncs t_mine1_funcs = { NULL, };
   MbsTaskFuncs t_mine2_funcs = { NULL, };
   MbObject *room;
