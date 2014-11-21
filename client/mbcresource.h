@@ -31,6 +31,7 @@ struct _MbcResourceClass
 
 MbObject *mbc_resource_new ( MbObject *game,
                              MbObjectID id,
+                             gint index,
                              const gchar *name,
                              MbResourceFlags flags );
 

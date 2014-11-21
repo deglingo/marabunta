@@ -62,6 +62,7 @@ static void mb_game_init ( LObject *obj )
                           g_str_equal,
                           NULL,
                           (GDestroyNotify) l_object_unref);
+  MB_GAME(obj)->resources_index = g_ptr_array_new();
 }
 
 
@@ -124,9 +125,17 @@ void mb_game_register_resource ( MbGame *game,
   ASSERT(MB_IS_RESOURCE(resource));
   ASSERT(MB_OBJECT_GAME(resource) == MB_OBJECT(game));
   ASSERT(!mb_game_lookup_resource(game, MB_RESOURCE_NAME(resource)));
+  l_object_ref(resource);
   g_hash_table_insert(game->resources,
                       MB_RESOURCE_NAME(resource),
-                      l_object_ref(resource));
+                      resource);
+  if (MB_RESOURCE_INDEX(resource) < 0)
+    MB_RESOURCE(resource)->index = game->resources_index->len;
+  if (game->resources_index->len <= MB_RESOURCE_INDEX(resource))
+    g_ptr_array_set_size(game->resources_index,
+                         MB_RESOURCE_INDEX(resource) + 1);
+  ASSERT(!game->resources_index->pdata[MB_RESOURCE_INDEX(resource)]);
+  game->resources_index->pdata[MB_RESOURCE_INDEX(resource)] = resource;
 }
 
 
@@ -137,6 +146,19 @@ MbObject *mb_game_lookup_resource ( MbGame *game,
                                     const gchar *name )
 {
   return g_hash_table_lookup(game->resources, name);
+}
+
+
+
+/* mb_game_get_resource:
+ */
+MbObject *mb_game_get_resource ( MbGame *game,
+                                 guint index )
+{
+  if (index < game->resources_index->len)
+    return game->resources_index->pdata[index];
+  else
+    return NULL;
 }
 
 

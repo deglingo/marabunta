@@ -12,6 +12,7 @@
 enum
   {
     PROP_0,
+    PROP_INDEX,
     PROP_NAME,
     PROP_FLAGS,
     N_PROPS,
@@ -35,6 +36,10 @@ static void mb_resource_class_init ( LObjectClass *cls )
 {
   cls->set_property = set_property;
   cls->get_property = get_property;
+  
+  pspecs[PROP_INDEX] =
+    l_param_spec_int("index",
+                     -1);
 
   pspecs[PROP_NAME] =
     l_param_spec_string("name",
@@ -49,6 +54,15 @@ static void mb_resource_class_init ( LObjectClass *cls )
 
 
 
+/* mb_resource_init:
+ */
+static void mb_resource_init ( LObject *obj )
+{
+  MB_RESOURCE(obj)->index = -1;
+}
+
+
+
 /* set_property:
  */
 static void set_property ( LObject *obj,
@@ -57,6 +71,11 @@ static void set_property ( LObject *obj,
 {
   switch (pspec->param_id)
     {
+    case PROP_INDEX:
+      ASSERT(MB_RESOURCE_INDEX(obj) < 0);
+      ASSERT(L_INT_VALUE(value) >= 0);
+      MB_RESOURCE(obj)->index = L_INT_VALUE(value);
+      break;
     case PROP_NAME:
       ASSERT(!MB_RESOURCE_NAME(obj));
       MB_RESOURCE(obj)->name = g_strdup(L_STRING(value)->str);

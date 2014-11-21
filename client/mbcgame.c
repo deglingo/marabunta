@@ -88,6 +88,7 @@ static void _handle_resource_setup ( MbcGame *game,
   MbObject *rsc;
   rsc = mbc_resource_new(MB_OBJECT(game),
                          st_rsc->resource_id,
+                         st_rsc->index,
                          st_rsc->name,
                          st_rsc->flags);
   mb_game_register_resource(MB_GAME(game), rsc);

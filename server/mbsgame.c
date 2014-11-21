@@ -225,6 +225,7 @@ static void _send_resources_setup ( MbsGame *game,
       st_rsc->resource_id = MB_OBJECT_ID(rsc);
       ASSERT(strlen(MB_RESOURCE_NAME(rsc)) <= MB_RESOURCE_MAX_NAME);
       sprintf(st_rsc->name, MB_RESOURCE_NAME(rsc));
+      st_rsc->index = MB_RESOURCE_INDEX(rsc);
       st_rsc->flags = MB_RESOURCE_FLAGS(rsc);
     }
 }

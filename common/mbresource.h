@@ -19,6 +19,7 @@ struct _MbResource
 
   gchar *name;
   MbResourceFlags flags;
+  gint index; /* set by MbGame */
 };
 
 
@@ -34,6 +35,7 @@ struct _MbResourceClass
 
 #define MB_RESOURCE_NAME(rsc) (MB_RESOURCE(rsc)->name)
 #define MB_RESOURCE_FLAGS(rsc) (MB_RESOURCE(rsc)->flags)
+#define MB_RESOURCE_INDEX(rsc) (MB_RESOURCE(rsc)->index)
 
 
 

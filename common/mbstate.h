@@ -101,6 +101,7 @@ struct _MbStateResourceSetup
 {
   MbStateBlock block;
   MbObjectID resource_id;
+  gint index;
   gchar name[MB_RESOURCE_MAX_NAME+1];
   MbResourceFlags flags;
 };
