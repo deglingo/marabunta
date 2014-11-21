@@ -12,6 +12,7 @@ libmarabunta_common_la_SOURCES = \
 	mbobject.c \
 	mbgame.c \
 	mbplayer.c \
+	mbresource.c \
 	mbworld.c \
 	mbsector.c \
 	mbtask.c \
@@ -23,14 +24,14 @@ libmarabunta_common_la_SOURCES = \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
-	mbpoptype.c \
-	mbresource.c
+	mbpoptype.c
 
 BUILT_SOURCES = \
 	mbapp-def.h mbapp.inl \
 	mbobject-def.h mbobject.inl \
 	mbgame-def.h mbgame.inl \
 	mbplayer-def.h mbplayer.inl \
+	mbresource-def.h mbresource.inl \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
 	mbtask-def.h mbtask.inl \
@@ -44,6 +45,7 @@ mbapp-def.h mbapp.inl \
 mbobject-def.h mbobject.inl \
 mbgame-def.h mbgame.inl \
 mbplayer-def.h mbplayer.inl \
+mbresource-def.h mbresource.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
 mbtask-def.h mbtask.inl \

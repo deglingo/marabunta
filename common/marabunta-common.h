@@ -15,6 +15,8 @@
 
 #include "common/mbplayer.h"
 
+#include "common/mbresource.h"
+
 #include "common/mbsector.h"
 
 #include "common/mbpriority.h"

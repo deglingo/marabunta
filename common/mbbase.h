@@ -12,6 +12,16 @@ typedef guint MbObjectID;
 
 
 
+/* MbResourceFlags:
+ */
+typedef enum _MbResourceFlags
+  {
+    MB_RESOURCE_FOOD = 1 << 0,
+  }
+  MbResourceFlags;
+
+
+
 /* MbRoomType:
  */
 typedef enum _MbRoomType

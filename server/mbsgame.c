@@ -4,6 +4,7 @@
 #include "server/srvprivate.h"
 #include "server/mbsgame.h"
 #include "server/mbsplayer.h"
+#include "server/mbsresource.h"
 #include "server/mbsworld.h"
 #include "server/mbssector.h"
 #include "server/mbscolony.h"
@@ -25,6 +26,8 @@ typedef struct _Private
   /* update timer */
   GTimer *timer;
   gdouble next_frame;
+  /* resources : map < gchar *name, MbObject *rsc > */
+  GHashTable *resources;
 }
   Private;
 
@@ -63,6 +66,10 @@ static void mbs_game_init ( LObject *obj )
 {
   MBS_GAME(obj)->private = g_new0(Private, 1);
   PRIVATE(obj)->timer = g_timer_new();
+  PRIVATE(obj)->resources = g_hash_table_new_full(g_str_hash,
+                                                  g_str_equal,
+                                                  NULL,
+                                                  (GDestroyNotify) l_object_unref);
 }
 
 
@@ -90,6 +97,22 @@ static void add_player ( MbGame *game,
 
 
 
+/* mbs_game_register_resource:
+ */
+void mbs_game_register_resource ( MbsGame *game,
+                                  const gchar *name,
+                                  MbResourceFlags flags )
+{
+  Private *priv = PRIVATE(game);
+  MbObject *resource;
+  resource = mbs_resource_new(MB_OBJECT(game), name, flags);
+  g_hash_table_insert(priv->resources,
+                      MB_RESOURCE_NAME(resource),
+                      resource);
+}
+
+
+
 /* mbs_game_setup:
  */
 void mbs_game_setup ( MbsGame *game )
@@ -106,6 +129,12 @@ void mbs_game_setup ( MbsGame *game )
           mb_world_add_sector(MB_WORLD(world), sector, x, y);
         }
     }
+  /* resources */
+  l_trash_push();
+  {
+    mbs_game_register_resource(game, "food", MB_RESOURCE_FOOD);
+  }
+  l_trash_pop();
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

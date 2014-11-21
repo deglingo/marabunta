@@ -23,6 +23,11 @@ namespace Mb
     void class_init ();
   };
 
+  class Resource : Object
+  {
+    void class_init ();
+  };
+
   class World : Object
   {
     void class_init ();
