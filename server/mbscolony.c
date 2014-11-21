@@ -10,6 +10,16 @@
 
 
 
+static void t_spawn_process ( MbsTask *task )
+{
+  MbsColony *colony = MBS_COLONY(MB_TASK_COLONY(task));
+  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+  gint count = g_random_int_range(0, 10 * MB_TASK_WORKERS(task));
+  mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
+}
+
+
+
 /* mbs_colony_new:
  */
 MbObject *mbs_colony_new ( MbObject *game )
@@ -18,7 +28,7 @@ MbObject *mbs_colony_new ( MbObject *game )
                                          "game", game,
                                          NULL));
   MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
-  MbsTaskFuncs t_spawn_funcs = { NULL, };
+  MbsTaskFuncs t_spawn_funcs = { NULL, NULL, t_spawn_process };
   MbsTaskFuncs t_food_funcs = { NULL, };
   MbsTaskFuncs t_mine1_funcs = { NULL, };
   MbsTaskFuncs t_mine2_funcs = { NULL, };
@@ -204,10 +214,7 @@ static void _update_ls ( MbsColony *colony,
 static void _update_aq ( MbsColony *colony,
                          MbsPopUnit *unit )
 {
-  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
-  gint count = g_random_int_range(0, 10 * unit->count);
   MbObject *task;
-  mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
   task = mbs_colony_select_task(colony, MB_POP_ADULT_QUEEN);
   mbs_pop_unit_affect_task(unit, task);
   /* CL_DEBUG("affect aq: %p (%s) -> %" G_GINT64_FORMAT, */
