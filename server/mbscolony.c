@@ -12,10 +12,13 @@
 
 static void t_spawn_process ( MbsTask *task )
 {
-  MbsColony *colony = MBS_COLONY(MB_TASK_COLONY(task));
-  guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
-  gint count = g_random_int_range(0, 10 * MB_TASK_WORKERS(task));
-  mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
+  if (MB_TASK_WORKERS(task) > 0)
+    {
+      MbsColony *colony = MBS_COLONY(MB_TASK_COLONY(task));
+      guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
+      gint count = g_random_int_range(0, 10 * MB_TASK_WORKERS(task));
+      mbs_pop_tree_add(colony->adj_tree, MB_POP_EGG, date, count);
+    }
 }
 
 
@@ -245,34 +248,43 @@ static void _update_as ( MbsColony *colony,
 
 
 
+struct update_data
+{
+  MbsColony *colony;
+  guint birthdate_mask;
+};
+
+
+
 /* _update_pop_unit:
  */
 static void _update_pop_unit ( MbsPopUnit *unit,
-                               gpointer data )
+                               struct update_data *data )
 {
-  MbsColony *colony = MBS_COLONY(data);
+  if ((unit->birthdate & 0xf) != data->birthdate_mask)
+    return;
   switch (unit->type)
     {
     case MB_POP_EGG:
-      _update_egg(colony, unit);
+      _update_egg(data->colony, unit);
       break;
     case MB_POP_LARVAE_QUEEN:
-      _update_lq(colony, unit);
+      _update_lq(data->colony, unit);
       break;
     case MB_POP_LARVAE_WORKER:
-      _update_lw(colony, unit);
+      _update_lw(data->colony, unit);
       break;
     case MB_POP_LARVAE_SOLDIER:
-      _update_ls(colony, unit);
+      _update_ls(data->colony, unit);
       break;
     case MB_POP_ADULT_QUEEN:
-      _update_aq(colony, unit);
+      _update_aq(data->colony, unit);
       break;
     case MB_POP_ADULT_WORKER:
-      _update_aw(colony, unit);
+      _update_aw(data->colony, unit);
       break;
     case MB_POP_ADULT_SOLDIER:
-      _update_as(colony, unit);
+      _update_as(data->colony, unit);
       break;
     default:
       CL_DEBUG("[TODO] type %d", unit->type);
@@ -286,10 +298,15 @@ static void _update_pop_unit ( MbsPopUnit *unit,
 void mbs_colony_update ( MbsColony *colony )
 {
   gint64 min_score;
+  struct update_data data;
+  data.colony = colony;
+  data.birthdate_mask = g_random_int_range(0, 0x10);
   /* [FIXME] debug only */
   mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
   /* update pop units */
-  mbs_pop_tree_traverse(colony->pop_tree, _update_pop_unit, colony);
+  mbs_pop_tree_traverse(colony->pop_tree,
+                        (MbsPopTreeTraverseFunc) _update_pop_unit,
+                        &data);
   /* adjust hatch scores */
   min_score = MIN(MBS_PRIORITY_SCORE(colony->hatch_priority_queen),
                   MBS_PRIORITY_SCORE(colony->hatch_priority_worker));
