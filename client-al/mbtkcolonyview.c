@@ -61,9 +61,6 @@ static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
 
 
 
-static void forall ( AltkWidget *widget,
-                     AltkForeachFunc func,
-                     gpointer data );
 static void size_request ( AltkWidget *widget,
                            AltkRequisition *req );
 static void size_allocate ( AltkWidget *widget,
@@ -77,7 +74,6 @@ static void expose_event ( AltkWidget *widget,
  */
 static void mbtk_colony_view_class_init ( LObjectClass *cls )
 {
-  ALTK_WIDGET_CLASS(cls)->forall = forall;
   ALTK_WIDGET_CLASS(cls)->size_request = size_request;
   ALTK_WIDGET_CLASS(cls)->size_allocate = size_allocate;
   ALTK_WIDGET_CLASS(cls)->expose_event = expose_event;
@@ -104,25 +100,6 @@ AltkWidget *mbtk_colony_view_new ( void )
   AltkWidget *view;
   view = ALTK_WIDGET(l_object_new(MBTK_CLASS_COLONY_VIEW, NULL));
   return view;
-}
-
-
-
-/* forall:
- */
-static void forall ( AltkWidget *widget,
-                     AltkForeachFunc func,
-                     gpointer data )
-{
-  Private *priv = PRIVATE(widget);
-  gint tp;
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
-    {
-      Room *room = &priv->rooms[tp];
-      if (room->task_view)
-        if (func(room->task_view, data) == ALTK_FOREACH_STOP)
-          return;
-    }
 }
 
 
