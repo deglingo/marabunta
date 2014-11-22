@@ -217,12 +217,21 @@ void mbtk_pop_table_set_colony ( MbtkPopTable *table,
                                  MbObject *colony )
 {
   Private *priv = PRIVATE(table);
-  ASSERT(MB_IS_COLONY(colony));
-  ASSERT(!priv->colony); /* [todo] */
-  priv->colony = l_object_ref(colony);
-  l_signal_connect(L_OBJECT(colony),
-                   "pop_notify",
-                   (LSignalHandler) _on_pop_notify,
-                   table,
-                   NULL);
+  if (colony == priv->colony)
+    return;
+  if (priv->colony)
+    {
+      CL_DEBUG("[TODO] set_colony");
+      return;
+    }
+  if (colony)
+    {
+      ASSERT(MB_IS_COLONY(colony));
+      priv->colony = l_object_ref(colony);
+      l_signal_connect(L_OBJECT(colony),
+                       "pop_notify",
+                       (LSignalHandler) _on_pop_notify,
+                       table,
+                       NULL);
+    }
 }

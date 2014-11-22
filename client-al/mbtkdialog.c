@@ -205,24 +205,30 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
   Private *priv = PRIVATE(dialog);
   if (sector == priv->sector)
     return;
-  ASSERT(!priv->sector); /* [todo] */
-  priv->sector = l_object_ref(sector);
-  if (MB_SECTOR_COLONY(sector))
+  if (priv->sector)
     {
-      mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
-                                MB_SECTOR_COLONY(sector));
-      mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
-                                  sector);
-      mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
-                                 MB_SECTOR_COLONY(sector));
+      L_OBJECT_CLEAR(priv->sector);
     }
-  else
+  if (sector)
     {
-      mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
-                                NULL);
-      mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
-                                  NULL);
-      mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
-                                 NULL);
+      priv->sector = l_object_ref(sector);
+      if (MB_SECTOR_COLONY(sector))
+        {
+          mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                                    MB_SECTOR_COLONY(sector));
+          mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
+                                      sector);
+          mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
+                                     MB_SECTOR_COLONY(sector));
+        }
+      else
+        {
+          mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                                    NULL);
+          mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
+                                      NULL);
+          mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
+                                     NULL);
+        }
     }
 }

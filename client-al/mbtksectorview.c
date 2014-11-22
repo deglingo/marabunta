@@ -144,32 +144,41 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
 {
   Private *priv = PRIVATE(view);
   gint tp;
-  ASSERT(MB_IS_SECTOR(sector));
-  ASSERT(!priv->sector); /* [todo] */
-  priv->sector = l_object_ref(sector);
-  if (MB_SECTOR_COLONY(sector))
+  if (sector == priv->sector)
+    return;
+  if (priv->sector)
     {
-      MbObject *colony = MB_SECTOR_COLONY(sector);
-      for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+      CL_DEBUG("[TODO] set_sector");
+      return;
+    }
+  if (sector)
+    {
+      ASSERT(MB_IS_SECTOR(sector));
+      priv->sector = l_object_ref(sector);
+      if (MB_SECTOR_COLONY(sector))
         {
-          MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
-          Room *room;
-          const RoomInfo *info;
-          if (!mb_room)
-            continue;
-          room = &priv->rooms[tp];
-          info = &ROOM_INFO[tp];
-          room->room = l_object_ref(mb_room);
-          if (info->task_path)
+          MbObject *colony = MB_SECTOR_COLONY(sector);
+          for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
             {
-              room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
-                                        info->task_path);
-              ASSERT(room->task);
-              l_object_ref(room->task);
-              room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
-              _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
-              mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
-              altk_widget_show_all(room->task_view);
+              MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
+              Room *room;
+              const RoomInfo *info;
+              if (!mb_room)
+                continue;
+              room = &priv->rooms[tp];
+              info = &ROOM_INFO[tp];
+              room->room = l_object_ref(mb_room);
+              if (info->task_path)
+                {
+                  room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                                            info->task_path);
+                  ASSERT(room->task);
+                  l_object_ref(room->task);
+                  room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
+                  _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+                  mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
+                  altk_widget_show_all(room->task_view);
+                }
             }
         }
     }

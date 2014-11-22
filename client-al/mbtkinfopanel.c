@@ -250,10 +250,19 @@ void mbtk_info_panel_set_colony ( MbtkInfoPanel *panel,
 {
   Private *priv = PRIVATE(panel);
   GList *l;
-  ASSERT(!priv->colony); /* [todo] */
-  priv->colony = l_object_ref(colony);
-  l_trash_push();
-  for (l = priv->pages; l; l = l->next)
-    ((Page *) l->data)->init(l->data);
-  l_trash_pop();
+  if (colony == priv->colony)
+    return;
+  if (priv->colony)
+    {
+      CL_DEBUG("[TODO] set_colony");
+      return;
+    }
+  if (colony)
+    {
+      priv->colony = l_object_ref(colony);
+      l_trash_push();
+      for (l = priv->pages; l; l = l->next)
+        ((Page *) l->data)->init(l->data);
+      l_trash_pop();
+    }
 }
