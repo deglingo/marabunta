@@ -5,7 +5,7 @@
 #include "client-al/mbtkdialog.h"
 #include "client-al/mbtkmapview.h"
 #include "client-al/mbtkpoptable.h"
-#include "client-al/mbtkcolonyview.h"
+#include "client-al/mbtksectorview.h"
 #include "client-al/mbtkinfopanel.h"
 #include "client-al/mbtkdialog.inl"
 
@@ -20,7 +20,7 @@ typedef struct _Private
   AltkWidget *frame_count_label;
   AltkWidget *map_view;
   AltkWidget *pop_table;
-  AltkWidget *colony_view;
+  AltkWidget *sector_view;
   AltkWidget *info_panel;
 }
   Private;
@@ -103,9 +103,9 @@ static AltkWidget *_create_body ( AltkWidget *dlg )
   frame = L_TRASH_OBJECT
     (altk_frame_new(""));
   ALTK_BOX_ADD(box, frame, ALTK_PACK_EXPAND_FILL);
-  priv->colony_view = L_TRASH_OBJECT
-    (mbtk_colony_view_new());
-  ALTK_CONTAINER_ADD(frame, priv->colony_view);
+  priv->sector_view = L_TRASH_OBJECT
+    (mbtk_sector_view_new());
+  ALTK_CONTAINER_ADD(frame, priv->sector_view);
   return box;
 }
 
@@ -200,8 +200,8 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
     {
       mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
                                 MB_SECTOR_COLONY(sector));
-      mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
-                                  MB_SECTOR_COLONY(sector));
+      mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
+                                  sector);
       mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
                                  MB_SECTOR_COLONY(sector));
     }
@@ -209,7 +209,7 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
     {
       mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
                                 NULL);
-      mbtk_colony_view_set_colony(MBTK_COLONY_VIEW(priv->colony_view),
+      mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
                                   NULL);
       mbtk_info_panel_set_colony(MBTK_INFO_PANEL(priv->info_panel),
                                  NULL);

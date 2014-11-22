@@ -1,10 +1,10 @@
-/* mbtkcolonyview.c -
+/* mbtksectorview.c -
  */
 
 #include "client-al/alprivate.h"
-#include "client-al/mbtkcolonyview.h"
+#include "client-al/mbtksectorview.h"
 #include "client-al/mbtktaskview.h"
-#include "client-al/mbtkcolonyview.inl"
+#include "client-al/mbtksectorview.inl"
 
 
 
@@ -43,12 +43,12 @@ typedef struct _Room
  */
 typedef struct _Private
 {
-  MbObject *colony;
+  MbObject *sector;
   Room rooms[MB_ROOM_TYPE_COUNT];
 }
   Private;
 
-#define PRIVATE(view) ((Private *)(MBTK_COLONY_VIEW(view)->private))
+#define PRIVATE(view) ((Private *)(MBTK_SECTOR_VIEW(view)->private))
 
 
 
@@ -70,9 +70,9 @@ static void expose_event ( AltkWidget *widget,
 
 
 
-/* mbtk_colony_view_class_init:
+/* mbtk_sector_view_class_init:
  */
-static void mbtk_colony_view_class_init ( LObjectClass *cls )
+static void mbtk_sector_view_class_init ( LObjectClass *cls )
 {
   ALTK_WIDGET_CLASS(cls)->size_request = size_request;
   ALTK_WIDGET_CLASS(cls)->size_allocate = size_allocate;
@@ -81,11 +81,11 @@ static void mbtk_colony_view_class_init ( LObjectClass *cls )
 
 
 
-/* mbtk_colony_view_init:
+/* mbtk_sector_view_init:
  */
-static void mbtk_colony_view_init ( LObject *obj )
+static void mbtk_sector_view_init ( LObject *obj )
 {
-  MBTK_COLONY_VIEW(obj)->private = g_new0(Private, 1);
+  MBTK_SECTOR_VIEW(obj)->private = g_new0(Private, 1);
   ALTK_WIDGET(obj)->flags |= ALTK_WIDGET_FLAG_NOWINDOW;
   altk_widget_set_event_mask(ALTK_WIDGET(obj),
                              ALTK_EVENT_MASK_EXPOSE);
@@ -93,12 +93,12 @@ static void mbtk_colony_view_init ( LObject *obj )
 
 
 
-/* mbtk_colony_view_new:
+/* mbtk_sector_view_new:
  */
-AltkWidget *mbtk_colony_view_new ( void )
+AltkWidget *mbtk_sector_view_new ( void )
 {
   AltkWidget *view;
-  view = ALTK_WIDGET(l_object_new(MBTK_CLASS_COLONY_VIEW, NULL));
+  view = ALTK_WIDGET(l_object_new(MBTK_CLASS_SECTOR_VIEW, NULL));
   return view;
 }
 
@@ -106,7 +106,7 @@ AltkWidget *mbtk_colony_view_new ( void )
 
 /* _rooms_layout:
  */
-static void _rooms_layout ( MbtkColonyView *view )
+static void _rooms_layout ( MbtkSectorView *view )
 {
   Private *priv = PRIVATE(view);
   gint tp;
@@ -137,36 +137,40 @@ static void _rooms_layout ( MbtkColonyView *view )
 
 
 
-/* mbtk_colony_view_set_colony:
+/* mbtk_sector_view_set_sector:
  */
-void mbtk_colony_view_set_colony ( MbtkColonyView *view,
-                                   MbObject *colony )
+void mbtk_sector_view_set_sector ( MbtkSectorView *view,
+                                   MbObject *sector )
 {
   Private *priv = PRIVATE(view);
   gint tp;
-  ASSERT(MB_IS_COLONY(colony));
-  ASSERT(!priv->colony); /* [todo] */
-  priv->colony = l_object_ref(colony);
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  ASSERT(MB_IS_SECTOR(sector));
+  ASSERT(!priv->sector); /* [todo] */
+  priv->sector = l_object_ref(sector);
+  if (MB_SECTOR_COLONY(sector))
     {
-      MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
-      Room *room;
-      const RoomInfo *info;
-      if (!mb_room)
-        continue;
-      room = &priv->rooms[tp];
-      info = &ROOM_INFO[tp];
-      room->room = l_object_ref(mb_room);
-      if (info->task_path)
+      MbObject *colony = MB_SECTOR_COLONY(sector);
+      for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
         {
-          room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
-                                    info->task_path);
-          ASSERT(room->task);
-          l_object_ref(room->task);
-          room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
-          _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
-          mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
-          altk_widget_show_all(room->task_view);
+          MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
+          Room *room;
+          const RoomInfo *info;
+          if (!mb_room)
+            continue;
+          room = &priv->rooms[tp];
+          info = &ROOM_INFO[tp];
+          room->room = l_object_ref(mb_room);
+          if (info->task_path)
+            {
+              room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                                        info->task_path);
+              ASSERT(room->task);
+              l_object_ref(room->task);
+              room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
+              _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+              mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
+              altk_widget_show_all(room->task_view);
+            }
         }
     }
   _rooms_layout(view);
@@ -201,7 +205,7 @@ static void size_allocate ( AltkWidget *widget,
   Private *priv = PRIVATE(widget);
   gint tp;
   ALTK_WIDGET_CLASS(parent_class)->size_allocate(widget, alloc);
-  _rooms_layout(MBTK_COLONY_VIEW(widget));
+  _rooms_layout(MBTK_SECTOR_VIEW(widget));
   for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
     {
       Room *room = &priv->rooms[tp];

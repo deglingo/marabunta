@@ -38,7 +38,7 @@ namespace Mbtk
     void init ();
   };
 
-  class ColonyView : Altk::Widget
+  class SectorView : Altk::Widget
   {
     void class_init ();
     void init ();
