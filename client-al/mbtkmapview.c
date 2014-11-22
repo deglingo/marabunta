@@ -150,3 +150,12 @@ void mbtk_map_view_set_sector ( MbtkMapView *view,
   priv->current_sector = l_object_ref(sector);
   l_signal_emit(L_OBJECT(view), signals[SIG_SET_SECTOR], 0);
 }
+
+
+
+/* mbtk_map_view_get_sector:
+ */
+MbObject *mbtk_map_view_get_sector ( MbtkMapView *view )
+{
+  return PRIVATE(view)->current_sector;
+}

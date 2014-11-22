@@ -36,6 +36,7 @@ void mbtk_map_view_set_world ( MbtkMapView *view,
                                MbObject *world );
 void mbtk_map_view_set_sector ( MbtkMapView *view,
                                 MbObject *sector );
+MbObject *mbtk_map_view_get_sector ( MbtkMapView *view );
 
 
 

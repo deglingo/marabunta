@@ -56,6 +56,15 @@ static AltkWidget *_create_header ( AltkWidget *dlg )
 
 
 
+static void _on_set_sector ( AltkWidget *map_view,
+                             AltkWidget *dlg )
+{
+  mbtk_dialog_set_sector(MBTK_DIALOG(dlg),
+                         mbtk_map_view_get_sector(MBTK_MAP_VIEW(map_view)));
+}
+
+
+
 /* _create_side_panel:
  */
 static AltkWidget *_create_side_panel ( AltkWidget *dlg )
@@ -72,6 +81,11 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
   ALTK_BOX_ADD(box,
                priv->map_view,
                ALTK_PACK_ANCHOR_LEFT);
+  l_signal_connect(L_OBJECT(priv->map_view),
+                   "set_sector",
+                   (LSignalHandler) _on_set_sector,
+                   dlg,
+                   NULL);
   /* pop table */
   priv->pop_table = L_TRASH_OBJECT(mbtk_pop_table_new());
   ALTK_BOX_ADD(box,
@@ -178,7 +192,7 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
                    NULL);
   mbtk_map_view_set_world(MBTK_MAP_VIEW(priv->map_view),
                           MB_GAME_WORLD(game));
-  mbtk_dialog_set_sector(dialog, 0, 0);
+  mbtk_dialog_set_sector(dialog, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0));
 }
 
 
@@ -186,15 +200,12 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
 /* mbtk_dialog_set_sector:
  */
 void mbtk_dialog_set_sector ( MbtkDialog *dialog,
-                              guint x,
-                              guint y )
+                              MbObject *sector )
 {
   Private *priv = PRIVATE(dialog);
-  MbObject *sector;
-  ASSERT(x < MB_WORLD_WIDTH(MB_GAME_WORLD(priv->game)));
-  ASSERT(y < MB_WORLD_HEIGHT(MB_GAME_WORLD(priv->game)));
+  if (sector == priv->sector)
+    return;
   ASSERT(!priv->sector); /* [todo] */
-  sector = MB_WORLD_SECTOR(MB_GAME_WORLD(priv->game), x, y);
   priv->sector = l_object_ref(sector);
   if (MB_SECTOR_COLONY(sector))
     {
