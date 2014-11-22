@@ -3,7 +3,6 @@
 
 #include "client/cliprivate.h"
 #include "client/mbcapp.h"
-#include "client/mbcgame.h"
 #include "client/mbcapp.inl"
 
 #include <sys/resource.h>
@@ -54,21 +53,21 @@ static void mbc_app_init ( LObject *object )
 
 
 
-static void _player_handler ( MbPlayer *player,
-                              MbState *state,
-                              gpointer app )
-{
-  mbc_game_update_state(MBC_GAME(MBC_APP(app)->game_proxy), state);
-}
+/* static void _player_handler ( MbPlayer *player, */
+/*                               MbState *state, */
+/*                               gpointer app ) */
+/* { */
+/*   mbc_game_update_state(MBC_GAME(MBC_APP(app)->game_proxy), state); */
+/* } */
 
 
 
-static void _solo_state_handler ( MbState *state,
-                                  gpointer data )
-{
-  MbcApp *app = data;
-  mbs_game_handle_request(MBS_GAME(app->game), app->player, state);
-}
+/* static void _solo_state_handler ( MbState *state, */
+/*                                   gpointer data ) */
+/* { */
+/*   MbcApp *app = data; */
+/*   mbs_game_handle_request(MBS_GAME(app->game), app->player, state); */
+/* } */
 
 
 
@@ -77,10 +76,10 @@ static void _solo_state_handler ( MbState *state,
 void mbc_app_setup_solo_game ( MbcApp *app )
 {
   /* setup the proxy */
-  app->game_proxy = mbc_game_new(_solo_state_handler, app, NULL);
+  /* app->game_proxy = mbc_game_new(_solo_state_handler, app, NULL); */
   /* setup the real game */  
   app->game = mbs_game_new();
-  app->player = mbs_player_new(app->game, "Player1", _player_handler, app, NULL);
+  app->player = mbs_player_new(app->game, "Player1", NULL /* _player_handler */, app, NULL);
   mb_game_add_player(MB_GAME(app->game), app->player);
   mbs_game_setup(MBS_GAME(app->game));
 }

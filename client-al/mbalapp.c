@@ -52,7 +52,7 @@ static gint run ( MbApp *app )
   altk_display_open(MBAL_APP(app)->display);
   /* setup and start the game */
   mbc_app_setup_solo_game(MBC_APP(app));
-  l_signal_connect(L_OBJECT(MBC_APP(app)->game_proxy),
+  l_signal_connect(L_OBJECT(MBC_APP(app)->game),
                    "started",
                    (LSignalHandler) _on_game_started,
                    app,

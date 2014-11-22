@@ -15,6 +15,7 @@
  */
 enum
   {
+    SIG_POP_NOTIFY,
     SIG_STOCK_NOTIFY,
     SIG_COUNT,
   };
@@ -45,6 +46,10 @@ static void stock_node_free ( StockNode *node )
  */
 static void mb_colony_class_init ( LObjectClass *cls )
 {
+  signals[SIG_POP_NOTIFY] =
+    l_signal_new(cls,
+                 "pop_notify");
+
   signals[SIG_STOCK_NOTIFY] =
     l_signal_new(cls,
                  "stock_notify");
@@ -101,6 +106,15 @@ void mb_colony_add_room ( MbColony *colony,
   ASSERT(!colony->rooms[MB_ROOM_TYPE(room)]);
   colony->rooms[MB_ROOM_TYPE(room)] = l_object_ref(room);
   MB_ROOM(room)->colony = MB_OBJECT(colony);
+}
+
+
+
+/* mb_colony_pop_notify:
+ */
+void mb_colony_pop_notify ( MbColony *colony )
+{
+  l_signal_emit(L_OBJECT(colony), signals[SIG_POP_NOTIFY], 0);
 }
 
 

@@ -35,7 +35,7 @@ struct _Node
  */
 struct _MbsPopTree
 {
-  gint64 pop[MB_POP_TYPE_COUNT];
+  gint64 *pop;
   Node *root;
 };
 
@@ -121,11 +121,12 @@ static TrashItem *free_unit = NULL;
 
 /* mbs_pop_tree_new:
  */
-MbsPopTree *mbs_pop_tree_new ( void )
+MbsPopTree *mbs_pop_tree_new ( gint64 *pop )
 {
   MbsPopTree *tree;
   tree = g_slice_alloc0(sizeof(MbsPopTree));
   tree->root = node_new();
+  tree->pop = pop;
   return tree;
 }
 

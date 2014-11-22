@@ -66,8 +66,8 @@ MbObject *mbs_colony_new ( MbObject *game )
   MbsTaskFuncs t_mine2_funcs = { NULL, };
   MbObject *room;
   /* create the pop trees */
-  MBS_COLONY(col)->pop_tree = mbs_pop_tree_new();
-  MBS_COLONY(col)->adj_tree = mbs_pop_tree_new();
+  MBS_COLONY(col)->pop_tree = mbs_pop_tree_new(MB_COLONY(col)->pop);
+  MBS_COLONY(col)->adj_tree = mbs_pop_tree_new(MBS_COLONY(col)->adj_pop);
   /* hatch priorities */
   MBS_COLONY(col)->hatch_priority_queen =
     mbs_priority_new(game, 1);
@@ -348,6 +348,7 @@ void mbs_colony_update ( MbsColony *colony )
   MBS_PRIORITY(colony->hatch_priority_soldier)->score.score -= min_score;
   /* [FIXME] post update */
   mbs_pop_tree_update(colony->pop_tree, colony->adj_tree);
+  mb_colony_pop_notify(MB_COLONY(colony));
   /* process all tasks */
   mbs_task_process(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
   /* [FIXME] debug only */

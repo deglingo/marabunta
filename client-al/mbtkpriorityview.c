@@ -55,8 +55,9 @@ static void _on_inc_clicked ( AltkWidget *button,
 {
   Private *priv = PRIVATE(view);
   if (priv->priority)
-    mbc_priority_request_set_value(MBC_PRIORITY(priv->priority),
-                                   MB_PRIORITY_VALUE(priv->priority) + 1);
+    /* [FIXME] request */
+    mb_priority_set_value(MB_PRIORITY(priv->priority),
+                          MB_PRIORITY_VALUE(priv->priority) + 1);
 }
 
 
@@ -66,8 +67,8 @@ static void _on_dec_clicked ( AltkWidget *button,
 {
   Private *priv = PRIVATE(view);
   if (priv->priority)
-    mbc_priority_request_set_value(MBC_PRIORITY(priv->priority),
-                                   MB_PRIORITY_VALUE(priv->priority) - 1);
+    mb_priority_set_value(MB_PRIORITY(priv->priority),
+                          MB_PRIORITY_VALUE(priv->priority) - 1);
 }
 
 

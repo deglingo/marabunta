@@ -152,7 +152,7 @@ AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
 
 /* _on_frame_count_notify:
  */
-static void _on_frame_count_notify ( MbcGame *game,
+static void _on_frame_count_notify ( MbGame *game,
                                      AltkWidget *dialog )
 {
   gchar text[32];
@@ -168,7 +168,7 @@ void mbtk_dialog_setup ( MbtkDialog *dialog,
                          MbObject *game )
 {
   Private *priv = PRIVATE(dialog);
-  ASSERT(MBC_IS_GAME(game));
+  ASSERT(MB_IS_GAME(game));
   ASSERT(!priv->game); /* [todo] reset */
   priv->game = l_object_ref(game);
   l_signal_connect(L_OBJECT(game),

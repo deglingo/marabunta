@@ -48,7 +48,7 @@ struct _MbsPopUnit
 
 
 
-MbsPopTree *mbs_pop_tree_new ( void );
+MbsPopTree *mbs_pop_tree_new ( gint64 *pop );
 void mbs_pop_tree_check ( MbsPopTree *tree );
 void mbs_pop_tree_clear ( MbsPopTree *tree );
 void mbs_pop_tree_add ( MbsPopTree *tree,

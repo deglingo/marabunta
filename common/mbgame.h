@@ -42,6 +42,7 @@ struct _MbGameClass
 #define MB_GAME_WORLD(g) (MB_GAME(g)->world)
 #define MB_GAME_FRAME_COUNT(g) (MB_GAME(g)->frame_count)
 
+void mb_game_started ( MbGame *game );
 void mb_game_register_object ( MbGame *game,
                                MbObject *object );
 MbObject *mb_game_lookup_object ( MbGame *game,

@@ -5,6 +5,7 @@
 #define _MBCOLONY_H_
 
 #include "common/mbobject.h"
+#include "common/mbpoptype.h"
 #include "common/mbcolony-def.h"
 
 G_BEGIN_DECLS
@@ -31,6 +32,8 @@ struct _MbColony
   MbObject *sector;
   /* owner player */
   MbObject *owner;
+  /* population count */
+  gint64 pop[MB_POP_TYPE_COUNT];
   /* top task group */
   MbObject *top_task;
   /* rooms */
@@ -75,6 +78,7 @@ gboolean mb_colony_stock_iter_next ( MbColonyStockIter *iter,
                                      MbObject **resource,
                                      gint64 *qtty );
 gint mb_colony_stock_size ( MbColony *colony );
+void mb_colony_pop_notify ( MbColony *colony );
 
 
 

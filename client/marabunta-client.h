@@ -10,12 +10,6 @@
 
 #include "client/mbcapp.h"
 
-#include "client/mbcgame.h"
-
-#include "client/mbccolony.h"
-
-#include "client/mbcpriority.h"
-
 
 
 #endif

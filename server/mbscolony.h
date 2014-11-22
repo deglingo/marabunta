@@ -20,6 +20,7 @@ struct _MbsColony
 
   MbsPopTree *pop_tree;
   MbsPopTree *adj_tree;
+  gint64 adj_pop[MB_POP_TYPE_COUNT];
   /* hatch selection */
   MbObject *hatch_priority_queen;
   MbObject *hatch_priority_worker;

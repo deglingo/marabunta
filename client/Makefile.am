@@ -8,39 +8,12 @@ libmarabunta_client_la_CFLAGS = @GLIB_CFLAGS@ @CLOG_CFLAGS@
 
 libmarabunta_client_la_SOURCES = \
 	mbcbase.c \
-	mbcapp.c \
-	mbcgame.c \
-	mbcplayer.c \
-	mbcresource.c \
-	mbcworld.c \
-	mbcsector.c \
-	mbccolony.c \
-	mbcpriority.c \
-	mbctask.c \
-	mbcroom.c
+	mbcapp.c
 
 BUILT_SOURCES = \
-	mbcapp-def.h mbcapp.inl \
-	mbcgame-def.h mbcgame.inl \
-	mbcplayer-def.h mbcplayer.inl \
-	mbcresource-def.h mbcresource.inl \
-	mbcworld-def.h mbcworld.inl \
-	mbcsector-def.h mbcsector.inl \
-	mbccolony-def.h mbccolony.inl \
-	mbcpriority-def.h mbcpriority.inl \
-	mbctask-def.h mbctask.inl \
-	mbcroom-def.h mbcroom.inl
+	mbcapp-def.h mbcapp.inl
 
 mbcapp-def.h mbcapp.inl \
-mbcgame-def.h mbcgame.inl \
-mbcplayer-def.h mbcplayer.inl \
-mbcresource-def.h mbcresource.inl \
-mbcworld-def.h mbcworld.inl \
-mbcsector-def.h mbcsector.inl \
-mbccolony-def.h mbccolony.inl \
-mbcpriority-def.h mbcpriority.inl \
-mbctask-def.h mbctask.inl \
-mbcroom-def.h mbcroom.inl \
 : mbctypes.stamp-h
 
 mbctypes.stamp-h: mbctypes.in

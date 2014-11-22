@@ -24,6 +24,18 @@ static LParamSpec *pspecs[N_PROPS];
 
 
 
+/* Signals:
+ */
+enum
+  {
+    SIG_STARTED,
+    SIG_COUNT,
+  };
+
+static LSignalHandler signals[SIG_COUNT];
+
+
+
 static void add_player ( MbGame *game,
                          MbObject *player );
 
@@ -44,6 +56,10 @@ static void mb_game_class_init ( LObjectClass *cls )
                      0);
 
   l_object_class_install_properties(cls, N_PROPS, pspecs);
+
+  signals[SIG_STARTED] =
+    l_signal_new(cls,
+                 "started");
 }
 
 
@@ -62,6 +78,17 @@ static void mb_game_init ( LObject *obj )
                           g_str_equal,
                           NULL,
                           (GDestroyNotify) l_object_unref);
+}
+
+
+
+/* mb_game_started:
+ */
+void mb_game_started ( MbGame *game )
+{
+  l_signal_emit(L_OBJECT(game),
+                signals[SIG_STARTED],
+                0);
 }
 
 
