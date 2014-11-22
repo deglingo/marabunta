@@ -43,6 +43,8 @@
 
 #include "common/mbroom.h"
 
+#include "common/mbvein.h"
+
 #include "common/mbresource.h"
 
 

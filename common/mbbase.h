@@ -17,6 +17,7 @@ typedef guint MbObjectID;
 typedef enum _MbResourceFlags
   {
     MB_RESOURCE_FOOD = 1 << 0,
+    MB_RESOURCE_MINERAL = 1 << 1,
   }
   MbResourceFlags;
 

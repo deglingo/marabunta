@@ -10,6 +10,7 @@
 #include "server/mbscolony.h"
 #include "server/mbspriority.h"
 #include "server/mbstask.h"
+#include "server/mbsvein.h"
 #include "server/mbsgame.inl"
 
 
@@ -105,6 +106,22 @@ static void _register_resource ( MbsGame *game,
 
 
 
+static void _add_vein ( MbsGame *game,
+                        MbObject *sector,
+                        const gchar *name,
+                        gint depth,
+                        gint64 qtty )
+{
+  MbObject *resource, *vein;
+  resource = mb_game_lookup_resource(MB_GAME(game), name);
+  ASSERT(resource);
+  vein = mbs_vein_new(MB_OBJECT(game), resource, depth, qtty);
+  mb_sector_add_vein(MB_SECTOR(sector), vein);
+  l_object_unref(vein);
+}
+
+
+
 /* mbs_game_setup:
  */
 void mbs_game_setup ( MbsGame *game )
@@ -121,10 +138,16 @@ void mbs_game_setup ( MbsGame *game )
           mb_world_add_sector(MB_WORLD(world), sector, x, y);
         }
     }
-  /* resources */
-  {
-    _register_resource(game, "food", MB_RESOURCE_FOOD);
-  }
+  /* standard resources */
+  _register_resource(game, "food", MB_RESOURCE_FOOD);
+  /* mineral resources (should be random) */
+  _register_resource(game, "mr1", MB_RESOURCE_MINERAL);
+  _register_resource(game, "mr2", MB_RESOURCE_MINERAL);
+  _register_resource(game, "mr3", MB_RESOURCE_MINERAL);
+  /* create the veins */
+  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr1", 0, 1000000);
+  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr2", 0, 1000000);
+  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr3", 0, 1000000);
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

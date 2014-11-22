@@ -11,6 +11,7 @@ namespace Mb
   extern class Colony;
   extern class Priority;
   extern class Room;
+  extern class Vein;
 }
 
 namespace Mbs
@@ -51,6 +52,10 @@ namespace Mbs
   };
 
   class Room : Mb::Room
+  {
+  };
+
+  class Vein : Mb::Vein
   {
   };
 }

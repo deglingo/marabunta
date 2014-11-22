@@ -16,7 +16,8 @@ libmarabunta_server_la_SOURCES = \
 	mbstask.c \
 	mbspoptree.c \
 	mbspriority.c \
-	mbsroom.c
+	mbsroom.c \
+	mbsvein.c
 
 BUILT_SOURCES = \
 	mbsgame-def.h mbsgame.inl \
@@ -27,7 +28,8 @@ BUILT_SOURCES = \
 	mbstask-def.h mbstask.inl \
 	mbscolony-def.h mbscolony.inl \
 	mbspriority-def.h mbspriority.inl \
-	mbsroom-def.h mbsroom.inl
+	mbsroom-def.h mbsroom.inl \
+	mbsvein-def.h mbsvein.inl
 
 mbsgame-def.h mbsgame.inl \
 mbsplayer-def.h mbsplayer.inl \
@@ -38,6 +40,7 @@ mbstask-def.h mbstask.inl \
 mbscolony-def.h mbscolony.inl \
 mbspriority-def.h mbspriority.inl \
 mbsroom-def.h mbsroom.inl \
+mbsvein-def.h mbsvein.inl \
 : mbstypes.stamp-h
 
 mbstypes.stamp-h: mbstypes.in

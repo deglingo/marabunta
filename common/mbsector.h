@@ -23,6 +23,8 @@ struct _MbSector
   guint y;
   /* colony */
   MbObject *colony;
+  /* veins */
+  GList *veins;
 };
 
 
@@ -42,6 +44,8 @@ struct _MbSectorClass
 
 void mb_sector_set_colony ( MbSector *sector,
                             MbObject *colony );
+void mb_sector_add_vein ( MbSector *sector,
+                          MbObject *vein );
 
 
 

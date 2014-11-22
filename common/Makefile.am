@@ -21,6 +21,7 @@ libmarabunta_common_la_SOURCES = \
 	mbstate.c \
 	mbpriority.c \
 	mbroom.c \
+	mbvein.c \
 	mbmessagewriter.c \
 	mbmessagereader.c \
 	mbwatch.c \
@@ -39,7 +40,8 @@ BUILT_SOURCES = \
 	mbmessage-def.h mbmessage.inl
 	mbstate-def.h mbstate.inl \
 	mbpriority-def.h mbpriority.inl \
-	mbroom-def.h mbroom.inl
+	mbroom-def.h mbroom.inl \
+	mbvein-def.h mbvein.inl
 
 mbapp-def.h mbapp.inl \
 mbobject-def.h mbobject.inl \
@@ -54,6 +56,7 @@ mbmessage-def.h mbmessage.inl \
 mbstate-def.h mbstate.inl \
 mbpriority-def.h mbpriority.inl \
 mbroom-def.h mbroom.inl \
+mbvein-def.h mbvein.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in

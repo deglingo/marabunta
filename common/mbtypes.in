@@ -59,6 +59,11 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class Vein : Object
+  {
+    void class_init ();
+  };
   
   class Message
   {
