@@ -34,6 +34,7 @@ typedef struct _Total
 typedef struct _Private
 {
   MbObject *colony;
+  LSignalHandlerGroup *sig_group;
   AltkWidget *table;
   Value values[MB_POP_TYPE_COUNT];
   GList *totals;
@@ -171,6 +172,7 @@ static void _create ( AltkWidget *table )
 static void mbtk_pop_table_init ( LObject *obj )
 {
   MBTK_POP_TABLE(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->sig_group = l_signal_handler_group_new();
   l_trash_push();
   _create(ALTK_WIDGET(obj));
   l_trash_pop();
@@ -221,17 +223,28 @@ void mbtk_pop_table_set_colony ( MbtkPopTable *table,
     return;
   if (priv->colony)
     {
-      CL_DEBUG("[TODO] set_colony");
-      return;
+      l_signal_handler_group_remove_all(priv->sig_group);
+      L_OBJECT_CLEAR(priv->colony);
     }
   if (colony)
     {
       ASSERT(MB_IS_COLONY(colony));
       priv->colony = l_object_ref(colony);
-      l_signal_connect(L_OBJECT(colony),
-                       "pop_notify",
-                       (LSignalHandler) _on_pop_notify,
-                       table,
-                       NULL);
+      l_signal_handler_group_connect
+        (priv->sig_group,
+         L_OBJECT(colony),
+         "pop_notify",
+         (LSignalHandler) _on_pop_notify,
+         table,
+         NULL);
+    }
+  else
+    {
+      gint tp;
+      GList *l;
+      for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+        altk_label_set_text(ALTK_LABEL(priv->values[tp].label), "-");
+      for (l = priv->totals; l; l = l->next)
+        altk_label_set_text(ALTK_LABEL(((Total *) l->data)->label), "-");
     }
 }
