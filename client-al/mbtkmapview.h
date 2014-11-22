@@ -34,6 +34,8 @@ struct _MbtkMapViewClass
 AltkWidget *mbtk_map_view_new ( void );
 void mbtk_map_view_set_world ( MbtkMapView *view,
                                MbObject *world );
+void mbtk_map_view_set_sector ( MbtkMapView *view,
+                                MbObject *sector );
 
 
 
