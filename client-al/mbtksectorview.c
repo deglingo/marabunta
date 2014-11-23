@@ -67,6 +67,8 @@ static void size_allocate ( AltkWidget *widget,
                             AltkAllocation *alloc );
 static void expose_event ( AltkWidget *widget,
                            AltkEvent *event );
+static void _remove ( AltkContainer *cont,
+                      AltkWidget *child );
 
 
 
@@ -77,6 +79,7 @@ static void mbtk_sector_view_class_init ( LObjectClass *cls )
   ALTK_WIDGET_CLASS(cls)->size_request = size_request;
   ALTK_WIDGET_CLASS(cls)->size_allocate = size_allocate;
   ALTK_WIDGET_CLASS(cls)->expose_event = expose_event;
+  ALTK_CONTAINER_CLASS(cls)->remove = _remove;
 }
 
 
@@ -100,6 +103,17 @@ AltkWidget *mbtk_sector_view_new ( void )
   AltkWidget *view;
   view = ALTK_WIDGET(l_object_new(MBTK_CLASS_SECTOR_VIEW, NULL));
   return view;
+}
+
+
+
+/* _remove:
+ */
+static void _remove ( AltkContainer *cont,
+                      AltkWidget *child )
+{
+  /* [FIXME] the ref is dropped by _unset_sector() */
+  _altk_widget_unset_parent(child);
 }
 
 
@@ -137,6 +151,30 @@ static void _rooms_layout ( MbtkSectorView *view )
 
 
 
+/* _unset_sector:
+ */
+static void _unset_sector ( MbtkSectorView *view )
+{
+  Private *priv = PRIVATE(view);
+  gint tp;
+  /* cleanup rooms */
+  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+    {
+      Room *room = &priv->rooms[tp];
+      if (room->room)
+        L_OBJECT_CLEAR(room->room);
+      if (room->task)
+        L_OBJECT_CLEAR(room->task);
+      if (room->task_view) {
+        altk_widget_destroy(room->task_view);
+        L_OBJECT_CLEAR(room->task_view);
+      }
+    }
+  L_OBJECT_CLEAR(priv->sector);
+}
+
+
+
 /* mbtk_sector_view_set_sector:
  */
 void mbtk_sector_view_set_sector ( MbtkSectorView *view,
@@ -148,16 +186,17 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
     return;
   if (priv->sector)
     {
-      CL_DEBUG("[TODO] set_sector");
-      return;
+      _unset_sector(view);
     }
   if (sector)
     {
       ASSERT(MB_IS_SECTOR(sector));
+      /* CL_DEBUG("set_sector: %p", sector); */
       priv->sector = l_object_ref(sector);
       if (MB_SECTOR_COLONY(sector))
         {
           MbObject *colony = MB_SECTOR_COLONY(sector);
+          /* CL_DEBUG("set_colony: %p", colony); */
           for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
             {
               MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
@@ -165,6 +204,7 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
               const RoomInfo *info;
               if (!mb_room)
                 continue;
+              /* CL_DEBUG("set room %d: %p", tp, mb_room); */
               room = &priv->rooms[tp];
               info = &ROOM_INFO[tp];
               room->room = l_object_ref(mb_room);
@@ -182,7 +222,9 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
             }
         }
     }
-  _rooms_layout(view);
+  /* _rooms_layout(view); */
+  altk_widget_queue_resize(ALTK_WIDGET(view));
+  altk_widget_queue_draw(ALTK_WIDGET(view));
 }
 
 

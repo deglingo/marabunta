@@ -34,6 +34,7 @@ typedef struct _Private
 static void mbtk_dialog_init ( LObject *obj )
 {
   MBTK_DIALOG(obj)->private = g_new0(Private, 1);
+  /* l_object_trace_ref(L_OBJECT(obj), TRUE); */
 }
 
 

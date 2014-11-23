@@ -12,6 +12,7 @@
  */
 typedef struct _Private
 {
+  LSignalHandlerGroup *sig_group;
   AltkOrientation orientation;
   MbObject *task;
   AltkWidget *title;
@@ -25,11 +26,36 @@ typedef struct _Private
 
 
 
+static void _dispose ( LObject *object );
+
+
+
+/* mbtk_task_view_class_init:
+ */
+static void mbtk_task_view_class_init ( LObjectClass *cls )
+{
+  cls->dispose = _dispose;
+}
+
+
+
 /* mbtk_task_view_init:
  */
 static void mbtk_task_view_init ( LObject *obj )
 {
   MBTK_TASK_VIEW(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->sig_group = l_signal_handler_group_new();
+}
+
+
+
+/* _dispose:
+ */
+static void _dispose ( LObject *object )
+{
+  l_signal_handler_group_remove_all(PRIVATE(object)->sig_group);
+  if (PRIVATE(object)->task)
+    l_object_unref(PRIVATE(object)->task);
 }
 
 
@@ -109,10 +135,12 @@ static void _set_task ( AltkWidget *view,
   ASSERT(!priv->task); /* [todo] */
   priv->task = l_object_ref(task);
   altk_label_set_text(ALTK_LABEL(priv->title), MB_TASK_NAME(task));
-  l_signal_connect(L_OBJECT(task),
-                   "notify:workers",
-                   (LSignalHandler) _on_workers_notify,
-                   view, NULL);
+  l_signal_handler_group_connect
+    (priv->sig_group,
+     L_OBJECT(task),
+     "notify:workers",
+     (LSignalHandler) _on_workers_notify,
+     view, NULL);
   if (!MB_TASK_RESOURCE(task))
     {
       altk_widget_set_enable_show_all(priv->resource, FALSE);
@@ -124,11 +152,13 @@ static void _set_task ( AltkWidget *view,
       altk_widget_set_enable_show_all(priv->resource, TRUE);
       altk_widget_show(priv->resource);
       signame = g_strdup_printf("stock_notify:%s", MB_RESOURCE_NAME(MB_TASK_RESOURCE(task)));
-      l_signal_connect(L_OBJECT(MB_TASK_COLONY(task)),
-                       signame,
-                       (LSignalHandler) _on_stock_notify,
-                       view,
-                       NULL);
+      l_signal_handler_group_connect
+        (priv->sig_group,
+         L_OBJECT(MB_TASK_COLONY(task)),
+         signame,
+         (LSignalHandler) _on_stock_notify,
+         view,
+         NULL);
       g_free(signame);
     }
 }

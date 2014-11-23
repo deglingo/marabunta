@@ -3,6 +3,7 @@
 namespace Altk
 {
   extern class Widget;
+  extern class Container;
   extern class Dialog;
   extern class Frame;
 }
@@ -38,7 +39,7 @@ namespace Mbtk
     void init ();
   };
 
-  class SectorView : Altk::Widget
+  class SectorView : Altk::Container
   {
     void class_init ();
     void init ();
@@ -51,6 +52,7 @@ namespace Mbtk
 
   class TaskView : Altk::Frame
   {
+    void class_init ();
     void init ();
   };
 
