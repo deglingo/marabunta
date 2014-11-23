@@ -10,6 +10,11 @@
 
 
 
+static void set_sector ( MbColony *colony,
+                         MbObject *sector );
+
+
+
 static void t_spawn_process ( MbsTask *task )
 {
   if (MB_TASK_WORKERS(task) > 0)
@@ -52,6 +57,15 @@ static void t_food_process ( MbsTask *task )
 
 
 
+/* mbs_colony_class_init:
+ */
+static void mbs_colony_class_init ( LObjectClass *cls )
+{
+  MB_COLONY_CLASS(cls)->set_sector = set_sector;
+}
+
+
+
 /* mbs_colony_new:
  */
 MbObject *mbs_colony_new ( MbObject *game )
@@ -59,11 +73,9 @@ MbObject *mbs_colony_new ( MbObject *game )
   MbObject *col = MB_OBJECT(l_object_new(MBS_CLASS_COLONY,
                                          "game", game,
                                          NULL));
-  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine, *t_mine1, *t_mine2;
+  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine;
   MbsTaskFuncs t_spawn_funcs = { NULL, NULL, t_spawn_process };
   MbsTaskFuncs t_food_funcs = { t_food_init, NULL, t_food_process };
-  MbsTaskFuncs t_mine1_funcs = { NULL, };
-  MbsTaskFuncs t_mine2_funcs = { NULL, };
   MbObject *room;
   /* create the pop trees */
   MBS_COLONY(col)->pop_tree = mbs_pop_tree_new(MB_COLONY(col)->pop);
@@ -116,15 +128,40 @@ MbObject *mbs_colony_new ( MbObject *game )
   t_mine = mbs_task_new_group(game, "mine");
   mb_task_add(MB_TASK(t_work), t_mine);
   l_object_unref(t_mine);
-  /* mine1 */
-  t_mine1 = mbs_task_new(game, "mine1", MB_POP_FLAG_ADULT_WORKER, NULL, &t_mine1_funcs);
-  mb_task_add(MB_TASK(t_mine), t_mine1);
-  l_object_unref(t_mine1);
-  /* mine2 */
-  t_mine2 = mbs_task_new(game, "mine2", MB_POP_FLAG_ADULT_WORKER, NULL, &t_mine2_funcs);
-  mb_task_add(MB_TASK(t_mine), t_mine2);
-  l_object_unref(t_mine2);
   return col;
+}
+
+
+
+/* set_sector:
+ */
+static void set_sector ( MbColony *colony,
+                         MbObject *sector )
+{
+  MbObject *t_mine;
+  GList *l;
+  MbsTaskFuncs funcs = { NULL, };
+  MB_COLONY_CLASS(parent_class)->set_sector(colony, sector);
+  /* create the mine tasks */
+  t_mine = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)), "work/mine");
+  ASSERT(t_mine);
+  for (l = MB_SECTOR(sector)->veins; l; l = l->next)
+    {
+      MbObject *vein = l->data;
+      MbObject *task;
+      CL_TRACE("%s", MB_RESOURCE_NAME(MB_VEIN_RESOURCE(vein)));
+      task = mb_task_get_child(MB_TASK(t_mine),
+                               MB_RESOURCE_NAME(MB_VEIN_RESOURCE(vein)));
+      if (task)
+        continue;
+      task = mbs_task_new(MB_OBJECT_GAME(sector),
+                          MB_RESOURCE_NAME(MB_VEIN_RESOURCE(vein)),
+                          MB_POP_FLAG_ADULT_WORKER,
+                          MB_VEIN_RESOURCE(vein),
+                          &funcs);
+      mb_task_add(MB_TASK(t_mine), task);
+      l_object_unref(task);
+    }
 }
 
 

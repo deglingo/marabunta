@@ -49,6 +49,9 @@ struct _MbColony
 struct _MbColonyClass
 {
   MB_COLONY_CLASS_HEADER;
+
+  void (* set_sector) ( MbColony *colony,
+                        MbObject *sector );
 };
 
 
@@ -58,6 +61,8 @@ struct _MbColonyClass
 #define MB_COLONY_TOP_TASK(c) (MB_COLONY(c)->top_task)
 #define MB_COLONY_ROOM(c, tp) (MB_COLONY(c)->rooms[tp])
 
+void mb_colony_set_sector ( MbColony *colony,
+                            MbObject *sector );
 void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );
 void mb_colony_set_top_task ( MbColony *colony,

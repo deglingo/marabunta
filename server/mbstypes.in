@@ -45,6 +45,7 @@ namespace Mbs
   
   class Colony : Mb::Colony
   {
+    void class_init ();
   };
 
   class Priority : Mb::Priority

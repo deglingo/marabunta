@@ -3,6 +3,7 @@
 
 #include "common/private.h"
 #include "common/mbcolony.h"
+#include "common/mbsector.h"
 #include "common/mbgame.h"
 #include "common/mbplayer.h"
 #include "common/mbresource.h"
@@ -35,6 +36,11 @@ typedef struct _StockNode
 
 
 
+static void set_sector ( MbColony *colony,
+                         MbObject *sector );
+
+
+
 static void stock_node_free ( StockNode *node )
 {
   g_free(node);
@@ -46,6 +52,8 @@ static void stock_node_free ( StockNode *node )
  */
 static void mb_colony_class_init ( LObjectClass *cls )
 {
+  MB_COLONY_CLASS(cls)->set_sector = set_sector;
+  
   signals[SIG_POP_NOTIFY] =
     l_signal_new(cls,
                  "pop_notify");
@@ -66,6 +74,29 @@ static void mb_colony_init ( LObject *obj )
                           NULL,
                           NULL,
                           (GDestroyNotify) stock_node_free);
+}
+
+
+
+/* mb_colony_set_sector:
+ */
+void mb_colony_set_sector ( MbColony *colony,
+                            MbObject *sector )
+{
+  ASSERT(!colony->sector);
+  ASSERT(MB_IS_SECTOR(sector));
+  ASSERT(MB_SECTOR_COLONY(sector) == MB_OBJECT(colony));
+  MB_COLONY_GET_CLASS(colony)->set_sector(colony, sector);
+}
+
+
+
+/* set_sector:
+ */
+static void set_sector ( MbColony *colony,
+                         MbObject *sector )
+{
+  colony->sector = sector;
 }
 
 

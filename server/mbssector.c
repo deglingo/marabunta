@@ -11,7 +11,9 @@
  */
 MbObject *mbs_sector_new ( MbObject *game )
 {
-  return MB_OBJECT(l_object_new(MB_CLASS_SECTOR, NULL));
+  return MB_OBJECT(l_object_new(MB_CLASS_SECTOR,
+                                "game", game,
+                                NULL));
 }
 
 
