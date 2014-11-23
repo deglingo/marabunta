@@ -11,16 +11,52 @@
 /* Page:
  */
 typedef struct _Page Page;
+typedef void (* PageCreateFunc) ( Page *page );
 typedef void (* PageInitFunc) ( Page *page );
+typedef void (* PageCleanupFunc) ( Page *page );
 
 struct _Page
 {
   gchar *name;
+  PageCreateFunc create;
   PageInitFunc init;
+  PageCleanupFunc cleanup;
+  guint created : 1;
+  guint initialized : 1;
   AltkWidget *panel;
   AltkWidget *top;
   AltkWidget *body;
 };
+
+#define PAGE(p) ((Page *)(p))
+
+
+
+/* FoodPage:
+ */
+typedef struct _FoodPage
+{
+  Page page;
+  AltkWidget *top_box;
+  GSList *widgets;
+}
+  FoodPage;
+
+#define FOOD_PAGE(p) ((FoodPage *)(p))
+
+
+
+/* MinePage:
+ */
+typedef struct _MinePage
+{
+  Page page;
+  AltkWidget *top_box;
+  GSList *widgets;
+}
+  MinePage;
+
+#define MINE_PAGE(p) ((MinePage *)(p))
 
 
 
@@ -49,6 +85,52 @@ static void mbtk_info_panel_init ( LObject *obj )
 
 
 
+/* page_create:
+ */
+static void page_create ( Page *page )
+{
+  if (!page->created)
+    {
+      page->created = 1;
+      l_trash_push();
+      page->create(page);
+      l_trash_pop();
+    }
+}
+
+
+
+/* page_init:
+ */
+static void page_init ( Page *page )
+{
+  page_create(page);
+  if (!page->initialized)
+    {
+      page->initialized = 1;
+      l_trash_push();
+      page->init(page);
+      l_trash_pop();
+    }
+}
+
+
+
+/* page_cleanup:
+ */
+static void page_cleanup ( Page *page )
+{
+  if (page->initialized)
+    {
+      page->initialized = 0;
+      l_trash_push();
+      page->cleanup(page);
+      l_trash_pop();
+    }
+}
+
+
+
 /* _set_page:
  */
 static void _set_page ( MbtkInfoPanel *panel,
@@ -60,7 +142,10 @@ static void _set_page ( MbtkInfoPanel *panel,
   if (priv->current_page)
     altk_widget_hide(priv->current_page->top);
   if ((priv->current_page = page))
-    altk_widget_show(page->top);
+    {
+      page_init(page);
+      altk_widget_show(page->top);
+    }
 }
 
 
@@ -78,18 +163,24 @@ static void _on_page_button_clicked ( AltkWidget *button,
 /* _create_page:
  */
 static Page *_create_page ( AltkWidget *panel,
+                            gint struct_size,
                             const gchar *name,
                             const gchar *title,
                             const gchar *but_label,
-                            PageInitFunc init )
+                            PageCreateFunc create,
+                            PageInitFunc init,
+                            PageCleanupFunc cleanup )
 {
   Private *priv = PRIVATE(panel);
-  Page *page = g_new0(Page, 1);
+  ASSERT(struct_size >= sizeof(Page));
+  Page *page = g_malloc0(struct_size);
   AltkWidget *but, *top_box, *title_label;
   priv->pages = g_list_append(priv->pages, page);
   page->panel = panel;
   page->name = g_strdup(name);
+  page->create = create;
   page->init = init;
+  page->cleanup = cleanup;
   /* button */
   but = L_TRASH_OBJECT
     (altk_button_new_with_label(but_label));
@@ -122,82 +213,112 @@ static Page *_create_page ( AltkWidget *panel,
 
 
 
-/* _init_food_page:
+/* _food_page_create:
  */
-static void _init_food_page ( Page *page )
+static void _food_page_create ( Page *page )
+{
+  FOOD_PAGE(page)->top_box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(page->body, FOOD_PAGE(page)->top_box);
+}
+
+
+
+/* _food_page_init:
+ */
+static void _food_page_init ( Page *page )
 {
   Private *priv = PRIVATE(page->panel);
   MbObject *task;
-  AltkWidget *top_box, *tview;
+  AltkWidget *tview;
   GList *l;
-  /* top box */
-  top_box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_VERTICAL));
-  ALTK_CONTAINER_ADD(page->body, top_box);
+  if (!priv->colony)
+    return;
   /* top task */
   task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(priv->colony)), "work/farm");
   ASSERT(task);
   tview = L_TRASH_OBJECT
     (mbtk_task_view_new(ALTK_HORIZONTAL, task));
-  ALTK_BOX_ADD(top_box, tview, 0);
+  ALTK_BOX_ADD(FOOD_PAGE(page)->top_box, tview, 0);
+  FOOD_PAGE(page)->widgets = g_slist_prepend(FOOD_PAGE(page)->widgets, tview);
   /* sub tasks */
   for (l = MB_TASK_CHILDREN(task); l; l = l->next)
     {
       task = l->data;
       tview = L_TRASH_OBJECT
         (mbtk_task_view_new(ALTK_HORIZONTAL, task));
-      ALTK_BOX_ADD(top_box, tview, 0);
+      ALTK_BOX_ADD(FOOD_PAGE(page)->top_box, tview, 0);
+      FOOD_PAGE(page)->widgets = g_slist_prepend(FOOD_PAGE(page)->widgets, tview);
     }
   altk_widget_show_all(page->body);
 }
 
 
 
-/* _create_food_page:
+/* _food_page_cleanup:
  */
-static void _create_food_page ( AltkWidget *panel )
+static void _food_page_cleanup ( Page *page )
 {
-  _create_page(panel, "food", "Food", "F", _init_food_page);
+  GSList *l;
+  for (l = FOOD_PAGE(page)->widgets; l; l = l->next)
+    altk_widget_destroy(l->data);
+  g_slist_free(FOOD_PAGE(page)->widgets);
+  FOOD_PAGE(page)->widgets = NULL;
 }
 
 
 
-/* _init_mine_page:
+/* _mine_page_create:
  */
-static void _init_mine_page ( Page *page )
+static void _mine_page_create ( Page *page )
+{
+  MINE_PAGE(page)->top_box = L_TRASH_OBJECT
+    (altk_box_new(ALTK_VERTICAL));
+  ALTK_CONTAINER_ADD(page->body, MINE_PAGE(page)->top_box);
+}
+
+
+
+/* _mine_page_init:
+ */
+static void _mine_page_init ( Page *page )
 {
   Private *priv = PRIVATE(page->panel);
   MbObject *task;
-  AltkWidget *top_box, *tview;
+  AltkWidget *tview;
   GList *l;
-  /* top box */
-  top_box = L_TRASH_OBJECT
-    (altk_box_new(ALTK_VERTICAL));
-  ALTK_CONTAINER_ADD(page->body, top_box);
+  if (!priv->colony)
+    return;
   /* top task */
   task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(priv->colony)), "work/mine");
   ASSERT(task);
   tview = L_TRASH_OBJECT
     (mbtk_task_view_new(ALTK_HORIZONTAL, task));
-  ALTK_BOX_ADD(top_box, tview, 0);
+  ALTK_BOX_ADD(MINE_PAGE(page)->top_box, tview, 0);
+  MINE_PAGE(page)->widgets = g_slist_prepend(MINE_PAGE(page)->widgets, tview);
   /* sub tasks */
   for (l = MB_TASK_CHILDREN(task); l; l = l->next)
     {
       task = l->data;
       tview = L_TRASH_OBJECT
         (mbtk_task_view_new(ALTK_HORIZONTAL, task));
-      ALTK_BOX_ADD(top_box, tview, 0);
+      ALTK_BOX_ADD(MINE_PAGE(page)->top_box, tview, 0);
+      MINE_PAGE(page)->widgets = g_slist_prepend(MINE_PAGE(page)->widgets, tview);
     }
   altk_widget_show_all(page->body);
 }
 
 
 
-/* _create_mine_page:
+/* _mine_page_cleanup:
  */
-static void _create_mine_page ( AltkWidget *panel )
+static void _mine_page_cleanup ( Page *page )
 {
-  _create_page(panel, "mine", "Mine", "M", _init_mine_page);
+  GSList *l;
+  for (l = MINE_PAGE(page)->widgets; l; l = l->next)
+    altk_widget_destroy(l->data);
+  g_slist_free(MINE_PAGE(page)->widgets);
+  MINE_PAGE(page)->widgets = NULL;
 }
 
 
@@ -221,8 +342,22 @@ static void _create_panel ( AltkWidget *panel )
     (altk_box_new(ALTK_VERTICAL));
   ALTK_BOX_ADD(top_box, priv->button_box, ALTK_PACK_ANCHOR_TOP);
   /* create the pages */
-  _create_food_page(panel);
-  _create_mine_page(panel);
+  _create_page(panel,
+               sizeof(FoodPage),
+               "food",
+               "Food",
+               "F",
+               _food_page_create,
+               _food_page_init,
+               _food_page_cleanup);
+  _create_page(panel,
+               sizeof(MinePage),
+               "mine",
+               "Mine",
+               "M",
+               _mine_page_create,
+               _mine_page_init,
+               _mine_page_cleanup);
   /* open the first page */
   _set_page(MBTK_INFO_PANEL(panel), priv->pages->data);
 }
@@ -252,17 +387,12 @@ void mbtk_info_panel_set_colony ( MbtkInfoPanel *panel,
   GList *l;
   if (colony == priv->colony)
     return;
+  for (l = priv->pages; l; l = l->next)
+    page_cleanup(l->data);
   if (priv->colony)
-    {
-      CL_DEBUG("[TODO] set_colony");
-      return;
-    }
+    L_OBJECT_CLEAR(priv->colony);
   if (colony)
-    {
-      priv->colony = l_object_ref(colony);
-      l_trash_push();
-      for (l = priv->pages; l; l = l->next)
-        ((Page *) l->data)->init(l->data);
-      l_trash_pop();
-    }
+    priv->colony = l_object_ref(colony);
+  if (priv->current_page)
+    page_init(priv->current_page);
 }

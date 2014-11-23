@@ -55,7 +55,8 @@ static void _dispose ( LObject *object )
 {
   l_signal_handler_group_remove_all(PRIVATE(object)->sig_group);
   if (PRIVATE(object)->task)
-    l_object_unref(PRIVATE(object)->task);
+    L_OBJECT_CLEAR(PRIVATE(object)->task);
+  L_OBJECT_CLASS(parent_class)->dispose(object);
 }
 
 
