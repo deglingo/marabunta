@@ -57,6 +57,70 @@ static void t_food_process ( MbsTask *task )
 
 
 
+/* MineData:
+ */
+typedef struct _MineData
+{
+  GList *veins;
+}
+  MineData;
+
+#define MINE_DATA(task) ((MineData *)(MBS_TASK(task)->data))
+
+
+
+static void t_mine_init ( MbsTask *task )
+{
+  GList *l;
+  gint64 total = 0;
+  task->data = g_new0(MineData, 1);
+  for (l = MB_SECTOR(MB_COLONY_SECTOR(MB_TASK_COLONY(task)))->veins; l; l = l->next)
+    {
+      if (MB_VEIN_RESOURCE(l->data) == MB_TASK_RESOURCE(task))
+        MINE_DATA(task)->veins = g_list_append(MINE_DATA(task)->veins,
+                                               l_object_ref(l->data));
+      total += MB_VEIN_QTTY(l->data);
+    }
+  CL_DEBUG("mine task '%s' : %" G_GINT64_FORMAT,
+           MB_RESOURCE_NAME(MB_TASK_RESOURCE(task)),
+           total);
+}
+
+
+
+static void t_mine_process ( MbsTask *task )
+{
+  if (MB_TASK_WORKERS(task) > 0)
+    {
+      gint64 prod = MB_TASK_WORKERS(task);
+      gint64 real_prod = 0;
+      while (MINE_DATA(task)->veins && prod > 0)
+        {
+          MbObject *vein = MINE_DATA(task)->veins->data;
+          if (MB_VEIN_QTTY(vein) > prod)
+            {
+              real_prod += prod;
+              MB_VEIN(vein)->qtty -= prod;
+              prod = 0;
+            }
+          else
+            {
+              real_prod += MB_VEIN(vein)->qtty;
+              prod -= MB_VEIN(vein)->qtty;
+              MB_VEIN(vein)->qtty = 0;
+              MINE_DATA(task)->veins = g_list_delete_link(MINE_DATA(task)->veins,
+                                                          MINE_DATA(task)->veins);
+              l_object_unref(vein);
+            }
+        }
+      mb_colony_add_stock(MB_COLONY(MB_TASK_COLONY(task)),
+                          MB_OBJECT_ID(MB_TASK_RESOURCE(task)),
+                          real_prod);
+    }
+}
+
+
+
 /* mbs_colony_class_init:
  */
 static void mbs_colony_class_init ( LObjectClass *cls )
@@ -140,7 +204,7 @@ static void set_sector ( MbColony *colony,
 {
   MbObject *t_mine;
   GList *l;
-  MbsTaskFuncs funcs = { NULL, };
+  MbsTaskFuncs funcs = { t_mine_init, NULL, t_mine_process };
   MB_COLONY_CLASS(parent_class)->set_sector(colony, sector);
   /* create the mine tasks */
   t_mine = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)), "work/mine");

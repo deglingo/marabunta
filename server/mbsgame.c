@@ -145,9 +145,9 @@ void mbs_game_setup ( MbsGame *game )
   _register_resource(game, "mr2", MB_RESOURCE_MINERAL);
   _register_resource(game, "mr3", MB_RESOURCE_MINERAL);
   /* create the veins */
-  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr1", 0, 1000000);
-  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr2", 0, 1000000);
-  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr3", 0, 1000000);
+  _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr1", 0, 100000);
+  /* _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr2", 0, 1000000); */
+  /* _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr3", 0, 1000000000); */
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

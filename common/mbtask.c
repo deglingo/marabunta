@@ -5,6 +5,7 @@
 #include "common/mbtask.h"
 #include "common/mbpriority.h"
 #include "common/mbresource.h"
+#include "common/mbcolony.h"
 #include "common/mbtask.inl"
 
 
@@ -31,6 +32,8 @@ static void set_property ( LObject *obj,
                            LObject *value );
 static LObject *get_property ( LObject *obj,
                                LParamSpec *pspec );
+static void set_colony ( MbTask *task,
+                         MbObject *colony );
 static void add ( MbTask *task,
                   MbObject *child );
 static void add_workers ( MbTask *task,
@@ -45,6 +48,7 @@ static void mb_task_class_init ( LObjectClass *cls )
   cls->set_property = set_property;
   cls->get_property = get_property;
   
+  MB_TASK_CLASS(cls)->set_colony = set_colony;
   MB_TASK_CLASS(cls)->add = add;
   MB_TASK_CLASS(cls)->add_workers = add_workers;
   
@@ -125,6 +129,30 @@ static LObject *get_property ( LObject *obj,
 
 
 
+/* mb_task_set_colony:
+ */
+void mb_task_set_colony ( MbTask *task,
+                          MbObject *colony )
+{
+  ASSERT(colony);
+  ASSERT(MB_IS_COLONY(colony));
+  ASSERT(!task->colony);
+  ASSERT((!task->parent) || MB_TASK_COLONY(task->parent) == colony);
+  MB_TASK_GET_CLASS(task)->set_colony(task, colony);
+}
+
+
+
+/* set_colony:
+ */
+static void set_colony ( MbTask *task,
+                         MbObject *colony )
+{
+  task->colony = colony;
+}
+
+
+
 /* mb_task_add:
  */
 void mb_task_add ( MbTask *task,
@@ -148,7 +176,7 @@ static void add ( MbTask *task,
   l_object_ref(child);
   task->children = g_list_append(task->children, child);
   MB_TASK(child)->parent = task;
-  MB_TASK(child)->colony = MB_TASK_COLONY(task);
+  mb_task_set_colony(MB_TASK(child), task->colony);
 }
 
 

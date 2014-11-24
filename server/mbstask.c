@@ -10,6 +10,8 @@
 
 static void add ( MbTask *task,
                   MbObject *object );
+static void set_colony ( MbTask *task,
+                         MbObject *object );
 
 
 
@@ -18,6 +20,7 @@ static void add ( MbTask *task,
 static void mbs_task_class_init ( LObjectClass *cls )
 {
   MB_TASK_CLASS(cls)->add = add;
+  MB_TASK_CLASS(cls)->set_colony = set_colony;
 }
 
 
@@ -46,18 +49,29 @@ MbObject *mbs_task_new ( MbObject *game,
                          MbObject *resource,
                          MbsTaskFuncs *funcs )
 {
-  MbObject *task = MB_OBJECT(l_object_new_give(MBS_CLASS_TASK,
-                                               "game", l_object_ref(game),
-                                               "name", l_string_new(name),
-                                               "isgroup", l_int_new(0),
-                                               "priority", mbs_priority_new(game, 5),
-                                               "resource", (resource ? l_object_ref(resource) : l_none_ref()),
-                                               NULL));
+  MbObject *task;
+  task= MB_OBJECT(l_object_new_give(MBS_CLASS_TASK,
+                                    "game", l_object_ref(game),
+                                    "name", l_string_new(name),
+                                    "isgroup", l_int_new(0),
+                                    "priority", mbs_priority_new(game, 5),
+                                    "resource", (resource ? l_object_ref(resource) : l_none_ref()),
+                                    NULL));
   MBS_TASK(task)->funcs = *funcs;
   mbs_task_set_ready(MBS_TASK(task), pop_flags);
-  if (funcs->init)
-    funcs->init(MBS_TASK(task));
   return task;
+}
+
+
+
+/* set_colony:
+ */
+static void set_colony ( MbTask *task,
+                         MbObject *colony )
+{
+  MB_TASK_CLASS(parent_class)->set_colony(task, colony);
+  if (MBS_TASK(task)->funcs.init)
+    MBS_TASK(task)->funcs.init(MBS_TASK(task));
 }
 
 

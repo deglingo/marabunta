@@ -36,6 +36,9 @@ struct _MbTaskClass
 {
   MB_TASK_CLASS_HEADER;
 
+  void (* set_colony) ( MbTask *task,
+                        MbObject *colony );
+  
   void (* add) ( MbTask *task,
                  MbObject *child );
 
@@ -54,6 +57,8 @@ struct _MbTaskClass
 #define MB_TASK_PRIORITY(task) (MB_TASK(task)->priority)
 #define MB_TASK_RESOURCE(task) (MB_TASK(task)->resource)
 
+void mb_task_set_colony ( MbTask *task,
+                          MbObject *colony );
 void mb_task_add ( MbTask *task,
                    MbObject *child );
 MbObject *mb_task_get_child ( MbTask *task,

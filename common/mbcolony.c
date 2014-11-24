@@ -122,7 +122,7 @@ void mb_colony_set_top_task ( MbColony *colony,
   ASSERT(!colony->top_task);
   ASSERT(!MB_TASK_COLONY(task));
   colony->top_task = l_object_ref(task);
-  MB_TASK(task)->colony = MB_OBJECT(colony);
+  mb_task_set_colony(MB_TASK(task), MB_OBJECT(colony));
 }
 
 
