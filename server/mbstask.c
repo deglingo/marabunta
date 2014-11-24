@@ -10,6 +10,8 @@
 
 static void add ( MbTask *task,
                   MbObject *object );
+static void add_workers ( MbTask *task,
+                          gint64 workers );
 static void set_colony ( MbTask *task,
                          MbObject *object );
 
@@ -20,6 +22,7 @@ static void set_colony ( MbTask *task,
 static void mbs_task_class_init ( LObjectClass *cls )
 {
   MB_TASK_CLASS(cls)->add = add;
+  MB_TASK_CLASS(cls)->add_workers = add_workers;
   MB_TASK_CLASS(cls)->set_colony = set_colony;
 }
 
@@ -76,12 +79,12 @@ static void set_colony ( MbTask *task,
 
 
 
-/* mbs_task_check:
+/* mbs_task_check_tree:
  *
  * Sanity check.
  *
  */
-void mbs_task_check ( MbsTask *task )
+void mbs_task_check_tree ( MbsTask *task )
 {
   guint ready_sum = 0;
   gint tp;
@@ -142,6 +145,27 @@ static void _inc_ready ( MbsTask *task,
 
 
 
+static void _dec_ready ( MbsTask *task,
+                         MbPopFlags flags )
+{
+  gint tp;
+  MbPopFlags unset_flags = 0;
+  for (tp = 0; flags; tp++, flags >>= 1)
+    {
+      ASSERT(tp < MB_POP_TYPE_COUNT);
+      if ((flags & 1))
+        {
+          if ((--(task->ready_count[tp])) == 0)
+            unset_flags |= (1 << tp);
+          task->ready_sum--;
+        }
+    }
+  if (unset_flags && MB_TASK_PARENT(task))
+    _dec_ready(MBS_TASK(MB_TASK_PARENT(task)), unset_flags);  
+}
+
+
+
 /* add:
  */
 static void add ( MbTask *task,
@@ -161,6 +185,27 @@ static void add ( MbTask *task,
 
 
 
+/* add_workers:
+ */
+static void add_workers ( MbTask *task,
+                          gint64 workers )
+{
+  MB_TASK_CLASS(parent_class)->add_workers(task, workers);
+  mbs_task_check(MBS_TASK(task));
+}
+
+
+
+/* mbs_task_check:
+ */
+void mbs_task_check ( MbsTask *task )
+{
+  if (task->funcs.check)
+    task->funcs.check(task);
+}
+
+
+
 /* mbs_task_set_ready:
  */
 void mbs_task_set_ready ( MbsTask *task,
@@ -168,19 +213,32 @@ void mbs_task_set_ready ( MbsTask *task,
 {
   gint tp;
   MbPopFlags set_flags = 0;
+  MbPopFlags unset_flags = 0;
+  MbPopFlags f;
   ASSERT(!MB_TASK_ISGROUP(task));
-  for (tp = 0; flags; tp++, flags >>= 1)
+  for (tp = 0, f = 1; tp < MB_POP_TYPE_COUNT; tp++, f <<= 1)
     {
-      ASSERT(tp < MB_POP_TYPE_COUNT);
-      if ((flags & 1) && !task->ready_count[tp])
+      MbPopFlags set = flags & f;
+      if (set && !task->ready_count[tp])
         {
           task->ready_count[tp] = 1;
           task->ready_sum++;
-          set_flags |= (1 << tp);
+          set_flags |= f;
+        }
+      else if ((!set) && task->ready_count[tp])
+        {
+          task->ready_count[tp] = 0;
+          task->ready_sum--;
+          unset_flags |= f;
         }
     }
-  if (set_flags && MB_TASK_PARENT(task))
-    _inc_ready(MBS_TASK(MB_TASK_PARENT(task)), set_flags);
+  if (MB_TASK_PARENT(task))
+    {
+      if (set_flags)
+        _inc_ready(MBS_TASK(MB_TASK_PARENT(task)), set_flags);
+      if (unset_flags)
+        _dec_ready(MBS_TASK(MB_TASK_PARENT(task)), unset_flags);
+    }
 }
 
 
@@ -292,8 +350,8 @@ static void _process ( MbsTask *task )
     {
       if (task->funcs.process)
         task->funcs.process(task);
+      mbs_task_check(task);
     }
-  mbs_task_check(task);
   mbs_priority_update_score(MBS_PRIORITY(MB_TASK_PRIORITY(task)),
                             MB_TASK_WORKERS(task));
 }

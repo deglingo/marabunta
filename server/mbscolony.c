@@ -88,6 +88,16 @@ static void t_mine_init ( MbsTask *task )
 
 
 
+static void t_mine_check ( MbsTask *task )
+{
+  if (!MINE_DATA(task)->veins)
+    {
+      mbs_task_set_ready(task, 0);
+    }
+}
+
+
+
 static void t_mine_process ( MbsTask *task )
 {
   if (MB_TASK_WORKERS(task) > 0)
@@ -204,7 +214,7 @@ static void set_sector ( MbColony *colony,
 {
   MbObject *t_mine;
   GList *l;
-  MbsTaskFuncs funcs = { t_mine_init, NULL, t_mine_process };
+  MbsTaskFuncs funcs = { t_mine_init, t_mine_check, t_mine_process };
   MB_COLONY_CLASS(parent_class)->set_sector(colony, sector);
   /* create the mine tasks */
   t_mine = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)), "work/mine");
@@ -434,7 +444,7 @@ void mbs_colony_update ( MbsColony *colony )
   data.colony = colony;
   data.birthdate_mask = g_random_int_range(0, 0x10);
   /* [FIXME] debug only */
-  mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
+  MBS_TASK_CHECK_TREE(MB_COLONY_TOP_TASK(colony));
   /* update pop units */
   mbs_pop_tree_traverse(colony->pop_tree,
                         (MbsPopTreeTraverseFunc) _update_pop_unit,
@@ -453,5 +463,5 @@ void mbs_colony_update ( MbsColony *colony )
   /* process all tasks */
   mbs_task_process(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
   /* [FIXME] debug only */
-  mbs_task_check(MBS_TASK(MB_COLONY_TOP_TASK(colony)));
+  MBS_TASK_CHECK_TREE(MB_COLONY_TOP_TASK(colony));
 }
