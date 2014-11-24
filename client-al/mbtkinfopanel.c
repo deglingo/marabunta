@@ -60,6 +60,18 @@ typedef struct _MinePage
 
 
 
+/* RoomsPage:
+ */
+typedef struct _RoomsPage
+{
+  Page page;
+}
+  RoomsPage;
+
+#define ROOMS_PAGE(p) ((RoomsPage *)(p))
+
+
+
 /* Private:
  */
 typedef struct _Private
@@ -213,6 +225,30 @@ static Page *_create_page ( AltkWidget *panel,
 
 
 
+/* _rooms_page_create:
+ */
+static void _rooms_page_create ( Page *page )
+{
+}
+
+
+
+/* _rooms_page_init:
+ */
+static void _rooms_page_init ( Page *page )
+{
+}
+
+
+
+/* _rooms_page_cleanup:
+ */
+static void _rooms_page_cleanup ( Page *page )
+{
+}
+
+
+
 /* _food_page_create:
  */
 static void _food_page_create ( Page *page )
@@ -342,6 +378,14 @@ static void _create_panel ( AltkWidget *panel )
     (altk_box_new(ALTK_VERTICAL));
   ALTK_BOX_ADD(top_box, priv->button_box, ALTK_PACK_ANCHOR_TOP);
   /* create the pages */
+  _create_page(panel,
+               sizeof(RoomsPage),
+               "rooms",
+               "Rooms",
+               "R",
+               _rooms_page_create,
+               _rooms_page_init,
+               _rooms_page_cleanup);
   _create_page(panel,
                sizeof(FoodPage),
                "food",
