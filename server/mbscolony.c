@@ -147,7 +147,7 @@ MbObject *mbs_colony_new ( MbObject *game )
   MbObject *col = MB_OBJECT(l_object_new(MBS_CLASS_COLONY,
                                          "game", game,
                                          NULL));
-  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine;
+  MbObject *t_top, *t_spawn, *t_work, *t_farm, *t_food, *t_mine, *t_build;
   MbsTaskFuncs t_spawn_funcs = { NULL, NULL, t_spawn_process };
   MbsTaskFuncs t_food_funcs = { t_food_init, NULL, t_food_process };
   MbObject *room;
@@ -169,12 +169,12 @@ MbObject *mbs_colony_new ( MbObject *game )
   room = mbs_room_new(game, MB_ROOM_TYPE_ROYAL_CHAMBER);
   mb_colony_add_room(MB_COLONY(col), room);
   l_object_unref(room);
-  room = mbs_room_new(game, MB_ROOM_TYPE_FARM);
-  mb_colony_add_room(MB_COLONY(col), room);
-  l_object_unref(room);
-  room = mbs_room_new(game, MB_ROOM_TYPE_MINE);
-  mb_colony_add_room(MB_COLONY(col), room);
-  l_object_unref(room);
+  /* room = mbs_room_new(game, MB_ROOM_TYPE_FARM); */
+  /* mb_colony_add_room(MB_COLONY(col), room); */
+  /* l_object_unref(room); */
+  /* room = mbs_room_new(game, MB_ROOM_TYPE_MINE); */
+  /* mb_colony_add_room(MB_COLONY(col), room); */
+  /* l_object_unref(room); */
   /* create the default tasks */
   /* [fixme] is it the right place for this ? */
   t_top = mbs_task_new_group(game, "top");
@@ -188,6 +188,10 @@ MbObject *mbs_colony_new ( MbObject *game )
   t_work = mbs_task_new_group(game, "work");
   mb_task_add(MB_TASK(t_top), t_work);
   l_object_unref(t_work);
+  /* build */
+  t_build = mbs_task_new_group(game, "build");
+  mb_task_add(MB_TASK(t_work), t_build);
+  l_object_unref(t_build);
   /* farm */
   t_farm = mbs_task_new_group(game, "farm");
   mb_task_add(MB_TASK(t_work), t_farm);
