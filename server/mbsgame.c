@@ -27,6 +27,7 @@ typedef struct _Private
   /* update timer */
   GTimer *timer;
   gdouble next_frame;
+  guint frame_offset;
 }
   Private;
 
@@ -408,7 +409,7 @@ static gboolean _game_timer ( MbsGame *game )
   while (elapsed >= priv->next_frame)
     {
       _game_update(game);
-      priv->next_frame = ((gdouble) MB_GAME_FRAME_COUNT(game)) / MBS_GAME_FPS;
+      priv->next_frame = ((gdouble) (MB_GAME_FRAME_COUNT(game) - priv->frame_offset)) / MBS_GAME_FPS;
     }
   /* _send_game_update(game); */
   return G_SOURCE_CONTINUE;
@@ -428,6 +429,13 @@ void mbs_game_start ( MbsGame *game )
   /*     _send_game_setup(game, player); */
   /*   } */
   mb_game_started(MB_GAME(game));
+  /* [FIXME] quick start */
+  {
+    MbObject *col = MB_SECTOR_COLONY(MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0));
+    while (MB_COLONY(col)->pop[MB_POP_ADULT_WORKER] == 0)
+      _game_update(game);
+    priv->frame_offset = MB_GAME_FRAME_COUNT(game);
+  }
   /* install the game timer */
   g_timeout_add_full(MBS_PRIORITY_GAME_TIMER,
                      10,

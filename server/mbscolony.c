@@ -291,7 +291,7 @@ static void _update_egg ( MbsColony *colony,
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   guint age = date - unit->birthdate;
-  if (age > 50)
+  if (age > 500)
     {
       MbObject *priority;
       MbCast pop_cast = _select_hatch_cast(colony, &priority);
@@ -312,7 +312,7 @@ static void _update_lq ( MbsColony *colony,
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   guint age = date - unit->birthdate;
-  if (age > 100)
+  if (age > 1000)
     {
       mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_QUEEN, unit->birthdate, -unit->count);
       /* no new queens for now */
@@ -329,7 +329,7 @@ static void _update_lw ( MbsColony *colony,
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   guint age = date - unit->birthdate;
-  if (age > 100)
+  if (age > 1000)
     {
       mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_WORKER, unit->birthdate, -unit->count);
       mbs_pop_tree_add(colony->adj_tree, MB_POP_ADULT_WORKER, unit->birthdate, unit->count);
@@ -345,7 +345,7 @@ static void _update_ls ( MbsColony *colony,
 {
   guint date = MB_GAME_FRAME_COUNT(MB_OBJECT_GAME(colony));
   guint age = date - unit->birthdate;
-  if (age > 100)
+  if (age > 1000)
     {
       mbs_pop_tree_add(colony->adj_tree, MB_POP_LARVAE_SOLDIER, unit->birthdate, -unit->count);
       mbs_pop_tree_add(colony->adj_tree, MB_POP_ADULT_SOLDIER, unit->birthdate, unit->count);
