@@ -37,7 +37,7 @@ struct _MbColony
   /* top task group */
   MbObject *top_task;
   /* rooms */
-  MbObject *rooms[MB_ROOM_TYPE_COUNT];
+  GList *rooms;
   /* stock */
   GHashTable *stock;
 };
@@ -59,7 +59,7 @@ struct _MbColonyClass
 #define MB_COLONY_SECTOR(c) (MB_COLONY(c)->sector)
 #define MB_COLONY_OWNER(c) (MB_COLONY(c)->owner)
 #define MB_COLONY_TOP_TASK(c) (MB_COLONY(c)->top_task)
-#define MB_COLONY_ROOM(c, tp) (MB_COLONY(c)->rooms[tp])
+#define MB_COLONY_ROOMS(c) (MB_COLONY(c)->rooms)
 
 void mb_colony_set_sector ( MbColony *colony,
                             MbObject *sector );

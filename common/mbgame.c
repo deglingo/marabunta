@@ -244,6 +244,24 @@ MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
 
 
 
+/* mb_game_lookup_room_type:
+ */
+MbRoomType mb_game_lookup_room_type ( MbGame *game,
+                                      const gchar *nick )
+{
+  MbRoomType type;
+  /* [FIXME] hash table ? */
+  for (type = 1; type < game->room_types->len; type++)
+    {
+      MbRoomTypeInfo *info = game->room_types->pdata[type];
+      if (info && !strcmp(info->nick, nick))
+        return type;
+    }
+  return 0;
+}
+
+
+
 /* mb_game_set_world:
  */
 void mb_game_set_world ( MbGame *game,

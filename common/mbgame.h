@@ -78,6 +78,8 @@ void mb_game_register_room_type ( MbGame *game,
                                   const gchar *name );
 MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
                                              MbRoomType type );
+MbRoomType mb_game_lookup_room_type ( MbGame *game,
+                                      const gchar *nick );
 void mb_game_add_player ( MbGame *game,
                           MbObject *player );
 void mb_game_set_world ( MbGame *game,

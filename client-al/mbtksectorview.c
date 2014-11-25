@@ -44,20 +44,11 @@ typedef struct _Room
 typedef struct _Private
 {
   MbObject *sector;
-  Room rooms[MB_ROOM_TYPE_COUNT];
+  GList *rooms;
 }
   Private;
 
 #define PRIVATE(view) ((Private *)(MBTK_SECTOR_VIEW(view)->private))
-
-
-
-static const RoomInfo ROOM_INFO[MB_ROOM_TYPE_COUNT] =
-  {
-    [MB_ROOM_TYPE_ROYAL_CHAMBER] = { "Royal Chamber", "spawn",      0.5, 0.5, 0.1, 0.1 },
-    [MB_ROOM_TYPE_FARM]          = { "Farm",          "work/farm",  0.15, 0.5, 0.1, 0.1 },
-    [MB_ROOM_TYPE_MINE]          = { "Mine",          "work/mine",  0.5, 0.25, 0.1, 0.1 },
-  };
 
 
 
@@ -69,6 +60,24 @@ static void expose_event ( AltkWidget *widget,
                            AltkEvent *event );
 static void _remove ( AltkContainer *cont,
                       AltkWidget *child );
+
+
+
+/* room_new:
+ */
+static Room *room_new ( void )
+{
+  return g_new0(Room, 1);
+}
+
+
+
+/* room_free:
+ */
+static void room_free ( Room *room )
+{
+  g_free(room);
+}
 
 
 
@@ -123,22 +132,22 @@ static void _remove ( AltkContainer *cont,
 static void _rooms_layout ( MbtkSectorView *view )
 {
   Private *priv = PRIVATE(view);
-  gint tp;
+  GList *l;
   gint width = ALTK_WIDGET(view)->width;
   gint height = ALTK_WIDGET(view)->height;
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  CL_TRACE("%p", view);
+  for (l = priv->rooms; l; l = l->next)
     {
-      Room *room = &priv->rooms[tp];
-      const RoomInfo *info;
-      if (!room->room)
-        continue;
-      info = &ROOM_INFO[tp];
-      room->cx = width * info->x;
-      room->cy = height * info->y;
-      room->w = width * info->w;
-      room->h = height * info->h;
+      Room *room = l->data;
+      room->cx = width * MB_ROOM_X(room->room);
+      room->cy = height * MB_ROOM_Y(room->room);
+      room->w = width * MB_ROOM_WIDTH(room->room);
+      room->h = height * MB_ROOM_HEIGHT(room->room);
       room->x = room->cx - room->w / 2;
       room->y = room->cy - room->h / 2;
+      CL_TRACE("room: %d, %d, %d, %d",
+               room->x, room->y,
+               room->w, room->h);
       if (room->task_view)
         {
           room->task_alloc.width = room->task_req.width;
@@ -156,11 +165,11 @@ static void _rooms_layout ( MbtkSectorView *view )
 static void _unset_sector ( MbtkSectorView *view )
 {
   Private *priv = PRIVATE(view);
-  gint tp;
+  GList *l;
   /* cleanup rooms */
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  for (l = priv->rooms; l; l = l->next)
     {
-      Room *room = &priv->rooms[tp];
+      Room *room = l->data;
       if (room->room)
         L_OBJECT_CLEAR(room->room);
       if (room->task)
@@ -169,7 +178,10 @@ static void _unset_sector ( MbtkSectorView *view )
         altk_widget_destroy(room->task_view);
         L_OBJECT_CLEAR(room->task_view);
       }
+      room_free(room);
     }
+  g_list_free(priv->rooms);
+  priv->rooms = NULL;
   L_OBJECT_CLEAR(priv->sector);
 }
 
@@ -181,7 +193,6 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
                                    MbObject *sector )
 {
   Private *priv = PRIVATE(view);
-  gint tp;
   if (sector == priv->sector)
     return;
   if (priv->sector)
@@ -196,29 +207,27 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
       if (MB_SECTOR_COLONY(sector))
         {
           MbObject *colony = MB_SECTOR_COLONY(sector);
+          GList *l;
           /* CL_DEBUG("set_colony: %p", colony); */
-          for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+          for (l = MB_COLONY_ROOMS(colony); l; l = l->next)
             {
-              MbObject *mb_room = MB_COLONY_ROOM(colony, tp);
-              Room *room;
-              const RoomInfo *info;
-              if (!mb_room)
-                continue;
+              MbObject *mb_room = l->data;
+              Room *room = room_new();
+              priv->rooms = g_list_append(priv->rooms, room);
               /* CL_DEBUG("set room %d: %p", tp, mb_room); */
-              room = &priv->rooms[tp];
-              info = &ROOM_INFO[tp];
               room->room = l_object_ref(mb_room);
-              if (info->task_path)
-                {
-                  room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
-                                            info->task_path);
-                  ASSERT(room->task);
-                  l_object_ref(room->task);
-                  room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
-                  _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
-                  mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
-                  altk_widget_show_all(room->task_view);
-                }
+              /* [TODO] */
+              /* if (info->task_path) */
+              /*   { */
+              /*     room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)), */
+              /*                               info->task_path); */
+              /*     ASSERT(room->task); */
+              /*     l_object_ref(room->task); */
+              /*     room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task); */
+              /*     _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view)); */
+              /*     mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view)); */
+              /*     altk_widget_show_all(room->task_view); */
+              /*   } */
             }
         }
     }
@@ -235,10 +244,10 @@ static void size_request ( AltkWidget *widget,
                            AltkRequisition *req )
 {
   Private *priv = PRIVATE(widget);
-  gint tp;
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  GList *l;
+  for (l = priv->rooms; l; l = l->next)
     {
-      Room *room = &priv->rooms[tp];
+      Room *room = l->data;
       if (room->task_view)
         altk_widget_size_request(room->task_view, &room->task_req);
     }
@@ -254,12 +263,12 @@ static void size_allocate ( AltkWidget *widget,
                             AltkAllocation *alloc )
 {
   Private *priv = PRIVATE(widget);
-  gint tp;
+  GList *l;
   ALTK_WIDGET_CLASS(parent_class)->size_allocate(widget, alloc);
   _rooms_layout(MBTK_SECTOR_VIEW(widget));
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  for (l = priv->rooms; l; l = l->next)
     {
-      Room *room = &priv->rooms[tp];
+      Room *room = l->data;
       if (room->task_view)
         altk_widget_size_allocate(room->task_view, &room->task_alloc);
     }
@@ -273,16 +282,14 @@ static void expose_event ( AltkWidget *widget,
                            AltkEvent *event )
 {
   Private *priv = PRIVATE(widget);
-  gint tp;
+  GList *l;
   altk_gc_set_color_hrgb(event->expose.gc,
                          0x00FF00);
   altk_gc_clear_region(event->expose.gc,
                        event->expose.area);
-  for (tp = 0; tp < MB_ROOM_TYPE_COUNT; tp++)
+  for (l = priv->rooms; l; l = l->next)
     {
-      Room *room = &priv->rooms[tp];
-      if (!room->room)
-        continue;
+      Room *room = l->data;
       altk_gc_set_color_hrgb(event->expose.gc, 0x0);
       altk_gc_draw_rectangle(event->expose.gc,
                              FALSE,

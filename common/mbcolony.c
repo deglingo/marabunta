@@ -134,8 +134,8 @@ void mb_colony_add_room ( MbColony *colony,
 {
   ASSERT(MB_IS_ROOM(room));
   ASSERT(!MB_ROOM(room)->colony);
-  ASSERT(!colony->rooms[MB_ROOM_TYPE(room)]);
-  colony->rooms[MB_ROOM_TYPE(room)] = l_object_ref(room);
+  /* [FIXME] check room type */
+  colony->rooms = g_list_append(colony->rooms, l_object_ref(room));
   MB_ROOM(room)->colony = MB_OBJECT(colony);
 }
 

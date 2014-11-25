@@ -166,9 +166,13 @@ MbObject *mbs_colony_new ( MbObject *game )
                    MB_POP_ADULT_QUEEN,
                    0, 1);
   /* create the default rooms */
-  room = mbs_room_new(game, MB_ROOM_TYPE_ROYAL_CHAMBER);
-  mb_colony_add_room(MB_COLONY(col), room);
-  l_object_unref(room);
+  {
+    MbRoomType type = mb_game_lookup_room_type(MB_GAME(game), "royal-chamber");
+    ASSERT(type);
+    room = mbs_room_new(game, type);
+    mb_colony_add_room(MB_COLONY(col), room);
+    l_object_unref(room);
+  }
   /* room = mbs_room_new(game, MB_ROOM_TYPE_FARM); */
   /* mb_colony_add_room(MB_COLONY(col), room); */
   /* l_object_unref(room); */
