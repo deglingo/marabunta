@@ -11,6 +11,7 @@
 #include "server/mbspriority.h"
 #include "server/mbstask.h"
 #include "server/mbsvein.h"
+#include "server/mbstechnology.h"
 #include "server/mbsgame.inl"
 
 
@@ -123,6 +124,18 @@ static void _add_vein ( MbsGame *game,
 
 
 
+static void _register_room_tech ( MbsGame *game,
+                                  const gchar *name,
+                                  MbRoomType room_type )
+{
+  MbObject *tech;
+  tech = mbs_technology_new(MB_OBJECT(game), name);
+  mb_game_register_technology(MB_GAME(game), tech);
+  l_object_unref(tech);
+}
+
+
+
 /* mbs_game_setup:
  */
 void mbs_game_setup ( MbsGame *game )
@@ -149,6 +162,8 @@ void mbs_game_setup ( MbsGame *game )
   _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr1", 0, 100000);
   _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr2", 0, 1000000);
   _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr3", 0, 1000000000);
+  /* setup the technologies */
+  _register_room_tech(game, "farm1", MB_ROOM_TYPE_FARM);
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

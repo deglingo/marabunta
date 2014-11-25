@@ -7,6 +7,7 @@
 #include "common/mbresource.h"
 #include "common/mbworld.h"
 #include "common/mbstate.h"
+#include "common/mbtechnology.h"
 #include "common/mbgame.inl"
 
 
@@ -74,6 +75,11 @@ static void mb_game_init ( LObject *obj )
                           NULL,
                           (GDestroyNotify) l_object_unref);
   MB_GAME(obj)->resources =
+    g_hash_table_new_full(g_str_hash,
+                          g_str_equal,
+                          NULL,
+                          (GDestroyNotify) l_object_unref);
+  MB_GAME(obj)->technologies =
     g_hash_table_new_full(g_str_hash,
                           g_str_equal,
                           NULL,
@@ -165,6 +171,31 @@ MbObject *mb_game_lookup_resource ( MbGame *game,
                                     const gchar *name )
 {
   return g_hash_table_lookup(game->resources, name);
+}
+
+
+
+/* mb_game_register_technology:
+ */
+void mb_game_register_technology ( MbGame *game,
+                                   MbObject *technology )
+{
+  ASSERT(MB_IS_TECHNOLOGY(technology));
+  ASSERT(MB_OBJECT_GAME(technology) == MB_OBJECT(game));
+  ASSERT(!mb_game_lookup_technology(game, MB_TECHNOLOGY_NAME(technology)));
+  g_hash_table_insert(game->technologies,
+                      MB_TECHNOLOGY_NAME(technology),
+                      l_object_ref(technology));
+}
+
+
+
+/* mb_game_lookup_technology:
+ */
+MbObject *mb_game_lookup_technology ( MbGame *game,
+                                      const gchar *name )
+{
+  return g_hash_table_lookup(game->technologies, name);
 }
 
 

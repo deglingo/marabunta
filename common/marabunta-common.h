@@ -45,6 +45,8 @@
 
 #include "common/mbvein.h"
 
+#include "common/mbtechnology.h"
+
 #include "common/mbresource.h"
 
 

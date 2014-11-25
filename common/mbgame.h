@@ -23,6 +23,8 @@ struct _MbGame
   guint frame_count;
   /* resources : map < gchar *name, MbObject *rsc > */
   GHashTable *resources;
+  /* technologies : map < gchar *name, MbObject *tech > */
+  GHashTable *technologies;
 };
 
 
@@ -51,6 +53,10 @@ void mb_game_register_resource ( MbGame *game,
                                  MbObject *resource );
 MbObject *mb_game_lookup_resource ( MbGame *game,
                                     const gchar *name );
+void mb_game_register_technology ( MbGame *game,
+                                   MbObject *technology );
+MbObject *mb_game_lookup_technology ( MbGame *game,
+                                      const gchar *name );
 void mb_game_add_player ( MbGame *game,
                           MbObject *player );
 void mb_game_set_world ( MbGame *game,

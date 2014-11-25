@@ -12,6 +12,7 @@ namespace Mb
   extern class Priority;
   extern class Room;
   extern class Vein;
+  extern class Technology;
 }
 
 namespace Mbs
@@ -57,6 +58,10 @@ namespace Mbs
   };
 
   class Vein : Mb::Vein
+  {
+  };
+
+  class Technology : Mb::Technology
   {
   };
 }

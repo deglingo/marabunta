@@ -64,6 +64,11 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class Technology : Object
+  {
+    void class_init ();
+  };
   
   class Message
   {
