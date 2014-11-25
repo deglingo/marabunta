@@ -11,6 +11,18 @@ G_BEGIN_DECLS
 
 
 
+/* MbRoomTypeInfo:
+ */
+typedef struct _MbRoomTypeInfo
+  {
+    MbRoomType type;
+    gint level;
+    MbObject *technology;
+  }
+  MbRoomTypeInfo;
+
+
+
 /* MbGame:
  */
 struct _MbGame
@@ -25,6 +37,8 @@ struct _MbGame
   GHashTable *resources;
   /* technologies : map < gchar *name, MbObject *tech > */
   GHashTable *technologies;
+  /* room types */
+  MbRoomTypeInfo *room_types[MB_ROOM_TYPE_COUNT][MB_ROOM_MAX_LEVEL];
 };
 
 
@@ -57,6 +71,10 @@ void mb_game_register_technology ( MbGame *game,
                                    MbObject *technology );
 MbObject *mb_game_lookup_technology ( MbGame *game,
                                       const gchar *name );
+void mb_game_register_room_type ( MbGame *game,
+                                  MbRoomType type,
+                                  gint level,
+                                  const gchar *tech );
 void mb_game_add_player ( MbGame *game,
                           MbObject *player );
 void mb_game_set_world ( MbGame *game,

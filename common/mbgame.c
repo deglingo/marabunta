@@ -200,6 +200,30 @@ MbObject *mb_game_lookup_technology ( MbGame *game,
 
 
 
+/* mb_game_register_room_type:
+ */
+void mb_game_register_room_type ( MbGame *game,
+                                  MbRoomType type,
+                                  gint level,
+                                  const gchar *tech_name )
+{
+  MbRoomTypeInfo *info;
+  ASSERT(type >= 0 && type < MB_ROOM_TYPE_COUNT);
+  ASSERT(level >= 0 && level < MB_ROOM_MAX_LEVEL);
+  ASSERT(!game->room_types[type][level]);
+  info = game->room_types[type][level] = g_new0(MbRoomTypeInfo, 1);
+  info->type = type;
+  info->level = level;
+  if (tech_name)
+    {
+      MbObject *tech = mb_game_lookup_technology(game, tech_name);
+      ASSERT(tech);
+      info->technology = l_object_ref(tech);
+    }
+}
+
+
+
 /* mb_game_set_world:
  */
 void mb_game_set_world ( MbGame *game,

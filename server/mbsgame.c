@@ -125,8 +125,7 @@ static void _add_vein ( MbsGame *game,
 
 
 static void _register_room_tech ( MbsGame *game,
-                                  const gchar *name,
-                                  MbRoomType room_type )
+                                  const gchar *name )
 {
   MbObject *tech;
   tech = mbs_technology_new(MB_OBJECT(game), name);
@@ -163,7 +162,12 @@ void mbs_game_setup ( MbsGame *game )
   _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr2", 0, 1000000);
   _add_vein(game, MB_WORLD_SECTOR(MB_GAME_WORLD(game), 0, 0), "mr3", 0, 1000000000);
   /* setup the technologies */
-  _register_room_tech(game, "farm1", MB_ROOM_TYPE_FARM);
+  _register_room_tech(game, "farm1");
+  /* setup the room types */
+  mb_game_register_room_type(MB_GAME(game),
+                             MB_ROOM_TYPE_FARM,
+                             0,
+                             "farm1");
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

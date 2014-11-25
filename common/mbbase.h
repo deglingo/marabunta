@@ -34,6 +34,8 @@ typedef enum _MbRoomType
 }
   MbRoomType;
 
+#define MB_ROOM_MAX_LEVEL 4
+
 
 
 /* [fixme] */
