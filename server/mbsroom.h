@@ -30,7 +30,7 @@ struct _MbsRoomClass
 
 
 MbObject *mbs_room_new ( MbObject *game,
-                         MbRoomType type );
+                         gint type );
 
 
 

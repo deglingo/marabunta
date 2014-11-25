@@ -9,7 +9,7 @@
 /* mbs_room_new:
  */
 MbObject *mbs_room_new ( MbObject *game,
-                         MbRoomType type )
+                         gint type )
 {
   return MB_OBJECT(l_object_new_give(MBS_CLASS_ROOM,
                                      "game", l_object_ref(game),

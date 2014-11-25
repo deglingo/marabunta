@@ -135,6 +135,27 @@ static void _register_room_tech ( MbsGame *game,
 
 
 
+static MbRoomType _register_room_type ( MbsGame *game,
+                                        const gchar *nick,
+                                        const gchar *name )
+{
+  MbRoomType type = mb_game_next_room_type(MB_GAME(game));
+  mb_game_register_room_type(MB_GAME(game), type, nick, name);
+  return type;
+}
+
+
+
+static void _setup_rooms ( MbsGame *game )
+{
+  /* MbRoomType type; */
+  /* type = */ _register_room_type(game,
+                             "royal-chamber",
+                             "Royal chamber");
+}
+
+
+
 /* mbs_game_setup:
  */
 void mbs_game_setup ( MbsGame *game )
@@ -164,10 +185,7 @@ void mbs_game_setup ( MbsGame *game )
   /* setup the technologies */
   _register_room_tech(game, "farm1");
   /* setup the room types */
-  mb_game_register_room_type(MB_GAME(game),
-                             MB_ROOM_TYPE_FARM,
-                             0,
-                             "farm1");
+  _setup_rooms(game);
   /* [FIXME] */
   colony = mbs_colony_new(MB_OBJECT(game));
   ASSERT(MB_GAME(game)->players);

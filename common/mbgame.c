@@ -84,6 +84,8 @@ static void mb_game_init ( LObject *obj )
                           g_str_equal,
                           NULL,
                           (GDestroyNotify) l_object_unref);
+  MB_GAME(obj)->room_types = g_ptr_array_new();
+  g_ptr_array_add(MB_GAME(obj)->room_types, NULL);
 }
 
 
@@ -200,26 +202,44 @@ MbObject *mb_game_lookup_technology ( MbGame *game,
 
 
 
+/* mb_game_next_room_type:
+ */
+MbRoomType mb_game_next_room_type ( MbGame *game )
+{
+  return game->room_types->len;
+}
+
+
+
 /* mb_game_register_room_type:
  */
 void mb_game_register_room_type ( MbGame *game,
                                   MbRoomType type,
-                                  gint level,
-                                  const gchar *tech_name )
+                                  const gchar *nick,
+                                  const gchar *name )
 {
   MbRoomTypeInfo *info;
-  ASSERT(type >= 0 && type < MB_ROOM_TYPE_COUNT);
-  ASSERT(level >= 0 && level < MB_ROOM_MAX_LEVEL);
-  ASSERT(!game->room_types[type][level]);
-  info = game->room_types[type][level] = g_new0(MbRoomTypeInfo, 1);
+  ASSERT(type > 0 && !mb_game_get_room_type_info(game, type));
+  if (type >= game->room_types->len)
+    g_ptr_array_set_size(game->room_types, type+1);
+  info = g_new0(MbRoomTypeInfo, 1);
   info->type = type;
-  info->level = level;
-  if (tech_name)
-    {
-      MbObject *tech = mb_game_lookup_technology(game, tech_name);
-      ASSERT(tech);
-      info->technology = l_object_ref(tech);
-    }
+  info->nick = g_strdup(nick);
+  info->name = g_strdup(name);
+  game->room_types->pdata[type] = info;
+}
+
+
+
+/* mb_game_get_room_type_info:
+ */
+MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
+                                             MbRoomType type )
+{
+  if (type > 0 && type < game->room_types->len)
+    return game->room_types->pdata[type];
+  else
+    return NULL;
 }
 
 

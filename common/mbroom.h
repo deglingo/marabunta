@@ -17,7 +17,7 @@ struct _MbRoom
 {
   MB_ROOM_INSTANCE_HEADER;
 
-  MbRoomType type;
+  gint type;
   MbObject *colony;
 };
 

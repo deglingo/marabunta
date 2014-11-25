@@ -65,7 +65,7 @@ typedef struct _MinePage
 typedef struct _RoomData
 {
   Page *page;
-  MbRoomType type;
+  gint type;
   MbObject *room;
 }
   RoomData;

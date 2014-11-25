@@ -25,14 +25,16 @@ typedef enum _MbResourceFlags
 
 /* MbRoomType:
  */
-typedef enum _MbRoomType
+/* typedef */ enum /* _MbRoomType */
 {
   MB_ROOM_TYPE_ROYAL_CHAMBER,
   MB_ROOM_TYPE_FARM,
   MB_ROOM_TYPE_MINE,
   MB_ROOM_TYPE_COUNT,
 }
-  MbRoomType;
+  /* MbRoomType */;
+
+typedef guint MbRoomType;
 
 #define MB_ROOM_MAX_LEVEL 4
 

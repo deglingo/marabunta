@@ -166,7 +166,7 @@ struct _MbStateRoomSetup
   MbStateBlock block;
   MbObjectID room_id;
   MbObjectID colony_id;
-  MbRoomType type;
+  gint type;
 };
 
 
