@@ -11,18 +11,6 @@ G_BEGIN_DECLS
 
 
 
-/* MbRoomTypeInfo:
- */
-typedef struct _MbRoomTypeInfo
-  {
-    gint type;
-    gchar *nick;
-    gchar *name;
-  }
-  MbRoomTypeInfo;
-
-
-
 /* MbGame:
  */
 struct _MbGame
@@ -75,7 +63,8 @@ MbRoomType mb_game_next_room_type ( MbGame *game );
 void mb_game_register_room_type ( MbGame *game,
                                   MbRoomType type,
                                   const gchar *nick,
-                                  const gchar *name );
+                                  const gchar *name,
+                                  const gchar *work_task );
 MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
                                              MbRoomType type );
 MbRoomType mb_game_lookup_room_type ( MbGame *game,

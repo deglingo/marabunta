@@ -31,6 +31,19 @@ typedef guint MbRoomType;
 
 
 
+/* MbRoomTypeInfo:
+ */
+typedef struct _MbRoomTypeInfo
+  {
+    MbRoomType type;
+    gchar *nick;
+    gchar *name;
+    gchar *work_task;
+  }
+  MbRoomTypeInfo;
+
+
+
 /* [fixme] */
 #define MB_GAME_MAX_PLAYERS 4
 #define MB_PLAYER_MAX_NAME 16

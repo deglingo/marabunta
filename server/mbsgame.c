@@ -137,10 +137,11 @@ static void _register_room_tech ( MbsGame *game,
 
 static MbRoomType _register_room_type ( MbsGame *game,
                                         const gchar *nick,
-                                        const gchar *name )
+                                        const gchar *name,
+                                        const gchar *work_task )
 {
   MbRoomType type = mb_game_next_room_type(MB_GAME(game));
-  mb_game_register_room_type(MB_GAME(game), type, nick, name);
+  mb_game_register_room_type(MB_GAME(game), type, nick, name, work_task);
   return type;
 }
 
@@ -151,7 +152,8 @@ static void _setup_rooms ( MbsGame *game )
   /* MbRoomType type; */
   /* type = */ _register_room_type(game,
                              "royal-chamber",
-                             "Royal chamber");
+                                   "Royal chamber",
+                                   "spawn");
 }
 
 

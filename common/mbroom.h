@@ -19,6 +19,7 @@ struct _MbRoom
 
   gint type;
   MbObject *colony;
+  MbObject *work_task;
 };
 
 
@@ -34,10 +35,14 @@ struct _MbRoomClass
 
 #define MB_ROOM_TYPE(room) (MB_ROOM(room)->type)
 #define MB_ROOM_COLONY(room) (MB_ROOM(room)->colony)
+#define MB_ROOM_WORK_TASK(room) (MB_ROOM(room)->work_task)
 #define MB_ROOM_X(room) (0.5) /* [TODO] */
 #define MB_ROOM_Y(room) (0.5) /* [TODO] */
 #define MB_ROOM_WIDTH(room) (0.1) /* [TODO] */
 #define MB_ROOM_HEIGHT(room) (0.1) /* [TODO] */
+
+void mb_room_set_colony ( MbRoom *room,
+                          MbObject *colony );
 
 
 

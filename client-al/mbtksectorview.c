@@ -216,18 +216,14 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
               priv->rooms = g_list_append(priv->rooms, room);
               /* CL_DEBUG("set room %d: %p", tp, mb_room); */
               room->room = l_object_ref(mb_room);
-              /* [TODO] */
-              /* if (info->task_path) */
-              /*   { */
-              /*     room->task = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)), */
-              /*                               info->task_path); */
-              /*     ASSERT(room->task); */
-              /*     l_object_ref(room->task); */
-              /*     room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task); */
-              /*     _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view)); */
-              /*     mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view)); */
-              /*     altk_widget_show_all(room->task_view); */
-              /*   } */
+              if (MB_ROOM_WORK_TASK(room->room))
+                {
+                  room->task = l_object_ref(MB_ROOM_WORK_TASK(room->room));
+                  room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
+                  _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+                  mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
+                  altk_widget_show_all(room->task_view);
+                }
             }
         }
     }

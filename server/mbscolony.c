@@ -165,14 +165,6 @@ MbObject *mbs_colony_new ( MbObject *game )
   mbs_pop_tree_add(MBS_COLONY(col)->pop_tree,
                    MB_POP_ADULT_QUEEN,
                    0, 1);
-  /* create the default rooms */
-  {
-    MbRoomType type = mb_game_lookup_room_type(MB_GAME(game), "royal-chamber");
-    ASSERT(type);
-    room = mbs_room_new(game, type);
-    mb_colony_add_room(MB_COLONY(col), room);
-    l_object_unref(room);
-  }
   /* room = mbs_room_new(game, MB_ROOM_TYPE_FARM); */
   /* mb_colony_add_room(MB_COLONY(col), room); */
   /* l_object_unref(room); */
@@ -210,6 +202,14 @@ MbObject *mbs_colony_new ( MbObject *game )
   t_mine = mbs_task_new_group(game, "mine");
   mb_task_add(MB_TASK(t_work), t_mine);
   l_object_unref(t_mine);
+  /* create the default rooms */
+  {
+    MbRoomType type = mb_game_lookup_room_type(MB_GAME(game), "royal-chamber");
+    ASSERT(type);
+    room = mbs_room_new(game, type);
+    mb_colony_add_room(MB_COLONY(col), room);
+    l_object_unref(room);
+  }
   return col;
 }
 

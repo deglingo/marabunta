@@ -216,7 +216,8 @@ MbRoomType mb_game_next_room_type ( MbGame *game )
 void mb_game_register_room_type ( MbGame *game,
                                   MbRoomType type,
                                   const gchar *nick,
-                                  const gchar *name )
+                                  const gchar *name,
+                                  const gchar *work_task)
 {
   MbRoomTypeInfo *info;
   ASSERT(type > 0 && !mb_game_get_room_type_info(game, type));
@@ -226,6 +227,8 @@ void mb_game_register_room_type ( MbGame *game,
   info->type = type;
   info->nick = g_strdup(nick);
   info->name = g_strdup(name);
+  if (work_task)
+    info->work_task = g_strdup(work_task);
   game->room_types->pdata[type] = info;
 }
 
