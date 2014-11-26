@@ -16,6 +16,7 @@
  */
 enum
   {
+    SIG_ADD_ROOM,
     SIG_POP_NOTIFY,
     SIG_STOCK_NOTIFY,
     SIG_COUNT,
@@ -53,6 +54,10 @@ static void stock_node_free ( StockNode *node )
 static void mb_colony_class_init ( LObjectClass *cls )
 {
   MB_COLONY_CLASS(cls)->set_sector = set_sector;
+
+  signals[SIG_ADD_ROOM] =
+    l_signal_new(cls,
+                 "add_room");
   
   signals[SIG_POP_NOTIFY] =
     l_signal_new(cls,
@@ -137,6 +142,9 @@ void mb_colony_add_room ( MbColony *colony,
   /* [FIXME] check room type */
   colony->rooms = g_list_append(colony->rooms, l_object_ref(room));
   mb_room_set_colony(MB_ROOM(room), MB_OBJECT(colony));
+  l_signal_emit(L_OBJECT(colony),
+                signals[SIG_ADD_ROOM],
+                0);
 }
 
 

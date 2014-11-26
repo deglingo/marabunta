@@ -45,6 +45,7 @@ typedef struct _Private
 {
   MbObject *sector;
   GList *rooms;
+  LSignalHandlerGroup *sig_group;
 }
   Private;
 
@@ -101,6 +102,7 @@ static void mbtk_sector_view_init ( LObject *obj )
   ALTK_WIDGET(obj)->flags |= ALTK_WIDGET_FLAG_NOWINDOW;
   altk_widget_set_event_mask(ALTK_WIDGET(obj),
                              ALTK_EVENT_MASK_EXPOSE);
+  PRIVATE(obj)->sig_group = l_signal_handler_group_new();
 }
 
 
@@ -166,6 +168,7 @@ static void _unset_sector ( MbtkSectorView *view )
 {
   Private *priv = PRIVATE(view);
   GList *l;
+  l_signal_handler_group_remove_all(priv->sig_group);
   /* cleanup rooms */
   for (l = priv->rooms; l; l = l->next)
     {
@@ -187,6 +190,65 @@ static void _unset_sector ( MbtkSectorView *view )
 
 
 
+static void _add_room ( MbtkSectorView *view,
+                        MbObject *mb_room )
+{
+  Private *priv = PRIVATE(view);
+  Room *room = room_new();
+  priv->rooms = g_list_append(priv->rooms, room);
+  /* CL_DEBUG("set room %d: %p", tp, mb_room); */
+  room->room = l_object_ref(mb_room);
+  if (MB_ROOM_WORK_TASK(room->room))
+    {
+      room->task = l_object_ref(MB_ROOM_WORK_TASK(room->room));
+      room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
+      _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
+      mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
+      altk_widget_show_all(room->task_view);
+    }
+}
+
+
+
+static void _on_colony_add_room ( MbObject *colony,
+                                  MbtkSectorView *view )
+{
+  /* [FIXME] should be a signal param */
+  MbObject *room = g_list_last(MB_COLONY_ROOMS(colony))->data;
+  _add_room(view, room);
+  altk_widget_queue_resize(ALTK_WIDGET(view));
+  altk_widget_queue_draw(ALTK_WIDGET(view));
+}
+
+
+
+static void _set_sector ( MbtkSectorView *view,
+                          MbObject *sector )
+{
+  Private *priv = PRIVATE(view);
+  /* CL_DEBUG("set_sector: %p", sector); */
+  priv->sector = l_object_ref(sector);
+  if (MB_SECTOR_COLONY(sector))
+    {
+      MbObject *colony = MB_SECTOR_COLONY(sector);
+      GList *l;
+      l_signal_handler_group_connect
+        (priv->sig_group,
+         L_OBJECT(colony),
+         "add_room",
+         (LSignalHandler) _on_colony_add_room,
+         view,
+         NULL);
+      /* CL_DEBUG("set_colony: %p", colony); */
+      for (l = MB_COLONY_ROOMS(colony); l; l = l->next)
+        {
+          _add_room(view, l->data);
+        }
+    }
+}
+
+
+
 /* mbtk_sector_view_set_sector:
  */
 void mbtk_sector_view_set_sector ( MbtkSectorView *view,
@@ -202,30 +264,7 @@ void mbtk_sector_view_set_sector ( MbtkSectorView *view,
   if (sector)
     {
       ASSERT(MB_IS_SECTOR(sector));
-      /* CL_DEBUG("set_sector: %p", sector); */
-      priv->sector = l_object_ref(sector);
-      if (MB_SECTOR_COLONY(sector))
-        {
-          MbObject *colony = MB_SECTOR_COLONY(sector);
-          GList *l;
-          /* CL_DEBUG("set_colony: %p", colony); */
-          for (l = MB_COLONY_ROOMS(colony); l; l = l->next)
-            {
-              MbObject *mb_room = l->data;
-              Room *room = room_new();
-              priv->rooms = g_list_append(priv->rooms, room);
-              /* CL_DEBUG("set room %d: %p", tp, mb_room); */
-              room->room = l_object_ref(mb_room);
-              if (MB_ROOM_WORK_TASK(room->room))
-                {
-                  room->task = l_object_ref(MB_ROOM_WORK_TASK(room->room));
-                  room->task_view = mbtk_task_view_new(ALTK_VERTICAL, room->task);
-                  _altk_widget_set_parent(room->task_view, ALTK_WIDGET(view));
-                  mbtk_task_view_hide_title(MBTK_TASK_VIEW(room->task_view));
-                  altk_widget_show_all(room->task_view);
-                }
-            }
-        }
+      _set_sector(view, sector);
     }
   /* _rooms_layout(view); */
   altk_widget_queue_resize(ALTK_WIDGET(view));
