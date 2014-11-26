@@ -535,6 +535,53 @@ void mbs_game_handle_request ( MbsGame *game,
 
 
 
+static gboolean _check_room_overlap ( MbGame *game,
+                                      MbObject *colony,
+                                      MbObject *room )
+{
+  GList *l;
+  gfloat room_x2 = MB_ROOM_X(room) + MB_ROOM_WIDTH(room);
+  gfloat room_y2 = MB_ROOM_Y(room) + MB_ROOM_HEIGHT(room) + 0.1;
+  for (l = MB_COLONY_ROOMS(colony); l; l = l->next)
+    {
+      MbObject *room2 = l->data;
+      gfloat room2_x2 = MB_ROOM_X(room2) + MB_ROOM_WIDTH(room2);
+      gfloat room2_y2 = MB_ROOM_Y(room2) + MB_ROOM_HEIGHT(room2) + 0.1;
+      gfloat ix = MAX(MB_ROOM_X(room), MB_ROOM_X(room2));
+      gfloat iy = MAX(MB_ROOM_Y(room), MB_ROOM_Y(room2));
+      gfloat ix2 = MIN(room_x2, room2_x2);
+      gfloat iy2 = MIN(room_y2, room2_y2);
+      if (ix < ix2 && iy < iy2)
+        return TRUE;
+    }
+  return FALSE;
+}
+
+
+
+static void _set_room_pos ( MbGame *game,
+                            MbObject *colony,
+                            MbObject *room)
+{
+  guint ntries;
+  MB_ROOM(room)->width = 0.1;
+  MB_ROOM(room)->height = 0.1;
+  for (ntries = 0; ntries < 10000; ntries++)
+    {
+      gfloat x = g_random_double_range(0.1, 0.9);
+      gfloat y = g_random_double_range(0.1, 0.9);
+      MB_ROOM(room)->x = x;
+      MB_ROOM(room)->y = y;
+      if (!_check_room_overlap(game, colony, room))
+        {
+          return;
+        }
+    }
+  CL_ERROR("[FIXME] could not set room pos!");
+}
+
+
+
 /* request_build_room:
  */
 static void request_build_room ( MbGame *game,
@@ -546,5 +593,6 @@ static void request_build_room ( MbGame *game,
   MbObject *room;
   CL_DEBUG("adding room type %d", type);
   room = mbs_room_new(MB_OBJECT(game), type);
+  _set_room_pos(game, colony, room);
   mb_colony_add_room(MB_COLONY(colony), room);
 }

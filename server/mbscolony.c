@@ -207,6 +207,10 @@ MbObject *mbs_colony_new ( MbObject *game )
     MbRoomType type = mb_game_lookup_room_type(MB_GAME(game), "royal-chamber");
     ASSERT(type);
     room = mbs_room_new(game, type);
+    MB_ROOM(room)->x = 0.5;
+    MB_ROOM(room)->y = 0.5;
+    MB_ROOM(room)->width = 0.1;
+    MB_ROOM(room)->height = 0.1;
     mb_colony_add_room(MB_COLONY(col), room);
     l_object_unref(room);
   }
