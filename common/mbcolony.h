@@ -70,6 +70,8 @@ void mb_colony_set_owner ( MbColony *colony,
                            MbObject *player );
 void mb_colony_set_top_task ( MbColony *colony,
                               MbObject *task );
+void mb_colony_task_added ( MbColony *colony,
+                            MbObject *task );
 void mb_colony_add_room ( MbColony *colony,
                           MbObject *room );
 void mb_colony_set_stock ( MbColony *colony,

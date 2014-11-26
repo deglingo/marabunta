@@ -177,6 +177,8 @@ static void add ( MbTask *task,
   task->children = g_list_append(task->children, child);
   MB_TASK(child)->parent = task;
   mb_task_set_colony(MB_TASK(child), task->colony);
+  /* [FIXME] */
+  mb_colony_task_added(MB_COLONY(task->colony), child);
 }
 
 

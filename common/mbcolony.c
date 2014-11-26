@@ -17,6 +17,7 @@
 enum
   {
     SIG_ADD_ROOM,
+    SIG_TASK_ADDED,
     SIG_POP_NOTIFY,
     SIG_STOCK_NOTIFY,
     SIG_COUNT,
@@ -61,6 +62,10 @@ static void mb_colony_class_init ( LObjectClass *cls )
   signals[SIG_ADD_ROOM] =
     l_signal_new(cls,
                  "add_room");
+
+  signals[SIG_TASK_ADDED] =
+    l_signal_new(cls,
+                 "task_added");
   
   signals[SIG_POP_NOTIFY] =
     l_signal_new(cls,
@@ -131,6 +136,20 @@ void mb_colony_set_top_task ( MbColony *colony,
   ASSERT(!MB_TASK_COLONY(task));
   colony->top_task = l_object_ref(task);
   mb_task_set_colony(MB_TASK(task), MB_OBJECT(colony));
+  mb_colony_task_added(colony, task);
+}
+
+
+
+/* mb_colony_task_added:
+ */
+void mb_colony_task_added ( MbColony *colony,
+                            MbObject *task )
+{
+  /* [FIXME] param */
+  l_signal_emit(L_OBJECT(colony),
+                signals[SIG_TASK_ADDED],
+                0);
 }
 
 
