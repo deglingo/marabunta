@@ -12,6 +12,7 @@
 #include "server/mbstask.h"
 #include "server/mbsvein.h"
 #include "server/mbstechnology.h"
+#include "server/mbsroom.h"
 #include "server/mbsgame.inl"
 
 
@@ -49,6 +50,10 @@ typedef struct _PlayerData
 
 static void add_player ( MbGame *game,
                          MbObject *player );
+static void request_build_room ( MbGame *game,
+                                 MbObject *player,
+                                 MbObject *colony,
+                                 MbRoomType type );
 
 
 
@@ -57,6 +62,7 @@ static void add_player ( MbGame *game,
 static void mbs_game_class_init ( LObjectClass *cls )
 {
   MB_GAME_CLASS(cls)->add_player = add_player;
+  MB_GAME_CLASS(cls)->request_build_room = request_build_room;
 }
 
 
@@ -525,4 +531,20 @@ void mbs_game_handle_request ( MbsGame *game,
           CL_ERROR("[TODO] block type %d", block->type);
         }
     }
+}
+
+
+
+/* request_build_room:
+ */
+static void request_build_room ( MbGame *game,
+                                 MbObject *player,
+                                 MbObject *colony,
+                                 MbRoomType type )
+{
+  /* [FIXME] check player, room existence... */
+  MbObject *room;
+  CL_DEBUG("adding room type %d", type);
+  room = mbs_room_new(MB_OBJECT(game), type);
+  mb_colony_add_room(MB_COLONY(colony), room);
 }

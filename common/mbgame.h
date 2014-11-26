@@ -39,6 +39,11 @@ struct _MbGameClass
 
   void (* add_player) ( MbGame *game,
                         MbObject *player );
+
+  void (* request_build_room) ( MbGame *game,
+                                MbObject *player,
+                                MbObject *colony,
+                                MbRoomType type );
 };
 
 
@@ -76,6 +81,12 @@ void mb_game_set_world ( MbGame *game,
                          MbObject *world );
 void mb_game_set_frame_count ( MbGame *game,
                                guint frame_count );
+
+/* user requests */
+void mb_game_request_build_room ( MbGame *game,
+                                  MbObject *player,
+                                  MbObject *colony,
+                                  MbRoomType type );
 
 
 

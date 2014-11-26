@@ -8,6 +8,7 @@
 #include "common/mbworld.h"
 #include "common/mbstate.h"
 #include "common/mbtechnology.h"
+#include "common/mbcolony.h"
 #include "common/mbgame.inl"
 
 
@@ -290,4 +291,19 @@ void mb_game_set_frame_count ( MbGame *game,
       l_object_notify(L_OBJECT(game),
                       pspecs[PROP_FRAME_COUNT]);
     }
+}
+
+
+
+/* mb_game_request_build_room:
+ */
+void mb_game_request_build_room ( MbGame *game,
+                                  MbObject *player,
+                                  MbObject *colony,
+                                  MbRoomType type )
+{
+  /* [FIXME] check player */
+  ASSERT(MB_IS_COLONY(colony));
+  ASSERT(mb_game_get_room_type_info(game, type));
+  MB_GAME_GET_CLASS(game)->request_build_room(game, player, colony, type);
 }

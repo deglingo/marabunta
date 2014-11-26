@@ -77,6 +77,7 @@ typedef struct _RoomData
 typedef struct _RoomsPage
 {
   Page page;
+  LSignalHandlerGroup *sig_group;
   RoomData *rooms;
   guint n_rooms;
   guint max_rooms;
@@ -246,6 +247,7 @@ static Page *_create_page ( AltkWidget *panel,
  */
 static void _rooms_page_create ( Page *page )
 {
+  ROOMS_PAGE(page)->sig_group = l_signal_handler_group_new();
   ROOMS_PAGE(page)->top_box = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
   ALTK_CONTAINER_ADD(page->body, ROOMS_PAGE(page)->top_box);
@@ -256,14 +258,20 @@ static void _rooms_page_create ( Page *page )
 static void _on_build_button_clicked ( AltkWidget *button,
                                        RoomData *data )
 {
-  CL_DEBUG("[TODO] build room type %d", data->type);
+  Private *priv = PRIVATE(data->page->panel);
+  MbObject *game = MB_OBJECT_GAME(priv->colony);
+  mb_game_request_build_room(MB_GAME(game),
+                             NULL, /* [FIXME] player */
+                             priv->colony,
+                             data->type);
 }
 
 
 
 /* _create_room_dialog:
  */
-static AltkWidget *_create_room_dialog ( RoomData *data,
+static AltkWidget *_create_room_dialog ( Page *page,
+                                         RoomData *data,
                                          const MbRoomTypeInfo *info )
 {
   AltkWidget *box, *label, *build_but;
@@ -274,11 +282,13 @@ static AltkWidget *_create_room_dialog ( RoomData *data,
   build_but = L_TRASH_OBJECT
     (altk_button_new_with_label("+"));
   ALTK_BOX_ADD(box, build_but, 0);
-  l_signal_connect(L_OBJECT(build_but),
-                   "clicked",
-                   (LSignalHandler) _on_build_button_clicked,
-                   data,
-                   NULL);
+  l_signal_handler_group_connect
+    (ROOMS_PAGE(page)->sig_group,
+     L_OBJECT(build_but),
+     "clicked",
+     (LSignalHandler) _on_build_button_clicked,
+     data,
+     NULL);
   return box;
 }
 
@@ -307,9 +317,10 @@ static void _rooms_page_init ( Page *page )
             }
           data = &ROOMS_PAGE(page)->rooms[ROOMS_PAGE(page)->n_rooms++];
           memset(data, 0, sizeof(RoomData));
+          data->page = page;
           data->type = type;
           AltkWidget *wid = L_TRASH_OBJECT
-            (_create_room_dialog(data, info));
+            (_create_room_dialog(page, data, info));
           ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box, wid, ALTK_PACK_HEXPAND_FILL);
           ROOMS_PAGE(page)->widgets = g_slist_prepend(ROOMS_PAGE(page)->widgets, wid);
         }
@@ -323,6 +334,7 @@ static void _rooms_page_init ( Page *page )
  */
 static void _rooms_page_cleanup ( Page *page )
 {
+  l_signal_handler_group_remove_all(ROOMS_PAGE(page)->sig_group);
   g_slist_free_full(ROOMS_PAGE(page)->widgets, (GDestroyNotify) altk_widget_destroy);
   ROOMS_PAGE(page)->widgets = NULL;
 }
