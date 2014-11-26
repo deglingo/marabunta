@@ -154,6 +154,11 @@ static void _setup_rooms ( MbsGame *game )
                              "royal-chamber",
                                    "Royal chamber",
                                    "spawn");
+
+  _register_room_type(game,
+                      "farm",
+                      "Farm",
+                      "work/farm");
 }
 
 

@@ -236,8 +236,8 @@ void mb_game_register_room_type ( MbGame *game,
 
 /* mb_game_get_room_type_info:
  */
-MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
-                                             MbRoomType type )
+const MbRoomTypeInfo *mb_game_get_room_type_info ( MbGame *game,
+                                                   MbRoomType type )
 {
   if (type > 0 && type < game->room_types->len)
     return game->room_types->pdata[type];

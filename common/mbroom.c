@@ -80,7 +80,7 @@ static LObject *get_property ( LObject *obj,
 void mb_room_set_colony ( MbRoom *room,
                           MbObject *colony )
 {
-  MbRoomTypeInfo *info;
+  const MbRoomTypeInfo *info;
   ASSERT(MB_IS_COLONY(colony));
   ASSERT(!room->colony);
   room->colony = colony;
