@@ -135,7 +135,7 @@ static void _rooms_layout ( MbtkSectorView *view )
   GList *l;
   gint width = ALTK_WIDGET(view)->width;
   gint height = ALTK_WIDGET(view)->height;
-  CL_TRACE("%p", view);
+  /* CL_TRACE("%p", view); */
   for (l = priv->rooms; l; l = l->next)
     {
       Room *room = l->data;
@@ -145,9 +145,9 @@ static void _rooms_layout ( MbtkSectorView *view )
       room->h = height * MB_ROOM_HEIGHT(room->room);
       room->x = room->cx - room->w / 2;
       room->y = room->cy - room->h / 2;
-      CL_TRACE("room: %d, %d, %d, %d",
-               room->x, room->y,
-               room->w, room->h);
+      /* CL_TRACE("room: %d, %d, %d, %d", */
+      /*          room->x, room->y, */
+      /*          room->w, room->h); */
       if (room->task_view)
         {
           room->task_alloc.width = room->task_req.width;
