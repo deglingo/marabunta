@@ -39,6 +39,8 @@ typedef struct _StockNode
 
 static void set_sector ( MbColony *colony,
                          MbObject *sector );
+static void add_room ( MbColony *colony,
+                       MbObject *room );
 
 
 
@@ -54,6 +56,7 @@ static void stock_node_free ( StockNode *node )
 static void mb_colony_class_init ( LObjectClass *cls )
 {
   MB_COLONY_CLASS(cls)->set_sector = set_sector;
+  MB_COLONY_CLASS(cls)->add_room = add_room;
 
   signals[SIG_ADD_ROOM] =
     l_signal_new(cls,
@@ -140,11 +143,22 @@ void mb_colony_add_room ( MbColony *colony,
   ASSERT(MB_IS_ROOM(room));
   ASSERT(!MB_ROOM(room)->colony);
   /* [FIXME] check room type */
-  colony->rooms = g_list_append(colony->rooms, l_object_ref(room));
-  mb_room_set_colony(MB_ROOM(room), MB_OBJECT(colony));
+  /* [fixme] signal method */
+  MB_COLONY_GET_CLASS(colony)->add_room(colony, room);
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_ADD_ROOM],
                 0);
+}
+
+
+
+/* add_room:
+ */
+static void add_room ( MbColony *colony,
+                       MbObject *room )
+{
+  colony->rooms = g_list_append(colony->rooms, l_object_ref(room));
+  mb_room_set_colony(MB_ROOM(room), MB_OBJECT(colony));
 }
 
 

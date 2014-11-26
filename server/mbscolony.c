@@ -12,6 +12,8 @@
 
 static void set_sector ( MbColony *colony,
                          MbObject *sector );
+static void add_room ( MbColony *colony,
+                       MbObject *room );
 
 
 
@@ -131,11 +133,48 @@ static void t_mine_process ( MbsTask *task )
 
 
 
+/* BuildData:
+ */
+typedef struct _BuildData
+{
+  int dummy;
+}
+  BuildData;
+
+#define BUILD_DATA(task) ((BuildData *)(MBS_TASK(task)))
+
+
+
+/* t_build_init:
+ */
+static void t_build_init ( MbsTask *task )
+{
+}
+
+
+
+/* t_build_check:
+ */
+static void t_build_check ( MbsTask *task )
+{
+}
+
+
+
+/* t_build_process:
+ */
+static void t_build_process ( MbsTask *task )
+{
+}
+
+
+
 /* mbs_colony_class_init:
  */
 static void mbs_colony_class_init ( LObjectClass *cls )
 {
   MB_COLONY_CLASS(cls)->set_sector = set_sector;
+  MB_COLONY_CLASS(cls)->add_room = add_room;
 }
 
 
@@ -248,6 +287,33 @@ static void set_sector ( MbColony *colony,
       mb_task_add(MB_TASK(t_mine), task);
       l_object_unref(task);
     }
+}
+
+
+
+/* add_room:
+ */
+static void add_room ( MbColony *colony,
+                       MbObject *room )
+{
+  MbObject *t_build, *t_room;
+  MbObject *game = MB_OBJECT_GAME(colony);
+  const MbRoomTypeInfo *info = mb_game_get_room_type_info(MB_GAME(game), MB_ROOM_TYPE(room));
+  MbsTaskFuncs t_build_funcs = {
+    t_build_init,
+    t_build_check,
+    t_build_process,
+  };
+  MB_COLONY_CLASS(parent_class)->add_room(colony, room);
+  t_build = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                         "work/build");
+  ASSERT(t_build);
+  t_room = mbs_task_new(MB_OBJECT_GAME(colony),
+                        info->nick,
+                        MB_POP_FLAG_ADULT_WORKER,
+                        NULL,
+                        &t_build_funcs);
+  mb_task_add(MB_TASK(t_build), t_room);
 }
 
 

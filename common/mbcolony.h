@@ -52,6 +52,9 @@ struct _MbColonyClass
 
   void (* set_sector) ( MbColony *colony,
                         MbObject *sector );
+
+  void (* add_room) ( MbColony *colony,
+                      MbObject *room );
 };
 
 
