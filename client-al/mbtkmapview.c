@@ -50,7 +50,13 @@ typedef struct _Private
 static void mbtk_map_view_class_init ( LObjectClass *cls )
 {
   signals[SIG_SET_SECTOR] = l_signal_new(cls,
-                                         "set_sector");
+                                         "set_sector",
+                                         0,
+                                         0,
+                                         NULL,
+                                         NULL,
+                                         NULL,
+                                         NULL);
 }
 
 

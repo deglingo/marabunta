@@ -61,7 +61,13 @@ static void mb_game_class_init ( LObjectClass *cls )
 
   signals[SIG_STARTED] =
     l_signal_new(cls,
-                 "started");
+                 "started",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 NULL);
 }
 
 

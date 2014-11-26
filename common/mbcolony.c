@@ -61,19 +61,43 @@ static void mb_colony_class_init ( LObjectClass *cls )
 
   signals[SIG_ADD_ROOM] =
     l_signal_new(cls,
-                 "add_room");
+                 "add_room",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 NULL);
 
   signals[SIG_TASK_ADDED] =
     l_signal_new(cls,
-                 "task_added");
+                 "task_added",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 NULL);
   
   signals[SIG_POP_NOTIFY] =
     l_signal_new(cls,
-                 "pop_notify");
+                 "pop_notify",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 NULL);
 
   signals[SIG_STOCK_NOTIFY] =
     l_signal_new(cls,
-                 "stock_notify");
+                 "stock_notify",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 NULL);
 }
 
 
