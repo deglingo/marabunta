@@ -103,7 +103,8 @@ void mb_game_started ( MbGame *game )
 {
   l_signal_emit(L_OBJECT(game),
                 signals[SIG_STARTED],
-                0);
+                0,
+                NULL);
 }
 
 

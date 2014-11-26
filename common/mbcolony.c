@@ -173,7 +173,8 @@ void mb_colony_task_added ( MbColony *colony,
   /* [FIXME] param */
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_TASK_ADDED],
-                0);
+                0,
+                NULL);
 }
 
 
@@ -190,7 +191,8 @@ void mb_colony_add_room ( MbColony *colony,
   MB_COLONY_GET_CLASS(colony)->add_room(colony, room);
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_ADD_ROOM],
-                0);
+                0,
+                NULL);
 }
 
 
@@ -210,7 +212,7 @@ static void add_room ( MbColony *colony,
  */
 void mb_colony_pop_notify ( MbColony *colony )
 {
-  l_signal_emit(L_OBJECT(colony), signals[SIG_POP_NOTIFY], 0);
+  l_signal_emit(L_OBJECT(colony), signals[SIG_POP_NOTIFY], 0, NULL);
 }
 
 
@@ -239,7 +241,8 @@ void mb_colony_set_stock ( MbColony *colony,
   node->qtty = qtty;
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_STOCK_NOTIFY],
-                MB_RESOURCE_QNAME(node->rsc));
+                MB_RESOURCE_QNAME(node->rsc),
+                NULL);
 }
 
 

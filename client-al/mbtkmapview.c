@@ -154,7 +154,7 @@ void mbtk_map_view_set_sector ( MbtkMapView *view,
   if (priv->current_sector)
     L_OBJECT_CLEAR(priv->current_sector);
   priv->current_sector = l_object_ref(sector);
-  l_signal_emit(L_OBJECT(view), signals[SIG_SET_SECTOR], 0);
+  l_signal_emit(L_OBJECT(view), signals[SIG_SET_SECTOR], 0, NULL);
 }
 
 
