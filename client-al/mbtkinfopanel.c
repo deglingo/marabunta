@@ -67,6 +67,8 @@ typedef struct _RoomData
   Page *page;
   gint type;
   MbObject *room;
+  AltkWidget *top_widget;
+  AltkWidget *task_view;
 }
   RoomData;
 
@@ -80,7 +82,6 @@ typedef struct _RoomsPage
   LSignalHandlerGroup *sig_group;
   RoomData *rooms;
   guint n_rooms;
-  guint max_rooms;
   AltkWidget *top_box;
   GSList *widgets;
 }
@@ -275,10 +276,15 @@ static AltkWidget *_create_room_dialog ( Page *page,
                                          const MbRoomTypeInfo *info )
 {
   AltkWidget *box, *label, *build_but;
-  box = altk_box_new(ALTK_HORIZONTAL);
+  data->top_widget = box = altk_box_new(ALTK_HORIZONTAL);
   label = L_TRASH_OBJECT
     (altk_label_new(info->name));
   ALTK_BOX_ADD(box, label, 0);
+  data->task_view = L_TRASH_OBJECT
+    (mbtk_task_view_new(ALTK_HORIZONTAL, NULL));
+  mbtk_task_view_hide_title(MBTK_TASK_VIEW(data->task_view));
+  altk_widget_hide(data->task_view);
+  ALTK_BOX_ADD(box, data->task_view, 0);
   build_but = L_TRASH_OBJECT
     (altk_button_new_with_label("+"));
   ALTK_BOX_ADD(box, build_but, 0);
@@ -294,6 +300,16 @@ static AltkWidget *_create_room_dialog ( Page *page,
 
 
 
+static void _rooms_page_add_room ( MbObject *colony,
+                                   MbObject *room,
+                                   Page *page )
+{
+  CL_DEBUG("[TODO]");
+}
+                           
+
+
+
 /* _rooms_page_init:
  */
 static void _rooms_page_init ( Page *page )
@@ -303,26 +319,32 @@ static void _rooms_page_init ( Page *page )
     {
       MbObject *game = MB_OBJECT_GAME(priv->colony);
       MbRoomType type;
-      for (type = 1; type < mb_game_next_room_type(MB_GAME(game)); type++)
+      if (!ROOMS_PAGE(page)->rooms)
+        {
+          ROOMS_PAGE(page)->n_rooms = mb_game_next_room_type(MB_GAME(MB_OBJECT_GAME(priv->colony)));
+          ROOMS_PAGE(page)->rooms = g_new(RoomData, ROOMS_PAGE(page)->n_rooms);
+        }
+      /* ?? */
+      memset(ROOMS_PAGE(page)->rooms, 0, sizeof(RoomData) * ROOMS_PAGE(page)->n_rooms);
+      l_signal_handler_group_add
+        (ROOMS_PAGE(page)->sig_group,
+         l_signal_connect(L_OBJECT(priv->colony),
+                          "add_room",
+                          (LSignalHandler) _rooms_page_add_room,
+                          page,
+                          NULL));
+      for (type = 1; type < ROOMS_PAGE(page)->n_rooms; type++)
         {
           const MbRoomTypeInfo *info = mb_game_get_room_type_info(MB_GAME(game), type);
           RoomData *data;
-          if (!info)
-            continue;
-          if (ROOMS_PAGE(page)->n_rooms == ROOMS_PAGE(page)->max_rooms)
-            {
-              ROOMS_PAGE(page)->max_rooms += 8;
-              ROOMS_PAGE(page)->rooms = g_realloc(ROOMS_PAGE(page)->rooms,
-                                                  ROOMS_PAGE(page)->max_rooms * sizeof(RoomData));
-            }
-          data = &ROOMS_PAGE(page)->rooms[ROOMS_PAGE(page)->n_rooms++];
-          memset(data, 0, sizeof(RoomData));
+          ASSERT(info);
+          data = &ROOMS_PAGE(page)->rooms[type];
           data->page = page;
           data->type = type;
-          AltkWidget *wid = L_TRASH_OBJECT
-            (_create_room_dialog(page, data, info));
-          ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box, wid, ALTK_PACK_HEXPAND_FILL);
-          ROOMS_PAGE(page)->widgets = g_slist_prepend(ROOMS_PAGE(page)->widgets, wid);
+          _create_room_dialog(page, data, info);
+          ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box, data->top_widget, ALTK_PACK_HEXPAND_FILL);
+          ROOMS_PAGE(page)->widgets = g_slist_prepend(ROOMS_PAGE(page)->widgets,
+                                                      data->top_widget);
         }
     }
   altk_widget_show_all(ROOMS_PAGE(page)->top_box);

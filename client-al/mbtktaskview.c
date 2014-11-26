@@ -92,6 +92,8 @@ static void _create_view ( AltkWidget *view )
   priv->resource = L_TRASH_OBJECT
     (altk_label_new("0"));
   ALTK_BOX_ADD(top_box, priv->resource, 0);
+  altk_widget_set_enable_show_all(priv->resource, FALSE);
+  altk_widget_hide(priv->resource);
   l_trash_pop();
 }
 
@@ -162,6 +164,8 @@ static void _set_task ( AltkWidget *view,
          NULL);
       g_free(signame);
     }
+  mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(PRIVATE(view)->priority_view),
+                                  MB_TASK_PRIORITY(PRIVATE(view)->task));
 }
 
 
@@ -175,9 +179,8 @@ AltkWidget *mbtk_task_view_new ( AltkOrientation orientation,
   Private *priv = PRIVATE(view);
   priv->orientation = orientation;
   _create_view(view);
-  _set_task(view, task);
-  mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(PRIVATE(view)->priority_view),
-                                  MB_TASK_PRIORITY(PRIVATE(view)->task));
+  if (task)
+    _set_task(view, task);
   return view;
 }
 
