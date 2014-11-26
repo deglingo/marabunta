@@ -211,10 +211,9 @@ static void _add_room ( MbtkSectorView *view,
 
 
 static void _on_colony_add_room ( MbObject *colony,
+                                  MbObject *room,
                                   MbtkSectorView *view )
 {
-  /* [FIXME] should be a signal param */
-  MbObject *room = g_list_last(MB_COLONY_ROOMS(colony))->data;
   _add_room(view, room);
   altk_widget_queue_resize(ALTK_WIDGET(view));
   altk_widget_queue_draw(ALTK_WIDGET(view));

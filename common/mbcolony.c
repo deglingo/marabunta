@@ -67,6 +67,7 @@ static void mb_colony_class_init ( LObjectClass *cls )
                  NULL,
                  NULL,
                  NULL,
+                 MB_CLASS_ROOM,
                  NULL);
 
   signals[SIG_TASK_ADDED] =
@@ -192,6 +193,7 @@ void mb_colony_add_room ( MbColony *colony,
   l_signal_emit(L_OBJECT(colony),
                 signals[SIG_ADD_ROOM],
                 0,
+                room,
                 NULL);
 }
 
