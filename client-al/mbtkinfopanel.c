@@ -83,6 +83,7 @@ typedef struct _RoomsPage
   RoomData *rooms;
   guint n_rooms;
   AltkWidget *top_box;
+  AltkWidget *top_task_view;
   GSList *widgets;
 }
   RoomsPage;
@@ -333,6 +334,14 @@ static void _rooms_page_init ( Page *page )
                           (LSignalHandler) _rooms_page_add_room,
                           page,
                           NULL));
+      /* top /work/build task */
+      ROOMS_PAGE(page)->top_task_view = L_TRASH_OBJECT
+        (mbtk_task_view_new(ALTK_HORIZONTAL,
+                            mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(priv->colony)),
+                                         "work/build")));
+      ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box,
+                   ROOMS_PAGE(page)->top_task_view,
+                   0);
       for (type = 1; type < ROOMS_PAGE(page)->n_rooms; type++)
         {
           const MbRoomTypeInfo *info = mb_game_get_room_type_info(MB_GAME(game), type);
@@ -357,6 +366,11 @@ static void _rooms_page_init ( Page *page )
 static void _rooms_page_cleanup ( Page *page )
 {
   l_signal_handler_group_remove_all(ROOMS_PAGE(page)->sig_group);
+  if (ROOMS_PAGE(page)->top_task_view)
+    {
+      altk_widget_destroy(ROOMS_PAGE(page)->top_task_view);
+      L_OBJECT_CLEAR(ROOMS_PAGE(page)->top_task_view);
+    }
   g_slist_free_full(ROOMS_PAGE(page)->widgets, (GDestroyNotify) altk_widget_destroy);
   ROOMS_PAGE(page)->widgets = NULL;
 }
