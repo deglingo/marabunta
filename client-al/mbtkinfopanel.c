@@ -306,7 +306,14 @@ static void _rooms_page_add_room ( MbObject *colony,
                                    MbObject *room,
                                    Page *page )
 {
-  CL_DEBUG("[TODO]");
+  RoomData *data;
+  data = &ROOMS_PAGE(page)->rooms[MB_ROOM_TYPE(room)];
+  ASSERT(!data->mb_room);
+  data->mb_room = l_object_ref(room);
+  altk_widget_set_enable_show_all(data->task_view, TRUE);
+  altk_widget_show(data->task_view);
+  mbtk_task_view_set_task(MBTK_TASK_VIEW(data->task_view),
+                          MB_ROOM_BUILD_TASK(room));
 }
                            
 
@@ -358,6 +365,8 @@ static void _rooms_page_init ( Page *page )
             {
               l_object_ref(data->mb_room);
               altk_widget_set_enable_show_all(data->task_view, TRUE);
+              mbtk_task_view_set_task(MBTK_TASK_VIEW(data->task_view),
+                                      MB_ROOM_BUILD_TASK(data->mb_room));
             }
           else
             {

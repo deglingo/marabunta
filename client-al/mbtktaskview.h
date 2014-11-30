@@ -34,6 +34,8 @@ struct _MbtkTaskViewClass
 AltkWidget *mbtk_task_view_new ( AltkOrientation orientation,
                                  MbObject *task );
 void mbtk_task_view_hide_title ( MbtkTaskView *view );
+void mbtk_task_view_set_task ( MbtkTaskView *view,
+                               MbObject *task );
 
 
 

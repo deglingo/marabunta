@@ -194,3 +194,18 @@ void mbtk_task_view_hide_title ( MbtkTaskView *view )
   altk_widget_set_enable_show_all(priv->title, FALSE);
   altk_widget_hide(priv->title);
 }
+
+
+
+/* mbtk_task_view_set_task:
+ */
+void mbtk_task_view_set_task ( MbtkTaskView *view,
+                               MbObject *task )
+{
+  Private *priv = PRIVATE(view);
+  ASSERT((!task) || MB_IS_TASK(task));
+  if (task == priv->task)
+    return;
+  ASSERT(!priv->task); /* [TODO] */
+  _set_task(ALTK_WIDGET(view), task);
+}
