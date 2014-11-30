@@ -63,6 +63,7 @@ struct _MbColonyClass
 #define MB_COLONY_OWNER(c) (MB_COLONY(c)->owner)
 #define MB_COLONY_TOP_TASK(c) (MB_COLONY(c)->top_task)
 #define MB_COLONY_ROOMS(c) (MB_COLONY(c)->rooms)
+#define MB_COLONY_ROOM(c, type) (mb_colony_get_room(MB_COLONY(c), (type)))
 
 void mb_colony_set_sector ( MbColony *colony,
                             MbObject *sector );
@@ -74,6 +75,8 @@ void mb_colony_task_added ( MbColony *colony,
                             MbObject *task );
 void mb_colony_add_room ( MbColony *colony,
                           MbObject *room );
+MbObject *mb_colony_get_room ( MbColony *colony,
+                               MbRoomType type );
 void mb_colony_set_stock ( MbColony *colony,
                            MbObjectID rscid,
                            gint64 qtty );

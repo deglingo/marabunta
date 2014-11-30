@@ -187,7 +187,7 @@ void mb_colony_add_room ( MbColony *colony,
 {
   ASSERT(MB_IS_ROOM(room));
   ASSERT(!MB_ROOM(room)->colony);
-  /* [FIXME] check room type */
+  ASSERT(!mb_colony_get_room(colony, MB_ROOM_TYPE(room)));
   /* [fixme] signal method */
   MB_COLONY_GET_CLASS(colony)->add_room(colony, room);
   l_signal_emit(L_OBJECT(colony),
@@ -206,6 +206,23 @@ static void add_room ( MbColony *colony,
 {
   colony->rooms = g_list_append(colony->rooms, l_object_ref(room));
   mb_room_set_colony(MB_ROOM(room), MB_OBJECT(colony));
+}
+
+
+
+/* mb_colony_get_room:
+ */
+MbObject *mb_colony_get_room ( MbColony *colony,
+                               MbRoomType type )
+{
+  /* [FIXME] store rooms in an type-indexed array ? */
+  GList *l;
+  for (l = colony->rooms; l; l = l->next)
+    {
+      if (MB_ROOM_TYPE(l->data) == type)
+        return l->data;
+    }
+  return NULL;
 }
 
 

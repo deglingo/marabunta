@@ -66,7 +66,7 @@ typedef struct _RoomData
 {
   Page *page;
   gint type;
-  MbObject *room;
+  MbObject *mb_room;
   AltkWidget *top_widget;
   AltkWidget *task_view;
 }
@@ -84,7 +84,6 @@ typedef struct _RoomsPage
   guint n_rooms;
   AltkWidget *top_box;
   AltkWidget *top_task_view;
-  GSList *widgets;
 }
   RoomsPage;
 
@@ -278,14 +277,16 @@ static AltkWidget *_create_room_dialog ( Page *page,
 {
   AltkWidget *box, *label, *build_but;
   data->top_widget = box = altk_box_new(ALTK_HORIZONTAL);
+  /* label */
   label = L_TRASH_OBJECT
     (altk_label_new(info->name));
   ALTK_BOX_ADD(box, label, 0);
+  /* task view */
   data->task_view = L_TRASH_OBJECT
     (mbtk_task_view_new(ALTK_HORIZONTAL, NULL));
   mbtk_task_view_hide_title(MBTK_TASK_VIEW(data->task_view));
-  altk_widget_hide(data->task_view);
   ALTK_BOX_ADD(box, data->task_view, 0);
+  /* build button */
   build_but = L_TRASH_OBJECT
     (altk_button_new_with_label("+"));
   ALTK_BOX_ADD(box, build_but, 0);
@@ -342,6 +343,7 @@ static void _rooms_page_init ( Page *page )
       ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box,
                    ROOMS_PAGE(page)->top_task_view,
                    0);
+      /* rooms build task */
       for (type = 1; type < ROOMS_PAGE(page)->n_rooms; type++)
         {
           const MbRoomTypeInfo *info = mb_game_get_room_type_info(MB_GAME(game), type);
@@ -352,8 +354,16 @@ static void _rooms_page_init ( Page *page )
           data->type = type;
           _create_room_dialog(page, data, info);
           ALTK_BOX_ADD(ROOMS_PAGE(page)->top_box, data->top_widget, ALTK_PACK_HEXPAND_FILL);
-          ROOMS_PAGE(page)->widgets = g_slist_prepend(ROOMS_PAGE(page)->widgets,
-                                                      data->top_widget);
+          if ((data->mb_room = MB_COLONY_ROOM(priv->colony, type)))
+            {
+              l_object_ref(data->mb_room);
+              altk_widget_set_enable_show_all(data->task_view, TRUE);
+            }
+          else
+            {
+              altk_widget_set_enable_show_all(data->task_view, FALSE);
+              altk_widget_hide(data->task_view);
+            }
         }
     }
   altk_widget_show_all(ROOMS_PAGE(page)->top_box);
@@ -365,14 +375,22 @@ static void _rooms_page_init ( Page *page )
  */
 static void _rooms_page_cleanup ( Page *page )
 {
+  MbRoomType type;
   l_signal_handler_group_remove_all(ROOMS_PAGE(page)->sig_group);
   if (ROOMS_PAGE(page)->top_task_view)
     {
       altk_widget_destroy(ROOMS_PAGE(page)->top_task_view);
       L_OBJECT_CLEAR(ROOMS_PAGE(page)->top_task_view);
     }
-  g_slist_free_full(ROOMS_PAGE(page)->widgets, (GDestroyNotify) altk_widget_destroy);
-  ROOMS_PAGE(page)->widgets = NULL;
+  for (type = 1; type < ROOMS_PAGE(page)->n_rooms; type++)
+    {
+      RoomData *data;
+      data = &ROOMS_PAGE(page)->rooms[type];
+      if (data->mb_room)
+        L_OBJECT_CLEAR(data->mb_room);
+      altk_widget_destroy(data->top_widget);
+      L_OBJECT_CLEAR(data->top_widget);
+    }
 }
 
 
