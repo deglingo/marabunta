@@ -304,7 +304,7 @@ static void add_room ( MbColony *colony,
     t_build_check,
     t_build_process,
   };
-  MB_COLONY_CLASS(parent_class)->add_room(colony, room);
+  /* create the build task */
   t_build = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
                          "work/build");
   ASSERT(t_build);
@@ -314,6 +314,9 @@ static void add_room ( MbColony *colony,
                         NULL,
                         &t_build_funcs);
   mb_task_add(MB_TASK(t_build), t_room);
+  l_object_unref(t_room);
+  /* chain */
+  MB_COLONY_CLASS(parent_class)->add_room(colony, room);
 }
 
 

@@ -19,6 +19,7 @@ struct _MbRoom
 
   gint type;
   MbObject *colony;
+  MbObject *build_task;
   MbObject *work_task;
   gfloat x;
   gfloat y;

@@ -81,6 +81,7 @@ void mb_room_set_colony ( MbRoom *room,
                           MbObject *colony )
 {
   const MbRoomTypeInfo *info;
+  MbObject *t_build;
   ASSERT(MB_IS_COLONY(colony));
   ASSERT(!room->colony);
   room->colony = colony;
@@ -94,4 +95,11 @@ void mb_room_set_colony ( MbRoom *room,
       ASSERT(task);
       room->work_task = l_object_ref(task);
     }
+  /* set the build task */
+  t_build = mb_task_find(MB_TASK(MB_COLONY_TOP_TASK(colony)),
+                         "work/build");
+  ASSERT(t_build);
+  room->build_task = mb_task_get_child(MB_TASK(t_build), info->nick);
+  ASSERT(room->build_task);
+  l_object_ref(room->build_task);
 }
