@@ -19,7 +19,6 @@ struct _MbObject
 
   MbObjectID id;
   MbObject *game;
-  gboolean client;
 };
 
 
