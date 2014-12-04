@@ -20,6 +20,7 @@ marabunta_new_SOURCES = \
 	mbsector.c \
 	mbcolony.c \
 	mbtkdialog.c \
+	mbtkpoptable.c \
 	mbmain.c
 
 BUILT_SOURCES = \
@@ -27,13 +28,15 @@ BUILT_SOURCES = \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
 	mbcolony-def.h mbcolony.inl \
-	mbtkdialog-def.h mbtkdialog.inl
+	mbtkdialog-def.h mbtkdialog.inl \
+	mbtkpoptable-def.h mbtkpoptable.inl
 
 mbgame-def.h mbgame.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
 mbcolony-def.h mbcolony.inl \
 mbtkdialog-def.h mbtkdialog.inl \
+mbtkpoptable-def.h mbtkpoptable.inl \
 : mbtypes.stamp-h
 
 mbtypes.stamp-h: mbtypes.in

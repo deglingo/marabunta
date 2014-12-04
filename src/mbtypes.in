@@ -3,6 +3,7 @@
 namespace Altk
 {
   extern class Dialog;
+  extern class Table;
 }
 
 namespace Mb
@@ -32,5 +33,9 @@ namespace Mbtk
   class Dialog : Altk::Dialog
   {
     void init ();
+  };
+
+  class PopTable : Altk::Table
+  {
   };
 }

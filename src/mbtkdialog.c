@@ -3,6 +3,7 @@
 
 #include "mbtkdialog.h"
 #include "mbgame.h"
+#include "mbtkpoptable.h"
 #include "mbtkdialog.inl"
 
 
@@ -14,6 +15,7 @@ typedef struct _Private
   LSignalHandlerGroup *sig_group;
   MbGame *game;
   AltkWidget *time_label;
+  AltkWidget *pop_table;
 }
   Private;
 
@@ -49,6 +51,36 @@ static AltkWidget *_create_header ( AltkWidget *dlg )
 
 
 
+/* _create_side_panel:
+ */
+static AltkWidget *_create_side_panel ( AltkWidget *dlg )
+{
+  Private *priv = PRIVATE(dlg);
+  AltkWidget *box;
+  box = altk_box_new(ALTK_VERTICAL);
+  priv->pop_table = L_TRASH_OBJECT
+    (mbtk_pop_table_new());
+  ALTK_BOX_ADD(box, priv->pop_table, 0);
+  return box;
+}
+
+
+
+/* _create_body:
+ */
+static AltkWidget *_create_body ( AltkWidget *dlg )
+{
+  /* Private *priv = PRIVATE(dlg); */
+  AltkWidget *box;
+  box = altk_box_new(ALTK_HORIZONTAL);
+  ALTK_BOX_ADD(box,
+               L_TRASH_OBJECT(_create_side_panel(dlg)),
+               ALTK_PACK_VEXPAND_FILL);
+  return box;
+}
+
+
+
 /* _create_dialog:
  */
 static void _create_dialog ( AltkWidget *dlg )
@@ -64,9 +96,9 @@ static void _create_dialog ( AltkWidget *dlg )
                L_TRASH_OBJECT(_create_header(dlg)),
                ALTK_PACK_HEXPAND_FILL);
   /* body */
-  /* ALTK_BOX_ADD(top_box, */
-  /*              L_TRASH_OBJECT(_create_body(dlg)), */
-  /*              ALTK_PACK_HEXPAND_FILL); */
+  ALTK_BOX_ADD(top_box,
+               L_TRASH_OBJECT(_create_body(dlg)),
+               ALTK_PACK_HEXPAND_FILL);
 }
 
 
