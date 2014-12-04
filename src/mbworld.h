@@ -37,6 +37,7 @@ struct _MbWorldClass
 
 MbWorld *mb_world_new ( guint width,
                         guint height );
+void mb_world_update ( MbWorld *world );
 
 
 

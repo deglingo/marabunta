@@ -26,3 +26,13 @@ void mb_sector_set_colony ( MbSector *sector,
   sector->colony = l_object_ref(colony);
   colony->sector = sector;
 }
+
+
+
+/* mb_sector_update:
+ */
+void mb_sector_update ( MbSector *sector )
+{
+  if (sector->colony)
+    mb_colony_update(sector->colony);
+}

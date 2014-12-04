@@ -34,6 +34,7 @@ struct _MbSectorClass
 MbSector *mb_sector_new ( void );
 void mb_sector_set_colony ( MbSector *sector,
                             struct _MbColony *colony );
+void mb_sector_update ( MbSector *sector );
 
 
 

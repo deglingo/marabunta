@@ -69,6 +69,7 @@ static void _update ( MbGame *game )
   Private *priv = PRIVATE(game);
   CL_DEBUG("update");
   priv->sim_time++;
+  mb_world_update(priv->world);
 }
 
 

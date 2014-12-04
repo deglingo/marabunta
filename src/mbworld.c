@@ -36,3 +36,19 @@ MbWorld *mb_world_new ( guint width,
     }
   return world;
 }
+
+
+
+/* mb_world_update:
+ */
+void mb_world_update ( MbWorld *world )
+{
+  guint x, y;
+  for (y = 0; y < world->height; y++)
+    {
+      for (x = 0; x < world->width; x++)
+        {
+          mb_sector_update(world->sectors[y][x]);
+        }
+    }
+}

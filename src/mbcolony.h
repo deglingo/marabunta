@@ -32,6 +32,7 @@ struct _MbColonyClass
 
 
 MbColony *mb_colony_new ( void );
+void mb_colony_update ( MbColony *colony );
 
 
 
