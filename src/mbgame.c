@@ -2,7 +2,29 @@
  */
 
 #include "mbgame.h"
+#include "mbworld.h"
 #include "mbgame.inl"
+
+
+
+/* Private:
+ */
+typedef struct _Private
+{
+  MbWorld *world;
+}
+  Private;
+
+#define PRIVATE(game) ((Private *)(MB_GAME(game)->private))
+
+
+
+/* mb_game_init:
+ */
+static void mb_game_init ( LObject *obj )
+{
+  MB_GAME(obj)->private = g_new0(Private, 1);
+}
 
 
 
@@ -19,5 +41,7 @@ MbGame *mb_game_new ( void )
  */
 void mb_game_setup ( MbGame *game )
 {
-  CL_DEBUG("[TODO] setup game");
+  Private *priv = PRIVATE(game);
+  ASSERT(!priv->world); /* [todo] */
+  priv->world = mb_world_new(3, 2);
 }

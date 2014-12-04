@@ -15,14 +15,17 @@ marabunta_new_LDFLAGS = \
 
 marabunta_new_SOURCES = \
 	mbgame.c \
+	mbworld.c \
 	mbtkdialog.c \
 	mbmain.c
 
 BUILT_SOURCES = \
 	mbgame-def.h mbgame.inl \
+	mbworld-def.h mbworld.inl \
 	mbtkdialog-def.h mbtkdialog.inl
 
 mbgame-def.h mbgame.inl \
+mbworld-def.h mbworld.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 : mbtypes.stamp-h
 

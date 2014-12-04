@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbGame
 {
   MB_GAME_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 

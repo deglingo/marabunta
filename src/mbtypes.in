@@ -9,6 +9,11 @@ namespace Mb
 {
   class Game
   {
+    void init ();
+  };
+
+  class World
+  {
   };
 }
 
