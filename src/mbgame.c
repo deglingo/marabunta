@@ -13,18 +13,29 @@
 
 
 
-/* Private:
+/* Properties:
  */
-typedef struct _Private
-{
-  MbWorld *world;
-  GTimer *timer;
-  guint sim_time;
-  gdouble next_frame;
-}
-  Private;
+enum
+  {
+    PROP_0,
+    PROP_SIM_TIME,
+    N_PROPS,
+  };
 
-#define PRIVATE(game) ((Private *)(MB_GAME(game)->private))
+static LParamSpec *pspecs[N_PROPS];
+
+
+
+/* mb_game_class_init:
+ */
+static void mb_game_class_init ( LObjectClass *cls )
+{
+  pspecs[PROP_SIM_TIME] =
+    l_param_spec_int("sim_time",
+                     0);
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
+}
 
 
 
@@ -32,8 +43,7 @@ typedef struct _Private
  */
 static void mb_game_init ( LObject *obj )
 {
-  MB_GAME(obj)->private = g_new0(Private, 1);
-  PRIVATE(obj)->timer = g_timer_new();
+  MB_GAME(obj)->timer = g_timer_new();
 }
 
 
@@ -51,12 +61,11 @@ MbGame *mb_game_new ( void )
  */
 void mb_game_setup ( MbGame *game )
 {
-  Private *priv = PRIVATE(game);
   MbColony *col;
-  ASSERT(!priv->world); /* [todo] */
-  priv->world = mb_world_new(3, 2);
+  ASSERT(!game->world); /* [todo] */
+  game->world = mb_world_new(3, 2);
   col = mb_colony_new();
-  mb_sector_set_colony(MB_WORLD_SECTOR(priv->world, 0, 0), col);
+  mb_sector_set_colony(MB_WORLD_SECTOR(game->world, 0, 0), col);
   l_object_unref(col);
 }
 
@@ -66,10 +75,10 @@ void mb_game_setup ( MbGame *game )
  */
 static void _update ( MbGame *game )
 {
-  Private *priv = PRIVATE(game);
   CL_DEBUG("update");
-  priv->sim_time++;
-  mb_world_update(priv->world);
+  game->sim_time++;
+  l_object_notify(L_OBJECT(game), pspecs[PROP_SIM_TIME]);
+  mb_world_update(game->world);
 }
 
 
@@ -78,12 +87,11 @@ static void _update ( MbGame *game )
  */
 static gboolean _game_timer ( MbGame *game )
 {
-  Private *priv = PRIVATE(game);
-  gdouble elapsed = g_timer_elapsed(priv->timer, NULL);
-  while (elapsed >= priv->next_frame)
+  gdouble elapsed = g_timer_elapsed(game->timer, NULL);
+  while (elapsed >= game->next_frame)
     {
       _update(game);
-      priv->next_frame = ((gdouble) priv->sim_time) / GAME_FPS;
+      game->next_frame = ((gdouble) game->sim_time) / GAME_FPS;
     }
   return G_SOURCE_CONTINUE;
 }
@@ -94,11 +102,10 @@ static gboolean _game_timer ( MbGame *game )
  */
 void mb_game_start ( MbGame *game )
 {
-  Private *priv = PRIVATE(game);
   g_timeout_add_full(MB_PRIORITY_GAME_TIMER,
                      10,
                      (GSourceFunc) _game_timer,
                      game,
                      NULL);
-  g_timer_start(priv->timer);
+  g_timer_start(game->timer);
 }

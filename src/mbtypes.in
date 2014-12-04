@@ -9,6 +9,7 @@ namespace Mb
 {
   class Game
   {
+    void class_init ();
     void init ();
   };
 
@@ -30,5 +31,6 @@ namespace Mbtk
 {
   class Dialog : Altk::Dialog
   {
+    void init ();
   };
 }

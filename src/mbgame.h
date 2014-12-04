@@ -17,7 +17,10 @@ struct _MbGame
 {
   MB_GAME_INSTANCE_HEADER;
 
-  gpointer private;
+  GTimer *timer;
+  gdouble next_frame;
+  guint sim_time;
+  struct _MbWorld *world;
 };
 
 

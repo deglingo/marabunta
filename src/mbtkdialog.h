@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkDialog
 {
   MBTK_DIALOG_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
@@ -30,6 +32,8 @@ struct _MbtkDialogClass
 
 
 AltkWidget *mbtk_dialog_new ( AltkDisplay *display );
+void mbtk_dialog_set_game ( MbtkDialog *dialog,
+                            struct _MbGame *game );
 
 
 
