@@ -5,6 +5,13 @@ namespace Altk
   extern class Dialog;
 }
 
+namespace Mb
+{
+  class Game
+  {
+  };
+}
+
 namespace Mbtk
 {
   class Dialog : Altk::Dialog
