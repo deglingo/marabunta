@@ -18,6 +18,7 @@ AC_PATH_PROG([ALTK_XML2C], [altk-xml2c])
 
 AC_CONFIG_FILES([ \
   Makefile \
+  src/Makefile \
   common/Makefile \
   server/Makefile \
   client/Makefile \
