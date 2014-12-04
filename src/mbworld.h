@@ -17,7 +17,9 @@ struct _MbWorld
 {
   MB_WORLD_INSTANCE_HEADER;
 
-  gpointer private;
+  guint width;
+  guint height;
+  struct _MbSector ***sectors;
 };
 
 
@@ -30,6 +32,8 @@ struct _MbWorldClass
 };
 
 
+
+#define MB_WORLD_SECTOR(w, x, y) (MB_WORLD(w)->sectors[y][x])
 
 MbWorld *mb_world_new ( guint width,
                         guint height );

@@ -17,6 +17,7 @@ marabunta_new_SOURCES = \
 	mbgame.c \
 	mbworld.c \
 	mbsector.c \
+	mbcolony.c \
 	mbtkdialog.c \
 	mbmain.c
 
@@ -24,11 +25,13 @@ BUILT_SOURCES = \
 	mbgame-def.h mbgame.inl \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
+	mbcolony-def.h mbcolony.inl \
 	mbtkdialog-def.h mbtkdialog.inl
 
 mbgame-def.h mbgame.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
+mbcolony-def.h mbcolony.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 : mbtypes.stamp-h
 

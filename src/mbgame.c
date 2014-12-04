@@ -3,6 +3,8 @@
 
 #include "mbgame.h"
 #include "mbworld.h"
+#include "mbsector.h"
+#include "mbcolony.h"
 #include "mbgame.inl"
 
 
@@ -42,6 +44,10 @@ MbGame *mb_game_new ( void )
 void mb_game_setup ( MbGame *game )
 {
   Private *priv = PRIVATE(game);
+  MbColony *col;
   ASSERT(!priv->world); /* [todo] */
   priv->world = mb_world_new(3, 2);
+  col = mb_colony_new();
+  mb_sector_set_colony(MB_WORLD_SECTOR(priv->world, 0, 0), col);
+  l_object_unref(col);
 }

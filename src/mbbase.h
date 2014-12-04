@@ -17,4 +17,10 @@
 
 
 
+/* [FIXME] */
+struct _MbSector;
+struct _MbColony;
+
+
+
 #endif

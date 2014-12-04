@@ -20,6 +20,10 @@ namespace Mb
   class Sector
   {
   };
+
+  class Colony
+  {
+  };
 }
 
 namespace Mbtk

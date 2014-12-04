@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbSector
 {
   MB_SECTOR_INSTANCE_HEADER;
+
+  struct _MbColony *colony;
 };
 
 
@@ -30,6 +32,8 @@ struct _MbSectorClass
 
 
 MbSector *mb_sector_new ( void );
+void mb_sector_set_colony ( MbSector *sector,
+                            struct _MbColony *colony );
 
 
 
