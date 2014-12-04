@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbWorld
 {
   MB_WORLD_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
