@@ -2,6 +2,7 @@
  */
 
 #include "mbbase.h"
+#include "mbtkdialog.h"
 
 
 

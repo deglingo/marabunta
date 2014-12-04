@@ -1,0 +1,13 @@
+/* -*- c++ -*- */
+
+namespace Altk
+{
+  extern class Dialog;
+}
+
+namespace Mbtk
+{
+  class Dialog : Altk::Dialog
+  {
+  };
+}
