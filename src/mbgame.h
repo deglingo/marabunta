@@ -33,6 +33,7 @@ struct _MbGameClass
 
 MbGame *mb_game_new ( void );
 void mb_game_setup ( MbGame *game );
+void mb_game_start ( MbGame *game );
 
 
 

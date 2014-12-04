@@ -22,6 +22,7 @@ gint main ()
   dlg = altk_dialog_new(display);
   altk_display_open(display);
   altk_widget_show_all(dlg);
+  mb_game_start(game);
   altk_main();
   return 0;
 }

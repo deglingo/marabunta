@@ -17,6 +17,8 @@
 
 
 
+#define MB_PRIORITY_GAME_TIMER 500
+
 /* [FIXME] */
 struct _MbSector;
 struct _MbColony;
