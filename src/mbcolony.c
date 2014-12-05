@@ -176,4 +176,5 @@ void mb_colony_update ( MbColony *colony )
   mb_pop_tree_traverse(colony->pop_tree,
                        _pop_unit_update,
                        &data);
+  mb_task_process(colony->t_top);
 }

@@ -35,6 +35,8 @@ struct _MbTaskClass
 
   MbTask * (* select) ( MbTask *task,
                         MbPopType pop_type );
+
+  void (* process) ( MbTask *task );
 };
 
 
@@ -45,6 +47,7 @@ MbTask *mb_task_new ( LObjectClass *cls,
                       MbPopFlags pop_flags );
 MbTask *mb_task_select ( MbTask *task,
                          MbPopType pop_type );
+void mb_task_process ( MbTask *task );
 void mb_task_add_workers ( MbTask *task,
                            gint64 workers );
 gint64 mb_task_next_score ( MbTask *task );

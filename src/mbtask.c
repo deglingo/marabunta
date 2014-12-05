@@ -77,6 +77,15 @@ static MbTask *_select ( MbTask *task,
 
 
 
+/* mb_task_process:
+ */
+void mb_task_process ( MbTask *task )
+{
+  MB_TASK_GET_CLASS(task)->process(task);
+}
+
+
+
 /* mb_task_add_workers:
  */
 void mb_task_add_workers ( MbTask *task,

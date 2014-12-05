@@ -8,6 +8,7 @@
 
 static MbTask *_select ( MbTask *task,
                          MbPopType pop_type );
+static void _process ( MbTask *task );
 
 
 
@@ -16,6 +17,7 @@ static MbTask *_select ( MbTask *task,
 static void mb_task_group_class_init ( LObjectClass *cls )
 {
   MB_TASK_CLASS(cls)->select = _select;
+  MB_TASK_CLASS(cls)->process = _process;
 }
 
 
@@ -58,4 +60,15 @@ static MbTask *_select ( MbTask *task,
         }
     }
   return found;
+}
+
+
+
+/* _process:
+ */
+static void _process ( MbTask *task )
+{
+  GList *l;
+  for (l = MB_TASK_GROUP(task)->children; l; l = l->next)
+    mb_task_process(l->data);
 }
