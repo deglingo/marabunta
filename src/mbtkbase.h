@@ -8,6 +8,10 @@
 
 #include "mbbase.h"
 #include "mbpoptype.h"
+#include "mbgame.h"
+#include "mbworld.h"
+#include "mbsector.h"
+#include "mbcolony.h"
 
 
 

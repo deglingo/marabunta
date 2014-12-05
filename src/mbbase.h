@@ -23,6 +23,7 @@
 struct _MbGame;
 struct _MbSector;
 struct _MbColony;
+struct _MbPopTree;
 
 
 

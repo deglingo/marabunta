@@ -10,6 +10,8 @@
  */
 typedef struct _Private
 {
+  LSignalHandlerGroup *sig_group;
+  MbColony *colony;
   AltkWidget *pop_label_egg;
   AltkWidget *pop_label_lq;
   AltkWidget *pop_label_lw;
@@ -35,6 +37,7 @@ typedef struct _Private
 static void mbtk_pop_table_init ( LObject *obj )
 {
   MBTK_POP_TABLE(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->sig_group = l_signal_handler_group_new();
 }
 
 
@@ -126,4 +129,36 @@ AltkWidget *mbtk_pop_table_new ( void )
   _create_table(table);
   l_trash_pop();
   return table;
+}
+
+
+
+/* _on_pop_notify:
+ */
+static void _on_pop_notify ( MbColony *colony,
+                             MbtkPopTable *table )
+{
+  CL_DEBUG("[TODO]");
+}
+
+
+
+/* mbtk_pop_table_set_colony:
+ */
+void mbtk_pop_table_set_colony ( MbtkPopTable *table,
+                                 struct _MbColony *colony )
+{
+  Private *priv = PRIVATE(table);
+  if (colony == priv->colony)
+    return;
+  ASSERT(!priv->colony); /* [todo] */
+  priv->colony = l_object_ref(colony);
+  l_signal_handler_group_add
+    (priv->sig_group,
+     l_signal_connect(L_OBJECT(colony),
+                      "pop_notify",
+                      (LSignalHandler) _on_pop_notify,
+                      table,
+                      NULL));
+  _on_pop_notify(colony, table);
 }

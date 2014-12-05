@@ -5,6 +5,7 @@
 #define _MBCOLONY_H_
 
 #include "mbbase.h"
+#include "mbpoptype.h"
 #include "mbcolony-def.h"
 
 G_BEGIN_DECLS
@@ -18,6 +19,10 @@ struct _MbColony
   MB_COLONY_INSTANCE_HEADER;
 
   struct _MbSector *sector;
+  struct _MbPopTree *pop_tree;
+  struct _MbPopTree *adj_tree;
+  gint64 pop[MB_POP_TYPE_COUNT];
+  gint64 adj_pop[MB_POP_TYPE_COUNT];
 };
 
 

@@ -2,7 +2,6 @@
  */
 
 #include "mbtkdialog.h"
-#include "mbgame.h"
 #include "mbtkpoptable.h"
 #include "mbtkdialog.inl"
 
@@ -14,6 +13,7 @@ typedef struct _Private
 {
   LSignalHandlerGroup *sig_group;
   MbGame *game;
+  MbSector *sector;
   AltkWidget *time_label;
   AltkWidget *pop_table;
 }
@@ -146,4 +146,19 @@ void mbtk_dialog_set_game ( MbtkDialog *dialog,
                       (LSignalHandler) _on_sim_time_notify,
                       dialog,
                       NULL));
+  mbtk_dialog_set_sector(dialog, game->world->sectors[0][0]);
+}
+
+
+
+/* mbtk_dialog_set_sector:
+ */
+void mbtk_dialog_set_sector ( MbtkDialog *dialog,
+                              struct _MbSector *sector )
+{
+  Private *priv = PRIVATE(dialog);
+  ASSERT(!priv->sector); /* [todo] */
+  priv->sector = l_object_ref(sector);
+  mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
+                            sector->colony);
 }

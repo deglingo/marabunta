@@ -21,6 +21,7 @@ marabunta_new_SOURCES = \
 	mbcolony.c \
 	mbtkdialog.c \
 	mbtkpoptable.c \
+	mbpoptree.c \
 	mbmain.c
 
 BUILT_SOURCES = \
