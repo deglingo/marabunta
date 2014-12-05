@@ -193,8 +193,7 @@ static void _clear ( Node *node )
     _clear(node->right);
   if (!ISLEAF(node))
     {
-      CL_DEBUG("[FIXME]");
-      /* ASSERT(!node->unit->task); /\* ?? *\/ */
+      ASSERT(!node->unit->task); /* ?? */
       unit_free(node->unit);
     }
   node_free(node);
@@ -291,8 +290,7 @@ struct update_data
 static void _traverse_update ( MbPopUnit *unit,
                                gpointer data )
 {
-  CL_DEBUG("[FIXME]");
-  /* ASSERT(!unit->task); /\* ?? *\/ */
+  ASSERT(!unit->task); /* ?? */
   mb_pop_tree_add(((struct update_data *) data)->dest,
                   unit->type,
                   unit->birthdate,
@@ -371,8 +369,7 @@ static inline MbPopUnit *unit_new ( MbPopType type,
   unit->type = type;
   unit->birthdate = birthdate;
   unit->count = count;
-  CL_DEBUG("[FIXME]");
-  /* unit->task = NULL; */
+  unit->task = NULL;
   return unit;
 }
 
@@ -382,8 +379,7 @@ static inline MbPopUnit *unit_new ( MbPopType type,
  */
 static inline void unit_free ( MbPopUnit *unit )
 {
-  CL_DEBUG("[FIXME]");
-  /* ASSERT(!unit->task); /\* ?? *\/ */
+  ASSERT(!unit->task); /* ?? */
   ((TrashItem *) unit)->next = free_unit;
   free_unit = (TrashItem *) unit;
 }
