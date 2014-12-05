@@ -6,6 +6,20 @@
 
 
 
+static MbTask *_select ( MbTask *task,
+                         MbPopType pop_type );
+
+
+
+/* mb_task_group_class_init:
+ */
+static void mb_task_group_class_init ( LObjectClass *cls )
+{
+  MB_TASK_CLASS(cls)->select = _select;
+}
+
+
+
 /* mb_task_group_new_top:
  */
 MbTask *mb_task_group_new_top ( struct _MbColony *colony,
@@ -18,4 +32,30 @@ MbTask *mb_task_group_new_top ( struct _MbColony *colony,
                      0);
   task->colony = colony; /* [FIXME] ref ? */
   return task;
+}
+
+
+
+/* _select:
+ */
+static MbTask *_select ( MbTask *task,
+                         MbPopType pop_type )
+{
+  GList *l;
+  MbTask *found = NULL;
+  gint64 found_score = 0;
+  for (l = MB_TASK_GROUP(task)->children; l; l = l->next)
+    {
+      MbTask *sel;
+      if ((sel = mb_task_select(l->data, pop_type)))
+        {
+          gint64 score = mb_task_next_score(sel);
+          if ((!found) || score < found_score)
+            {
+              found = sel;
+              found_score = score;
+            }
+        }
+    }
+  return found;
 }

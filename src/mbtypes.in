@@ -30,10 +30,12 @@ namespace Mb
 
   class Task
   {
+    void class_init ();
   };
 
   class TaskGroup : Task
   {
+    void class_init ();
   };
 
   class TaskSpawn : Task

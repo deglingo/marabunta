@@ -2,7 +2,7 @@
  */
 
 #include "mbpoptree.h"
-/* #include "server/mbtask.h" */
+#include "mbtask.h"
 
 #include <string.h>
 
@@ -325,23 +325,22 @@ void mb_pop_tree_get_pop ( MbPopTree *tree,
 
 
 
-/* /\* mb_pop_unit_affect_task: */
-/*  *\/ */
-/* void mb_pop_unit_affect_task ( MbPopUnit *unit, */
-/*                                MbObject *task ) */
-/* { */
-/*   ASSERT((!task) || MB_IS_TASK(task)); */
-/*   if (task == unit->task) */
-/*     return; */
-/*   if (unit->task) { */
-/*     mb_task_add_workers(MB_TASK(unit->task), -unit->count); */
-/*     L_OBJECT_CLEAR(unit->task); */
-/*   } */
-/*   if (task) { */
-/*     unit->task = l_object_ref(task); */
-/*     mb_task_add_workers(MB_TASK(unit->task), unit->count); */
-/*   } */
-/* } */
+/* mb_pop_unit_affect_task:
+ */
+void mb_pop_unit_affect_task ( MbPopUnit *unit,
+                               MbTask *task )
+{
+  if (task == unit->task)
+    return;
+  if (unit->task) {
+    mb_task_add_workers(MB_TASK(unit->task), -unit->count);
+    L_OBJECT_CLEAR(unit->task);
+  }
+  if (task) {
+    unit->task = l_object_ref(task);
+    mb_task_add_workers(MB_TASK(unit->task), unit->count);
+  }
+}
 
 
 

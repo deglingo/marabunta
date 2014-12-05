@@ -75,7 +75,7 @@ void mb_game_setup ( MbGame *game )
  */
 static void _update ( MbGame *game )
 {
-  CL_DEBUG("update");
+  /* CL_DEBUG("update"); */
   game->sim_time++;
   l_object_notify(L_OBJECT(game), pspecs[PROP_SIM_TIME]);
   mb_world_update(game->world);

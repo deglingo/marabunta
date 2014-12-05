@@ -44,7 +44,7 @@ struct _MbPopUnit
   MbPopType type;
   guint birthdate;
   gint64 count;
-  /* MbObject *task; */
+  struct _MbTask *task;
 };
 
 
@@ -64,8 +64,8 @@ void mb_pop_tree_update ( MbPopTree *tree,
 void mb_pop_tree_get_pop ( MbPopTree *tree,
                            gint64 *pop );
 
-/* void mb_pop_unit_affect_task ( MbPopUnit *unit, */
-/*                                MbObject *task ); */
+void mb_pop_unit_affect_task ( MbPopUnit *unit,
+                               struct _MbTask *task );
 
 
 

@@ -130,6 +130,11 @@ static void _update_ls ( MbPopUnit *unit,
 static void _update_aq ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbTask *task;
+  if (unit->task)
+    mb_pop_unit_affect_task(unit, NULL);
+  if ((task = mb_task_select(data->colony->t_top, MB_POP_ADULT_QUEEN)))
+    mb_pop_unit_affect_task(unit, task);
 }
 
 

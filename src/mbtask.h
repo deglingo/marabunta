@@ -22,6 +22,7 @@ struct _MbTask
   MbTask *parent;
   gchar *name;
   MbPopFlags pop_flags;
+  gint64 workers;
 };
 
 
@@ -31,6 +32,9 @@ struct _MbTask
 struct _MbTaskClass
 {
   MB_TASK_CLASS_HEADER;
+
+  MbTask * (* select) ( MbTask *task,
+                        MbPopType pop_type );
 };
 
 
@@ -39,6 +43,11 @@ MbTask *mb_task_new ( LObjectClass *cls,
                       MbTask *parent,
                       const gchar *name,
                       MbPopFlags pop_flags );
+MbTask *mb_task_select ( MbTask *task,
+                         MbPopType pop_type );
+void mb_task_add_workers ( MbTask *task,
+                           gint64 workers );
+gint64 mb_task_next_score ( MbTask *task );
 
 
 
