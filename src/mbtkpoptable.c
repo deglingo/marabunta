@@ -79,6 +79,8 @@ static AltkWidget *_pop_value ( AltkWidget *table,
   AltkWidget *label;
   label = L_TRASH_OBJECT
     (altk_label_new("0"));
+  altk_label_set_min_chars(ALTK_LABEL(label), MB_COUNT_MAX_CHARS);
+  altk_label_set_alignment(ALTK_LABEL(label), ALTK_PACK_ANCHOR_RIGHT);
   altk_table_attach(ALTK_TABLE(table),
                     label,
                     top,
