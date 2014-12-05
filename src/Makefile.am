@@ -22,6 +22,8 @@ marabunta_new_SOURCES = \
 	mbtkdialog.c \
 	mbtkpoptable.c \
 	mbpoptree.c \
+	mbtask.c \
+	mbtaskgroup.c \
 	mbmain.c
 
 BUILT_SOURCES = \
@@ -29,6 +31,8 @@ BUILT_SOURCES = \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
 	mbcolony-def.h mbcolony.inl \
+	mbtask-def.h mbtask.inl \
+	mbtaskgroup-def.h mbtaskgroup.inl \
 	mbtkdialog-def.h mbtkdialog.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl
 
@@ -36,6 +40,8 @@ mbgame-def.h mbgame.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
 mbcolony-def.h mbcolony.inl \
+mbtask-def.h mbtask.inl \
+mbtaskgroup-def.h mbtaskgroup.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
 : mbtypes.stamp-h

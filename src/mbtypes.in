@@ -27,6 +27,14 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class Task
+  {
+  };
+
+  class TaskGroup : Task
+  {
+  };
 }
 
 namespace Mbtk

@@ -3,6 +3,8 @@
 
 #include "mbcolony.h"
 #include "mbpoptree.h"
+#include "mbtask.h"
+#include "mbtaskgroup.h"
 #include "mbcolony.inl"
 
 
@@ -85,6 +87,10 @@ MbColony *mb_colony_new ( void )
   col->adj_tree = mb_pop_tree_new(col->adj_pop);
   /* [FIXME] */
   mb_pop_tree_add(col->pop_tree, MB_POP_ADULT_QUEEN, 0, 1);
+  /* default tasks */
+  col->t_top = mb_task_group_new_top(col, "top");
+  /* col->t_spawn = mb_task_spawn_new(col->t_top, "spawn"); */
+  /* l_object_unref(col->t_spawn); */
   return col;
 }
 

@@ -23,6 +23,7 @@ struct _MbColony
   struct _MbPopTree *adj_tree;
   gint64 pop[MB_POP_TYPE_COUNT];
   gint64 adj_pop[MB_POP_TYPE_COUNT];
+  struct _MbTask *t_top;
 };
 
 
