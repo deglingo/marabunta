@@ -26,6 +26,7 @@ struct _MbColony
   /* tasks */
   struct _MbTask *t_top;
   struct _MbTask *t_spawn;
+  struct _MbPriority *hatch_priority[3];
 };
 
 

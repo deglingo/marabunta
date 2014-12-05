@@ -23,6 +23,7 @@ marabunta_new_SOURCES = \
 	mbtkdialog.c \
 	mbtkpoptable.c \
 	mbpoptree.c \
+	mbpriority.c \
 	mbtask.c \
 	mbtaskgroup.c \
 	mbtaskspawn.c \
@@ -33,6 +34,7 @@ BUILT_SOURCES = \
 	mbworld-def.h mbworld.inl \
 	mbsector-def.h mbsector.inl \
 	mbcolony-def.h mbcolony.inl \
+	mbpriority-def.h mbpriority.inl \
 	mbtask-def.h mbtask.inl \
 	mbtaskgroup-def.h mbtaskgroup.inl \
 	mbtaskspawn-def.h mbtaskspawn.inl \
@@ -43,6 +45,7 @@ mbgame-def.h mbgame.inl \
 mbworld-def.h mbworld.inl \
 mbsector-def.h mbsector.inl \
 mbcolony-def.h mbcolony.inl \
+mbpriority-def.h mbpriority.inl \
 mbtask-def.h mbtask.inl \
 mbtaskgroup-def.h mbtaskgroup.inl \
 mbtaskspawn-def.h mbtaskspawn.inl \

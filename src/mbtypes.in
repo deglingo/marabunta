@@ -28,6 +28,10 @@ namespace Mb
     void class_init ();
   };
 
+  class Priority
+  {
+  };
+
   class Task
   {
     void class_init ();

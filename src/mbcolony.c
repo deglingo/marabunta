@@ -6,6 +6,7 @@
 #include "mbtask.h"
 #include "mbtaskgroup.h"
 #include "mbtaskspawn.h"
+#include "mbpriority.h"
 #include "mbcolony.inl"
 
 
@@ -19,6 +20,17 @@ enum
   };
 
 static LSignalID signals[SIG_COUNT];
+
+
+
+/* Hatch:
+ */
+enum
+  {
+    HATCH_QUEEN = 0,
+    HATCH_WORKER,
+    HATCH_SOLDIER,
+  };
 
 
 
@@ -88,6 +100,10 @@ MbColony *mb_colony_new ( void )
   col->adj_tree = mb_pop_tree_new(col->adj_pop);
   /* [FIXME] */
   mb_pop_tree_add(col->pop_tree, MB_POP_ADULT_QUEEN, 0, 1);
+  /* hatch priorities */
+  col->hatch_priority[HATCH_QUEEN] = mb_priority_new(1);
+  col->hatch_priority[HATCH_WORKER] = mb_priority_new(7);
+  col->hatch_priority[HATCH_SOLDIER] = mb_priority_new(3);
   /* default tasks */
   col->t_top = mb_task_group_new_top(col, "top");
   col->t_spawn = mb_task_spawn_new(col->t_top, "spawn");

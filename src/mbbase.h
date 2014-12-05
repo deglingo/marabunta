@@ -24,6 +24,7 @@ struct _MbGame;
 struct _MbSector;
 struct _MbColony;
 struct _MbPopTree;
+struct _MbPriority;
 struct _MbTask;
 
 #define MB_COUNT_MAX_CHARS 7
