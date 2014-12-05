@@ -11,6 +11,23 @@ G_BEGIN_DECLS
 
 
 
+/* MbRoomTypeInfo:
+ */
+typedef struct _MbRoomTypeInfo
+{
+  MbRoomType type;
+  gchar *nick;
+  gchar *name;
+  gdouble x;
+  gdouble y;
+  gdouble width;
+  gdouble height;
+  gchar *work_task;
+}
+  MbRoomTypeInfo;
+
+
+
 /* MbGame:
  */
 struct _MbGame
@@ -21,6 +38,9 @@ struct _MbGame
   gdouble next_frame;
   guint sim_time;
   struct _MbWorld *world;
+  /* room types */
+  GPtrArray *room_types; /* list < MbRoomTypeInfo > */
+  GHashTable *room_types_map; /* map < nick, MbRoomTypeInfo > */
 };
 
 
@@ -37,6 +57,16 @@ struct _MbGameClass
 MbGame *mb_game_new ( void );
 void mb_game_setup ( MbGame *game );
 void mb_game_start ( MbGame *game );
+MbRoomType mb_game_register_room_type ( MbGame *game,
+                                        const gchar *nick,
+                                        const gchar *name,
+                                        gdouble x,
+                                        gdouble y,
+                                        gdouble width,
+                                        gdouble height,
+                                        const gchar *work_task );
+MbRoomType mb_game_lookup_room_type ( MbGame *game,
+                                      const gchar *nick );
 
 
 

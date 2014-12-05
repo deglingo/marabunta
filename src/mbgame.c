@@ -44,6 +44,11 @@ static void mb_game_class_init ( LObjectClass *cls )
 static void mb_game_init ( LObject *obj )
 {
   MB_GAME(obj)->timer = g_timer_new();
+  MB_GAME(obj)->room_types = g_ptr_array_new();
+  g_ptr_array_add(MB_GAME(obj)->room_types, NULL);
+  MB_GAME(obj)->room_types_map =
+    g_hash_table_new(g_str_hash,
+                     g_str_equal);
 }
 
 
@@ -57,12 +62,62 @@ MbGame *mb_game_new ( void )
 
 
 
+/* mb_game_register_room_type:
+ */
+MbRoomType mb_game_register_room_type ( MbGame *game,
+                                        const gchar *nick,
+                                        const gchar *name,
+                                        gdouble x,
+                                        gdouble y,
+                                        gdouble width,
+                                        gdouble height,
+                                        const gchar *work_task )
+{
+  MbRoomTypeInfo *info;
+  ASSERT(!mb_game_lookup_room_type(game, nick));
+  info = g_new0(MbRoomTypeInfo, 1);
+  info->type = game->room_types->len;
+  info->nick = g_strdup(nick);
+  info->name = g_strdup(name);
+  info->x = x;
+  info->y = y;
+  info->width = width;
+  info->height = height;
+  info->work_task = g_strdup(work_task);
+  g_ptr_array_add(game->room_types, info);
+  g_hash_table_insert(game->room_types_map,
+                      info->nick,
+                      info);
+  return info->type;
+}
+
+
+
+/* mb_game_lookup_room_type:
+ */
+MbRoomType mb_game_lookup_room_type ( MbGame *game,
+                                      const gchar *nick )
+{
+  MbRoomTypeInfo *info;
+  if ((info = g_hash_table_lookup(game->room_types_map, nick)))
+    return info->type;
+  else
+    return 0;
+}
+
+
+
 /* mb_game_setup:
  */
 void mb_game_setup ( MbGame *game )
 {
   MbColony *col;
   ASSERT(!game->world); /* [todo] */
+  mb_game_register_room_type(game,
+                             "royal-chamber",
+                             "Royal chamber",
+                             0.5, 0.5, 0.1, 0.1,
+                             "spawn");
   game->world = mb_world_new(3, 2);
   game->world->game = game; /* [fixme] ref ? */
   col = mb_colony_new();

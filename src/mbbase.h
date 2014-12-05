@@ -27,6 +27,8 @@ struct _MbPopTree;
 struct _MbPriority;
 struct _MbTask;
 
+typedef guint MbRoomType;
+
 #define MB_COUNT_MAX_CHARS 7
 
 gchar *mb_count_print ( gint64 count,
