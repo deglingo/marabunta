@@ -26,6 +26,11 @@ struct _MbColony;
 struct _MbPopTree;
 struct _MbTask;
 
+#define MB_COUNT_MAX_CHARS 7
+
+gchar *mb_count_print ( gint64 count,
+                        gchar *dest );
+
 
 
 #endif

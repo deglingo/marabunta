@@ -32,6 +32,7 @@ MbWorld *mb_world_new ( guint width,
       for (x = 0; x < width; x++)
         {
           world->sectors[y][x] = mb_sector_new();
+          world->sectors[y][x]->world = world; /* [fixme] ref ? */
         }
     }
   return world;

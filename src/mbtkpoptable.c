@@ -12,15 +12,17 @@ typedef struct _Private
 {
   LSignalHandlerGroup *sig_group;
   MbColony *colony;
+  /* pop labels */
   AltkWidget *pop_label_egg;
   AltkWidget *pop_label_lq;
   AltkWidget *pop_label_lw;
   AltkWidget *pop_label_ls;
-  AltkWidget *pop_label_lt;
   AltkWidget *pop_label_aq;
   AltkWidget *pop_label_aw;
   AltkWidget *pop_label_as;
-  AltkWidget *pop_label_at;
+  /* totals */
+  AltkWidget *pop_label_tl;
+  AltkWidget *pop_label_ta;
   AltkWidget *pop_label_tq;
   AltkWidget *pop_label_tw;
   AltkWidget *pop_label_ts;
@@ -106,11 +108,11 @@ static void _create_table ( AltkWidget *table )
   priv->pop_label_lq = _pop_value(table, 1, 2, 2, 3);  
   priv->pop_label_lw = _pop_value(table, 2, 2, 3, 3);  
   priv->pop_label_ls = _pop_value(table, 3, 2, 4, 3);  
-  priv->pop_label_lt = _pop_value(table, 4, 2, 5, 3);
+  priv->pop_label_tl = _pop_value(table, 4, 2, 5, 3);
   priv->pop_label_aq = _pop_value(table, 1, 3, 2, 4);  
   priv->pop_label_aw = _pop_value(table, 2, 3, 3, 4);  
   priv->pop_label_as = _pop_value(table, 3, 3, 4, 4);  
-  priv->pop_label_at = _pop_value(table, 4, 3, 5, 4);
+  priv->pop_label_ta = _pop_value(table, 4, 3, 5, 4);
   priv->pop_label_tq = _pop_value(table, 1, 4, 2, 5);  
   priv->pop_label_tw = _pop_value(table, 2, 4, 3, 5);  
   priv->pop_label_ts = _pop_value(table, 3, 4, 4, 5);  
@@ -133,12 +135,37 @@ AltkWidget *mbtk_pop_table_new ( void )
 
 
 
+/* _set_pop_label:
+ */
+static void _set_pop_label ( AltkWidget *label,
+                             gint64 count )
+{
+  gchar text[MB_COUNT_MAX_CHARS+1];
+  mb_count_print(count, text);
+  altk_label_set_text(ALTK_LABEL(label), text);
+}
+
+
+
 /* _on_pop_notify:
  */
 static void _on_pop_notify ( MbColony *colony,
                              MbtkPopTable *table )
 {
-  CL_DEBUG("[TODO]");
+  Private *priv = PRIVATE(table);
+  _set_pop_label(priv->pop_label_egg, colony->pop[MB_POP_EGG]);
+  _set_pop_label(priv->pop_label_lq, colony->pop[MB_POP_LARVAE_QUEEN]);
+  _set_pop_label(priv->pop_label_lw, colony->pop[MB_POP_LARVAE_WORKER]);
+  _set_pop_label(priv->pop_label_ls, colony->pop[MB_POP_LARVAE_SOLDIER]);
+  _set_pop_label(priv->pop_label_aq, colony->pop[MB_POP_ADULT_QUEEN]);
+  _set_pop_label(priv->pop_label_aw, colony->pop[MB_POP_ADULT_WORKER]);
+  _set_pop_label(priv->pop_label_as, colony->pop[MB_POP_ADULT_SOLDIER]);
+  _set_pop_label(priv->pop_label_tl, mb_pop_total(colony->pop, MB_POP_FLAG_LARVAE));
+  _set_pop_label(priv->pop_label_ta, mb_pop_total(colony->pop, MB_POP_FLAG_ADULT));
+  _set_pop_label(priv->pop_label_tq, mb_pop_total(colony->pop, MB_POP_FLAG_QUEEN));
+  _set_pop_label(priv->pop_label_tw, mb_pop_total(colony->pop, MB_POP_FLAG_WORKER));
+  _set_pop_label(priv->pop_label_ts, mb_pop_total(colony->pop, MB_POP_FLAG_SOLDIER));
+  _set_pop_label(priv->pop_label_tt, mb_pop_total(colony->pop, MB_POP_FLAG_ADULT | MB_POP_FLAG_LARVAE));
 }
 
 

@@ -17,6 +17,7 @@ struct _MbWorld
 {
   MB_WORLD_INSTANCE_HEADER;
 
+  struct _MbGame *game; /* set by MbGame */
   guint width;
   guint height;
   struct _MbSector ***sectors;

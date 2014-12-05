@@ -176,5 +176,19 @@ void mb_colony_update ( MbColony *colony )
   mb_pop_tree_traverse(colony->pop_tree,
                        _pop_unit_update,
                        &data);
+  mb_pop_tree_update(colony->pop_tree, colony->adj_tree);
+  l_signal_emit(L_OBJECT(colony), signals[SIG_POP_NOTIFY], 0, NULL);
   mb_task_process(colony->t_top);
+}
+
+
+
+/* mb_colony_adjust_pop:
+ */
+void mb_colony_adjust_pop ( MbColony *colony,
+                            MbPopType type,
+                            guint birthdate,
+                            gint64 count )
+{
+  mb_pop_tree_add(colony->adj_tree, type, birthdate, count);
 }

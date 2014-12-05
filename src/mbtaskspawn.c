@@ -2,6 +2,10 @@
  */
 
 #include "mbtaskspawn.h"
+#include "mbcolony.h"
+#include "mbsector.h"
+#include "mbworld.h"
+#include "mbgame.h"
 #include "mbtaskspawn.inl"
 
 
@@ -39,5 +43,9 @@ MbTask *mb_task_spawn_new ( MbTask *parent,
  */
 static void _process ( MbTask *task )
 {
-  CL_DEBUG("[TODO] %" G_GINT64_FORMAT " workers", task->workers);
+  if (task->workers)
+    {
+      MbGame *game = task->colony->sector->world->game;
+      mb_colony_adjust_pop(task->colony, MB_POP_EGG, game->sim_time, task->workers * 10);
+    }
 }

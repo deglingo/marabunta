@@ -41,6 +41,10 @@ struct _MbColonyClass
 
 MbColony *mb_colony_new ( void );
 void mb_colony_update ( MbColony *colony );
+void mb_colony_adjust_pop ( MbColony *colony,
+                            MbPopType type,
+                            guint birthdate,
+                            gint64 count );
 
 
 

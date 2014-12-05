@@ -64,6 +64,7 @@ void mb_game_setup ( MbGame *game )
   MbColony *col;
   ASSERT(!game->world); /* [todo] */
   game->world = mb_world_new(3, 2);
+  game->world->game = game; /* [fixme] ref ? */
   col = mb_colony_new();
   mb_sector_set_colony(MB_WORLD_SECTOR(game->world, 0, 0), col);
   l_object_unref(col);

@@ -17,6 +17,7 @@ struct _MbSector
 {
   MB_SECTOR_INSTANCE_HEADER;
 
+  struct _MbWorld *world; /* set by MbWorld */
   struct _MbColony *colony;
 };
 

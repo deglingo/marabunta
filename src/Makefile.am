@@ -14,6 +14,7 @@ marabunta_new_LDFLAGS = \
 	@ALTK_LIBS@
 
 marabunta_new_SOURCES = \
+	mbbase.c \
 	mbpoptype.c \
 	mbgame.c \
 	mbworld.c \
