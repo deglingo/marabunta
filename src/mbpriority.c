@@ -15,3 +15,23 @@ MbPriority *mb_priority_new ( MbPriorityValue value )
   prio->value = value;
   return prio;
 }
+
+
+
+/* mb_priority_score:
+ */
+gint64 mb_priority_score ( MbPriority *priority )
+{
+  return priority->score;
+}
+
+
+
+/* mb_priority_update_score:
+ */
+void mb_priority_update_score ( MbPriority *priority,
+                                gint64 workers )
+{
+  priority->score += (workers + priority->remainder) / priority->value;
+  priority->remainder = (workers + priority->remainder) % priority->value;
+}

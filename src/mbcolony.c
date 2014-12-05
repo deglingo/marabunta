@@ -2,6 +2,9 @@
  */
 
 #include "mbcolony.h"
+#include "mbsector.h"
+#include "mbworld.h"
+#include "mbgame.h"
 #include "mbpoptree.h"
 #include "mbtask.h"
 #include "mbtaskgroup.h"
@@ -30,6 +33,13 @@ enum
     HATCH_QUEEN = 0,
     HATCH_WORKER,
     HATCH_SOLDIER,
+  };
+
+static const MbPopType HATCH_TYPE[3] =
+  {
+    MB_POP_LARVAE_QUEEN,
+    MB_POP_LARVAE_WORKER,
+    MB_POP_LARVAE_SOLDIER,
   };
 
 
@@ -101,9 +111,9 @@ MbColony *mb_colony_new ( void )
   /* [FIXME] */
   mb_pop_tree_add(col->pop_tree, MB_POP_ADULT_QUEEN, 0, 1);
   /* hatch priorities */
-  col->hatch_priority[HATCH_QUEEN] = mb_priority_new(1);
-  col->hatch_priority[HATCH_WORKER] = mb_priority_new(7);
-  col->hatch_priority[HATCH_SOLDIER] = mb_priority_new(3);
+  col->hatch_priority[HATCH_QUEEN] = mb_priority_new(10);
+  col->hatch_priority[HATCH_WORKER] = mb_priority_new(70);
+  col->hatch_priority[HATCH_SOLDIER] = mb_priority_new(30);
   /* default tasks */
   col->t_top = mb_task_group_new_top(col, "top");
   col->t_spawn = mb_task_spawn_new(col->t_top, "spawn");
@@ -113,11 +123,43 @@ MbColony *mb_colony_new ( void )
 
 
 
+/* _select_hatch_type:
+ */
+static gint _select_hatch_type ( MbColony *colony )
+{
+  gint found = -1;
+  gint64 found_score = 0;
+  gint tp;
+  for (tp = 0; tp < 3; tp++)
+    {
+      /* [fixme] next score ? */
+      gint64 score = mb_priority_score(colony->hatch_priority[tp]);
+      if ((found < 0) || score < found_score)
+        {
+          found = tp;
+          found_score = score;
+        }
+    }
+  return found;
+}
+
+
+
 /* _update_egg:
  */
 static void _update_egg ( MbPopUnit *unit,
                           struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 50)
+    {
+      guint hatch = _select_hatch_type(data->colony);
+      MbPopType type = HATCH_TYPE[hatch];
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+      mb_colony_adjust_pop(data->colony, type, unit->birthdate, unit->count);
+      mb_priority_update_score(data->colony->hatch_priority[hatch], unit->count);
+    }
 }
 
 
