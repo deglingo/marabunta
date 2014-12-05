@@ -35,6 +35,10 @@ namespace Mb
   class TaskGroup : Task
   {
   };
+
+  class TaskSpawn : Task
+  {
+  };
 }
 
 namespace Mbtk

@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbTaskGroup
 {
   MB_TASK_GROUP_INSTANCE_HEADER;
+
+  GList *children;
 };
 
 

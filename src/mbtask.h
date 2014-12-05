@@ -5,6 +5,7 @@
 #define _MBTASK_H_
 
 #include "mbbase.h"
+#include "mbpoptype.h"
 #include "mbtask-def.h"
 
 G_BEGIN_DECLS
@@ -16,6 +17,11 @@ G_BEGIN_DECLS
 struct _MbTask
 {
   MB_TASK_INSTANCE_HEADER;
+
+  struct _MbColony *colony;
+  MbTask *parent;
+  gchar *name;
+  MbPopFlags pop_flags;
 };
 
 
@@ -26,6 +32,13 @@ struct _MbTaskClass
 {
   MB_TASK_CLASS_HEADER;
 };
+
+
+
+MbTask *mb_task_new ( LObjectClass *cls,
+                      MbTask *parent,
+                      const gchar *name,
+                      MbPopFlags pop_flags );
 
 
 
