@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkPopTable
 {
   MBTK_POP_TABLE_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 

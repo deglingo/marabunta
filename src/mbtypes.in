@@ -37,5 +37,6 @@ namespace Mbtk
 
   class PopTable : Altk::Table
   {
+    void init ();
   };
 }
