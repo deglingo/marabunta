@@ -3,6 +3,7 @@
 
 #include "mbtkdialog.h"
 #include "mbtkpoptable.h"
+#include "mbtksectorview.h"
 #include "mbtkdialog.inl"
 
 
@@ -16,6 +17,7 @@ typedef struct _Private
   MbSector *sector;
   AltkWidget *time_label;
   AltkWidget *pop_table;
+  AltkWidget *sector_view;
 }
   Private;
 
@@ -66,6 +68,21 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
 
 
 
+/* _create_sector_view:
+ */
+static AltkWidget *_create_sector_view ( AltkWidget *dlg )
+{
+  Private *priv = PRIVATE(dlg);
+  AltkWidget *frame;
+  frame = altk_frame_new("");
+  priv->sector_view = L_TRASH_OBJECT
+    (mbtk_sector_view_new());
+  ALTK_CONTAINER_ADD(frame, priv->sector_view);
+  return frame;
+}
+
+
+
 /* _create_body:
  */
 static AltkWidget *_create_body ( AltkWidget *dlg )
@@ -76,6 +93,9 @@ static AltkWidget *_create_body ( AltkWidget *dlg )
   ALTK_BOX_ADD(box,
                L_TRASH_OBJECT(_create_side_panel(dlg)),
                ALTK_PACK_VEXPAND_FILL);
+  ALTK_BOX_ADD(box,
+               L_TRASH_OBJECT(_create_sector_view(dlg)),
+               ALTK_PACK_EXPAND_FILL);
   return box;
 }
 
@@ -98,7 +118,7 @@ static void _create_dialog ( AltkWidget *dlg )
   /* body */
   ALTK_BOX_ADD(top_box,
                L_TRASH_OBJECT(_create_body(dlg)),
-               ALTK_PACK_HEXPAND_FILL);
+               ALTK_PACK_EXPAND_FILL);
 }
 
 
@@ -110,6 +130,7 @@ AltkWidget *mbtk_dialog_new ( AltkDisplay *display )
   AltkWidget *dlg = ALTK_WIDGET(l_object_new(MBTK_CLASS_DIALOG,
                                              NULL));
   altk_dialog_set_display(ALTK_DIALOG(dlg), display);
+  altk_wm_set_top_widget_size_hints(dlg, ALTK_SIZE_HINT_MAXIMIZED);
   l_trash_push();
   _create_dialog(dlg);
   l_trash_pop();
@@ -161,4 +182,6 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
   priv->sector = l_object_ref(sector);
   mbtk_pop_table_set_colony(MBTK_POP_TABLE(priv->pop_table),
                             sector->colony);
+  mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
+                              sector);
 }

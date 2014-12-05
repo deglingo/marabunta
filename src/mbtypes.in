@@ -2,6 +2,7 @@
 
 namespace Altk
 {
+  extern class Widget;
   extern class Dialog;
   extern class Table;
 }
@@ -57,6 +58,12 @@ namespace Mbtk
 
   class PopTable : Altk::Table
   {
+    void init ();
+  };
+
+  class SectorView : Altk::Widget
+  {
+    void class_init ();
     void init ();
   };
 }
