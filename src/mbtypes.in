@@ -29,6 +29,10 @@ namespace Mb
     void class_init ();
   };
 
+  class Room
+  {
+  };
+
   class Priority
   {
   };

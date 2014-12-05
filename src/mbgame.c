@@ -112,6 +112,7 @@ MbRoomType mb_game_lookup_room_type ( MbGame *game,
 void mb_game_setup ( MbGame *game )
 {
   MbColony *col;
+  MbRoomType room_type;
   ASSERT(!game->world); /* [todo] */
   mb_game_register_room_type(game,
                              "royal-chamber",
@@ -122,6 +123,9 @@ void mb_game_setup ( MbGame *game )
   game->world->game = game; /* [fixme] ref ? */
   col = mb_colony_new();
   mb_sector_set_colony(MB_WORLD_SECTOR(game->world, 0, 0), col);
+  room_type = mb_game_lookup_room_type(game, "royal-chamber");
+  ASSERT(room_type);
+  mb_colony_create_room(col, room_type);
   l_object_unref(col);
 }
 

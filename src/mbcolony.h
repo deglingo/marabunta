@@ -27,6 +27,8 @@ struct _MbColony
   struct _MbTask *t_top;
   struct _MbTask *t_spawn;
   struct _MbPriority *hatch_priority[3];
+  /* rooms */
+  GList *rooms;
 };
 
 
@@ -46,6 +48,10 @@ void mb_colony_adjust_pop ( MbColony *colony,
                             MbPopType type,
                             guint birthdate,
                             gint64 count );
+void mb_colony_create_room ( MbColony *colony,
+                             MbRoomType type );
+struct _MbRoom *mb_colony_get_room ( MbColony *colony,
+                                     MbRoomType type );
 
 
 

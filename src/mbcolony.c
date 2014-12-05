@@ -10,6 +10,7 @@
 #include "mbtaskgroup.h"
 #include "mbtaskspawn.h"
 #include "mbpriority.h"
+#include "mbroom.h"
 #include "mbcolony.inl"
 
 
@@ -265,4 +266,33 @@ void mb_colony_adjust_pop ( MbColony *colony,
                             gint64 count )
 {
   mb_pop_tree_add(colony->adj_tree, type, birthdate, count);
+}
+
+
+
+/* mb_colony_create_room:
+ */
+void mb_colony_create_room ( MbColony *colony,
+                             MbRoomType type )
+{
+  MbRoom *room;
+  room = mb_room_new(type);
+  room->colony = colony;
+  colony->rooms = g_list_append(colony->rooms, room);
+}
+
+
+
+/* mb_colony_get_room:
+ */
+struct _MbRoom *mb_colony_get_room ( MbColony *colony,
+                                     MbRoomType type )
+{
+  GList *l;
+  for (l = colony->rooms; l; l = l->next)
+    {
+      if (MB_ROOM(l->data)->type == type)
+        return l->data;
+    }
+  return NULL;
 }
