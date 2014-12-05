@@ -227,12 +227,10 @@ void mb_pop_tree_add ( MbPopTree *tree,
     {
       ASSERT(node->unit);
       node->unit->count += count;
-      CL_DEBUG("[FIXME]");
-      /* if (node->unit->task) */
-      /*   mb_task_add_workers(MB_TASK(node->unit->task), count); */
+      if (node->unit->task)
+        mb_task_add_workers(MB_TASK(node->unit->task), count);
       if (node->unit->count == 0) {
-        CL_DEBUG("[FIXME]");
-        /* mb_pop_unit_affect_task(node->unit, NULL); */
+        mb_pop_unit_affect_task(node->unit, NULL);
         node_remove(tree, node);
       }
     }

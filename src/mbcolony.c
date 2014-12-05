@@ -229,6 +229,8 @@ static void _pop_unit_update ( MbPopUnit *unit,
 void mb_colony_update ( MbColony *colony )
 {
   struct update_data data;
+  gint tp;
+  gint64 min_score;
   data.colony = colony;
   data.birthdate_mask = g_random_int_range(0, 0x10);
   mb_pop_tree_traverse(colony->pop_tree,
@@ -237,6 +239,20 @@ void mb_colony_update ( MbColony *colony )
   mb_pop_tree_update(colony->pop_tree, colony->adj_tree);
   l_signal_emit(L_OBJECT(colony), signals[SIG_POP_NOTIFY], 0, NULL);
   mb_task_process(colony->t_top);
+  /* adjust hatch scores */
+  min_score = -1;
+  for (tp = 0; tp < 3; tp++)
+    {
+      if (min_score < 0)
+        min_score = colony->hatch_priority[tp]->score;
+      else
+        min_score = MIN(min_score, colony->hatch_priority[tp]->score);
+    }
+  if (min_score > 0)
+    {
+      for (tp = 0; tp < 3; tp++)
+        mb_priority_adjust_score(colony->hatch_priority[tp], -min_score);
+    }
 }
 
 
