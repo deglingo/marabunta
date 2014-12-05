@@ -168,6 +168,13 @@ static void _update_egg ( MbPopUnit *unit,
 static void _update_lq ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 100)
+    {
+      /* [FIXME] */
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+    }
 }
 
 
@@ -175,6 +182,13 @@ static void _update_lq ( MbPopUnit *unit,
 static void _update_lw ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 100)
+    {
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+      mb_colony_adjust_pop(data->colony, MB_POP_ADULT_WORKER, unit->birthdate, unit->count);
+    }
 }
 
 
@@ -182,6 +196,13 @@ static void _update_lw ( MbPopUnit *unit,
 static void _update_ls ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 100)
+    {
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+      mb_colony_adjust_pop(data->colony, MB_POP_ADULT_SOLDIER, unit->birthdate, unit->count);
+    }
 }
 
 
