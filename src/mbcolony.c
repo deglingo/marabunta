@@ -19,6 +19,45 @@ static LSignalID signals[SIG_COUNT];
 
 
 
+/* Update vtable:
+ */
+struct update_data
+{
+  MbColony *colony;
+  guint birthdate_mask;
+};
+
+typedef void (* UpdateFunc) ( MbPopUnit *unit,
+                              struct update_data *data );
+
+static void _update_egg ( MbPopUnit *unit,
+                          struct update_data *data );
+static void _update_lq ( MbPopUnit *unit,
+                         struct update_data *data );
+static void _update_lw ( MbPopUnit *unit,
+                         struct update_data *data );
+static void _update_ls ( MbPopUnit *unit,
+                         struct update_data *data );
+static void _update_aq ( MbPopUnit *unit,
+                         struct update_data *data );
+static void _update_aw ( MbPopUnit *unit,
+                         struct update_data *data );
+static void _update_as ( MbPopUnit *unit,
+                         struct update_data *data );
+
+static const UpdateFunc UPDATE_VTABLE[MB_POP_TYPE_COUNT] =
+    {
+      [MB_POP_EGG] = _update_egg,
+      [MB_POP_LARVAE_QUEEN] = _update_lq,
+      [MB_POP_LARVAE_WORKER] = _update_lw,
+      [MB_POP_LARVAE_SOLDIER] = _update_ls,
+      [MB_POP_ADULT_QUEEN] = _update_aq,
+      [MB_POP_ADULT_WORKER] = _update_aw,
+      [MB_POP_ADULT_SOLDIER] = _update_as,
+    };
+
+
+
 /* mb_colony_class_init:
  */
 static void mb_colony_class_init ( LObjectClass *cls )
@@ -51,9 +90,78 @@ MbColony *mb_colony_new ( void )
 
 
 
+/* _update_egg:
+ */
+static void _update_egg ( MbPopUnit *unit,
+                          struct update_data *data )
+{
+}
+
+
+
+static void _update_lq ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+static void _update_lw ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+static void _update_ls ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+static void _update_aq ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+static void _update_aw ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+static void _update_as ( MbPopUnit *unit,
+                         struct update_data *data )
+{
+}
+
+
+
+/* _pop_unit_update:
+ */
+static void _pop_unit_update ( MbPopUnit *unit,
+                               gpointer data_ )
+{
+  struct update_data *data = data_;
+  if ((unit->birthdate & 0xf) != data->birthdate_mask)
+    return;
+  UPDATE_VTABLE[unit->type](unit, data_);
+}
+
+
+
 /* mb_colony_update:
  */
 void mb_colony_update ( MbColony *colony )
 {
-  CL_DEBUG("[TODO] colony update");
+  struct update_data data;
+  data.colony = colony;
+  data.birthdate_mask = g_random_int_range(0, 0x10);
+  mb_pop_tree_traverse(colony->pop_tree,
+                       _pop_unit_update,
+                       &data);
 }
