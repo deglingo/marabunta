@@ -37,6 +37,8 @@ struct _MbtkInfoPageClass
 
 void mbtk_info_page_set_sector ( MbtkInfoPage *page,
                                  MbSector *sector );
+MbSector *mbtk_info_page_get_sector ( MbtkInfoPage *page );
+AltkWidget *mbtk_info_page_get_body ( MbtkInfoPage *page );
 void mbtk_info_page_setup ( MbtkInfoPage *page );
 void mbtk_info_page_cleanup ( MbtkInfoPage *page );
 

@@ -108,11 +108,31 @@ void mbtk_info_page_set_sector ( MbtkInfoPage *page,
                                  MbSector *sector )
 {
   Private *priv = PRIVATE(page);
+  /* CL_TRACE("%p, %p, %p", page, sector, (sector ? sector->colony : NULL)); */
   if (sector == priv->sector)
     return;
   ASSERT(!priv->sector); /* [todo] */
+  mbtk_info_page_cleanup(page);
   if ((priv->sector = sector))
     l_object_ref(priv->sector);
+}
+
+
+
+/* mbtk_info_page_get_sector:
+ */
+MbSector *mbtk_info_page_get_sector ( MbtkInfoPage *page )
+{
+  return PRIVATE(page)->sector;
+}
+
+
+
+/* mbtk_info_page_get_body:
+ */
+AltkWidget *mbtk_info_page_get_body ( MbtkInfoPage *page )
+{
+  return PRIVATE(page)->body;
 }
 
 
@@ -128,6 +148,7 @@ void mbtk_info_page_setup ( MbtkInfoPage *page )
       l_trash_push();
       MBTK_INFO_PAGE_GET_CLASS(page)->setup(page);
       l_trash_pop();
+      altk_widget_show_all(priv->top_box);
     }
 }
 
@@ -176,5 +197,5 @@ static void _cleanup ( MbtkInfoPage *page )
   Private *priv = PRIVATE(page);
   ASSERT(priv->top_box);
   altk_widget_destroy(priv->top_box);
-  L_OBJECT_CLEAR(priv->top_box);
+  priv->top_box = NULL;
 }

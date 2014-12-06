@@ -13,6 +13,7 @@
 #include "mbsector.h"
 #include "mbcolony.h"
 #include "mbroom.h"
+#include "mbtask.h"
 
 
 

@@ -38,6 +38,21 @@ MbTask *mb_task_group_new_top ( struct _MbColony *colony,
 
 
 
+/* mb_task_group_new:
+ */
+MbTask *mb_task_group_new ( MbTask *parent,
+                            const gchar *name )
+{
+  MbTask *task;
+  task = mb_task_new(MB_CLASS_TASK_GROUP,
+                     parent,
+                     name,
+                     0);
+  return task;
+}
+
+
+
 /* _select:
  */
 static MbTask *_select ( MbTask *task,

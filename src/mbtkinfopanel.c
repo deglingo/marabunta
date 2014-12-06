@@ -153,7 +153,6 @@ void mbtk_info_panel_set_sector ( MbtkInfoPanel *panel,
   for (l = priv->pages; l; l = l->next)
     {
       Page *page = l->data;
-      mbtk_info_page_setup(MBTK_INFO_PAGE(page->widget));
       mbtk_info_page_set_sector(MBTK_INFO_PAGE(page->widget), sector);
     }
   if (priv->current_page)

@@ -33,6 +33,8 @@ struct _MbTaskGroupClass
 
 MbTask *mb_task_group_new_top ( struct _MbColony *colony,
                                 const gchar *name );
+MbTask *mb_task_group_new ( MbTask *parent,
+                            const gchar *name );
 
 
 
