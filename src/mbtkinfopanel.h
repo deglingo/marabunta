@@ -32,6 +32,8 @@ struct _MbtkInfoPanelClass
 
 
 AltkWidget *mbtk_info_panel_new ( void );
+void mbtk_info_panel_set_sector ( MbtkInfoPanel *panel,
+                                  MbSector *sector );
 
 
 

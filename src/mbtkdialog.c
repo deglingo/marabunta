@@ -189,4 +189,6 @@ void mbtk_dialog_set_sector ( MbtkDialog *dialog,
                             sector->colony);
   mbtk_sector_view_set_sector(MBTK_SECTOR_VIEW(priv->sector_view),
                               sector);
+  mbtk_info_panel_set_sector(MBTK_INFO_PANEL(priv->info_panel),
+                             sector);
 }

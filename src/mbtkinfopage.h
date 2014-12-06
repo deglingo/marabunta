@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkInfoPage
 {
   MBTK_INFO_PAGE_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 
@@ -26,6 +28,11 @@ struct _MbtkInfoPageClass
 {
   MBTK_INFO_PAGE_CLASS_HEADER;
 };
+
+
+
+void mbtk_info_page_set_sector ( MbtkInfoPage *page,
+                                 MbSector *sector );
 
 
 

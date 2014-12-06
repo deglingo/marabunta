@@ -22,6 +22,7 @@ typedef struct _Page
  */
 typedef struct _Private
 {
+  MbSector *sector;
   AltkWidget *top_box;
   AltkWidget *button_box;
   GList *pages;
@@ -113,4 +114,25 @@ AltkWidget *mbtk_info_panel_new ( void )
   l_trash_pop();
   _set_page(MBTK_INFO_PANEL(panel), PRIVATE(panel)->pages->data);
   return panel;
+}
+
+
+
+/* mbtk_info_panel_set_sector:
+ */
+void mbtk_info_panel_set_sector ( MbtkInfoPanel *panel,
+                                  MbSector *sector )
+{
+  Private *priv = PRIVATE(panel);
+  GList *l;
+  if (priv->sector == sector)
+    return;
+  ASSERT(!priv->sector); /* [todo] */
+  if ((priv->sector = sector))
+    l_object_ref(priv->sector);
+  for (l = priv->pages; l; l = l->next)
+    {
+      Page *page = l->data;
+      mbtk_info_page_set_sector(MBTK_INFO_PAGE(page->widget), sector);
+    }
 }
