@@ -13,6 +13,7 @@ typedef struct _Private
   MbSector *sector;
   guint setup : 1;
   AltkWidget *top_box;
+  AltkWidget *body;
 }
   Private;
 
@@ -104,6 +105,9 @@ static void _setup ( MbtkInfoPage *page )
   title = L_TRASH_OBJECT
     (altk_label_new("TITLE"));
   ALTK_BOX_ADD(priv->top_box, title, 0);
+  priv->body = L_TRASH_OBJECT
+    (altk_frame_new(""));
+  ALTK_BOX_ADD(priv->top_box, priv->body, ALTK_PACK_EXPAND_FILL);
 }
 
 
