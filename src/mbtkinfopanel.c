@@ -7,6 +7,17 @@
 
 
 
+/* Page:
+ */
+typedef struct _Page
+{
+  AltkWidget *panel;
+  AltkWidget *widget;
+}
+  Page;
+
+
+
 /* Private:
  */
 typedef struct _Private
@@ -14,6 +25,7 @@ typedef struct _Private
   AltkWidget *top_box;
   AltkWidget *button_box;
   GList *pages;
+  Page *current_page;
 }
   Private;
 
@@ -30,6 +42,26 @@ static void mbtk_info_panel_init ( LObject *obj )
 
 
 
+/* _set_page:
+ */
+static void _set_page ( MbtkInfoPanel *panel,
+                        Page *page )
+{
+  Private *priv = PRIVATE(panel);
+  if (page == priv->current_page)
+    return;
+  if (priv->current_page)
+    {
+      altk_widget_hide(priv->current_page->widget);
+    }
+  if ((priv->current_page = page))
+    {
+      altk_widget_show(page->widget);
+    }
+}
+
+
+
 /* _add_page:
  */
 static void _add_page ( AltkWidget *panel,
@@ -37,12 +69,16 @@ static void _add_page ( AltkWidget *panel,
                         AltkWidget *page_widget )
 {
   Private *priv = PRIVATE(panel);
+  Page *page;
   AltkWidget *but;
+  page = g_new0(Page, 1);
+  page->panel = panel;
+  page->widget = l_object_ref(page_widget);
   but = L_TRASH_OBJECT
     (altk_button_new_with_label(button_label));
   ALTK_BOX_ADD(priv->button_box, but, 0);
   ALTK_BOX_ADD(priv->top_box, page_widget, ALTK_PACK_EXPAND_FILL);
-  priv->pages = g_list_append(priv->pages, page_widget);
+  priv->pages = g_list_append(priv->pages, page);
   altk_widget_set_enable_show_all(page_widget, FALSE);
 }
 
@@ -75,5 +111,6 @@ AltkWidget *mbtk_info_panel_new ( void )
   l_trash_push();
   _create_panel(panel);
   l_trash_pop();
+  _set_page(MBTK_INFO_PANEL(panel), PRIVATE(panel)->pages->data);
   return panel;
 }
