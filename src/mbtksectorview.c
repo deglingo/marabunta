@@ -6,7 +6,7 @@
 
 
 
-#define PRIORITY_UPDATE -600
+#define PRIORITY_UPDATE 600
 #define FPS 10.0
 
 
