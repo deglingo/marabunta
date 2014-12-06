@@ -65,6 +65,16 @@ static void _set_page ( MbtkInfoPanel *panel,
 
 
 
+/* _on_page_button_clicked:
+ */
+static void _on_page_button_clicked ( AltkWidget *but,
+                                      Page *page )
+{
+  _set_page(MBTK_INFO_PANEL(page->panel), page);
+}
+
+
+
 /* _add_page:
  */
 static void _add_page ( AltkWidget *panel,
@@ -80,6 +90,11 @@ static void _add_page ( AltkWidget *panel,
   but = L_TRASH_OBJECT
     (altk_button_new_with_label(button_label));
   ALTK_BOX_ADD(priv->button_box, but, 0);
+  l_signal_connect(L_OBJECT(but),
+                   "clicked",
+                   (LSignalHandler) _on_page_button_clicked,
+                   page,
+                   NULL);
   ALTK_BOX_ADD(priv->top_box, page_widget, ALTK_PACK_EXPAND_FILL);
   priv->pages = g_list_append(priv->pages, page);
   altk_widget_set_enable_show_all(page_widget, FALSE);
