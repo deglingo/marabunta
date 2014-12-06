@@ -23,6 +23,9 @@ marabunta_new_SOURCES = \
 	mbroom.c \
 	mbtkdialog.c \
 	mbtkpoptable.c \
+	mbtkinfopanel.c \
+	mbtkinfopage.c \
+	mbtkroomspage.c \
 	mbtksectorview.c \
 	mbpoptree.c \
 	mbpriority.c \
@@ -43,6 +46,9 @@ BUILT_SOURCES = \
 	mbtaskspawn-def.h mbtaskspawn.inl \
 	mbtkdialog-def.h mbtkdialog.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl \
+	mbtkinfopanel-def.h mbtkinfopanel.inl \
+	mbtkinfopage-def.h mbtkinfopage.inl \
+	mbtkroomspage-def.h mbtkroomspage.inl \
 	mbtksectorview-def.h mbtksectrview.inl
 
 mbgame-def.h mbgame.inl \
@@ -56,6 +62,9 @@ mbtaskgroup-def.h mbtaskgroup.inl \
 mbtaskspawn-def.h mbtaskspawn.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
+mbtkinfopanel-def.h mbtkinfopanel.inl \
+mbtkinfopage-def.h mbtkinfopage.inl \
+mbtkroomspage-def.h mbtkroomspage.inl \
 mbtksectorview-def.h mbtksectrview.inl \
 : mbtypes.stamp-h
 

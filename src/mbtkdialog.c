@@ -4,6 +4,7 @@
 #include "mbtkdialog.h"
 #include "mbtkpoptable.h"
 #include "mbtksectorview.h"
+#include "mbtkinfopanel.h"
 #include "mbtkdialog.inl"
 
 
@@ -17,6 +18,7 @@ typedef struct _Private
   MbSector *sector;
   AltkWidget *time_label;
   AltkWidget *pop_table;
+  AltkWidget *info_panel;
   AltkWidget *sector_view;
 }
   Private;
@@ -63,6 +65,9 @@ static AltkWidget *_create_side_panel ( AltkWidget *dlg )
   priv->pop_table = L_TRASH_OBJECT
     (mbtk_pop_table_new());
   ALTK_BOX_ADD(box, priv->pop_table, 0);
+  priv->info_panel = L_TRASH_OBJECT
+    (mbtk_info_panel_new());
+  ALTK_BOX_ADD(box, priv->info_panel, ALTK_PACK_EXPAND_FILL);
   return box;
 }
 

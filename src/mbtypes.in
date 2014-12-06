@@ -5,6 +5,7 @@ namespace Altk
   extern class Widget;
   extern class Dialog;
   extern class Table;
+  extern class Frame;
 }
 
 namespace Mb
@@ -63,6 +64,19 @@ namespace Mbtk
   class PopTable : Altk::Table
   {
     void init ();
+  };
+
+  class InfoPanel : Altk::Frame
+  {
+    void init ();
+  };
+
+  class InfoPage : Altk::Frame
+  {
+  };
+
+  class RoomsPage : InfoPage
+  {
   };
 
   class SectorView : Altk::Widget
