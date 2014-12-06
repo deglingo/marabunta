@@ -11,6 +11,8 @@
 AltkWidget *mbtk_rooms_page_new ( void )
 {
   AltkWidget *page;
-  page = ALTK_WIDGET(l_object_new(MBTK_CLASS_ROOMS_PAGE, NULL));
+  page = ALTK_WIDGET(l_object_new_give(MBTK_CLASS_ROOMS_PAGE,
+                                       "title", l_string_new("Rooms"),
+                                       NULL));
   return page;
 }

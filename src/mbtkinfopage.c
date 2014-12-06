@@ -6,10 +6,24 @@
 
 
 
+/* Properties:
+ */
+enum
+  {
+    PROP_0,
+    PROP_TITLE,
+    N_PROPS,
+  };
+
+static LParamSpec *pspecs[N_PROPS];
+
+
+
 /* Private:
  */
 typedef struct _Private
 {
+  gchar *title;
   MbSector *sector;
   guint setup : 1;
   AltkWidget *top_box;
@@ -21,6 +35,11 @@ typedef struct _Private
 
 
 
+static void _set_property ( LObject *obj,
+                            LParamSpec *pspec,
+                            LObject *value );
+static LObject *_get_property ( LObject *obj,
+                                LParamSpec *pspec );
 static void _setup ( MbtkInfoPage *page );
 static void _cleanup ( MbtkInfoPage *page );
 
@@ -30,8 +49,16 @@ static void _cleanup ( MbtkInfoPage *page );
  */
 static void mbtk_info_page_class_init ( LObjectClass *cls )
 {
+  cls->set_property = _set_property;
+  cls->get_property = _get_property;
   MBTK_INFO_PAGE_CLASS(cls)->setup = _setup;
   MBTK_INFO_PAGE_CLASS(cls)->cleanup = _cleanup;
+
+  pspecs[PROP_TITLE] =
+    l_param_spec_string("title",
+                        "");
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
 }
 
 
@@ -41,6 +68,36 @@ static void mbtk_info_page_class_init ( LObjectClass *cls )
 static void mbtk_info_page_init ( LObject *obj )
 {
   MBTK_INFO_PAGE(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->title = g_strdup("");
+}
+
+
+
+/* _set_property:
+ */
+static void _set_property ( LObject *obj,
+                            LParamSpec *pspec,
+                            LObject *value )
+{
+  switch (pspec->param_id)
+    {
+    case PROP_TITLE:
+      g_free(PRIVATE(obj)->title);
+      PRIVATE(obj)->title = g_strdup(L_STRING(value)->str);
+      break;
+    default:
+      L_OBJECT_SET_PROPERTY_ERROR(obj, pspec);
+    }
+}
+
+
+
+/* _get_property:
+ */
+static LObject *_get_property ( LObject *obj,
+                                LParamSpec *pspec )
+{
+  L_OBJECT_GET_PROPERTY_ERROR(obj, pspec);
 }
 
 
@@ -103,7 +160,7 @@ static void _setup ( MbtkInfoPage *page )
     (altk_box_new(ALTK_VERTICAL));
   ALTK_CONTAINER_ADD(page, priv->top_box);
   title = L_TRASH_OBJECT
-    (altk_label_new("TITLE"));
+    (altk_label_new(priv->title));
   ALTK_BOX_ADD(priv->top_box, title, 0);
   priv->body = L_TRASH_OBJECT
     (altk_frame_new(""));

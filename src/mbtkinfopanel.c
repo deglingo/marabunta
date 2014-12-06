@@ -3,6 +3,7 @@
 
 #include "mbtkinfopanel.h"
 #include "mbtkroomspage.h"
+#include "mbtkfoodpage.h"
 #include "mbtkinfopanel.inl"
 
 
@@ -99,6 +100,9 @@ static void _create_panel ( AltkWidget *panel )
   _add_page(panel,
             "R",
             L_TRASH_OBJECT(mbtk_rooms_page_new()));
+  _add_page(panel,
+            "F",
+            L_TRASH_OBJECT(mbtk_food_page_new()));
   ALTK_BOX_ADD(priv->top_box, priv->button_box, ALTK_PACK_ANCHOR_TOP);
 }
 

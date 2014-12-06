@@ -81,6 +81,10 @@ namespace Mbtk
   {
   };
 
+  class FoodPage : InfoPage
+  {
+  };
+
   class SectorView : Altk::Widget
   {
     void class_init ();
