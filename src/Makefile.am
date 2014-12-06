@@ -1,5 +1,7 @@
 #
 
+noinst_SCRIPTS = memcheck
+
 bin_PROGRAMS = marabunta-new
 
 marabunta_new_CFLAGS = \

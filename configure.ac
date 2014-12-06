@@ -24,4 +24,5 @@ AC_CONFIG_FILES([ \
   client/Makefile \
   client-al/Makefile \
 ])
+AC_CONFIG_FILES([src/memcheck], [chmod +x src/memcheck])
 AC_OUTPUT

@@ -1,0 +1,19 @@
+#!@SHELL@
+# -*- shell-script -*-
+
+valgrind \
+    --quiet \
+    --tool=memcheck \
+    --leak-check=yes \
+    --show-possibly-lost=yes \
+    --leak-resolution=high \
+    --show-reachable=yes \
+    --undef-value-errors=yes \
+    --fullpath-after= \
+    --track-fds=yes \
+    --num-callers=50 \
+    --show-below-main=yes \
+    --read-var-info=yes \
+    --gen-suppressions=all \
+    --suppressions=@srcdir@/allegro.supp \
+    marabunta-new
