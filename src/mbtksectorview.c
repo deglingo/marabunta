@@ -255,9 +255,14 @@ static void _size_request ( AltkWidget *widget,
 static void _size_allocate ( AltkWidget *widget,
                              AltkAllocation *alloc )
 {
+  gint w = widget->width;
+  gint h = widget->height;
   ALTK_WIDGET_CLASS(parent_class)->size_allocate(widget, alloc);
-  _grow_backbuf(MBTK_SECTOR_VIEW(widget));
-  _layout(MBTK_SECTOR_VIEW(widget));
+  if (alloc->width != w || alloc->height != h)
+    {
+      _grow_backbuf(MBTK_SECTOR_VIEW(widget));
+      _layout(MBTK_SECTOR_VIEW(widget));
+    }
 }
 
 
