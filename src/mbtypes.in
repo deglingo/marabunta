@@ -73,6 +73,7 @@ namespace Mbtk
 
   class InfoPage : Altk::Frame
   {
+    void class_init ();
     void init ();
   };
 
