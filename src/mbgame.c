@@ -107,6 +107,19 @@ MbRoomType mb_game_lookup_room_type ( MbGame *game,
 
 
 
+/* mb_game_room_type_info:
+ */
+const MbRoomTypeInfo *mb_game_room_type_info ( MbGame *game,
+                                               MbRoomType type )
+{
+  if (type > 0 && type < game->room_types->len)
+    return game->room_types->pdata[type];
+  else
+    return NULL;
+}
+
+
+
 /* mb_game_setup:
  */
 void mb_game_setup ( MbGame *game )

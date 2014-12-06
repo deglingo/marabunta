@@ -222,6 +222,12 @@ static void _update_aq ( MbPopUnit *unit,
 static void _update_aw ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 200)
+    {
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+    }
 }
 
 
@@ -229,6 +235,12 @@ static void _update_aw ( MbPopUnit *unit,
 static void _update_as ( MbPopUnit *unit,
                          struct update_data *data )
 {
+  MbGame *game = data->colony->sector->world->game;
+  guint age = game->sim_time - unit->birthdate;
+  if (age > 200)
+    {
+      mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
+    }
 }
 
 

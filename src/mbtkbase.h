@@ -12,6 +12,7 @@
 #include "mbworld.h"
 #include "mbsector.h"
 #include "mbcolony.h"
+#include "mbroom.h"
 
 
 
