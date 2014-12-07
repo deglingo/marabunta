@@ -2,6 +2,7 @@
  */
 
 #include "mbtktaskview.h"
+#include "mbtkpriorityview.h"
 #include "mbtktaskview.inl"
 
 
@@ -13,6 +14,7 @@ typedef struct _Private
   LSignalHandlerGroup *sig_group;
   MbTask *task;
   AltkWidget *title_label;
+  AltkWidget *priority_view;
   AltkWidget *workers_label;
 }
   Private;
@@ -43,6 +45,9 @@ static void _create_view ( AltkWidget *view )
   priv->title_label = L_TRASH_OBJECT
     (altk_label_new("TASK"));
   ALTK_BOX_ADD(box, priv->title_label, 0);
+  priv->priority_view = L_TRASH_OBJECT
+    (mbtk_priority_view_new(NULL));
+  ALTK_BOX_ADD(box, priv->priority_view, 0);
   priv->workers_label = L_TRASH_OBJECT
     (altk_label_new(""));
   ALTK_BOX_ADD(box, priv->workers_label, 0);
@@ -84,6 +89,8 @@ static void _set_task ( MbtkTaskView *view,
                           view,
                           NULL));
       _on_workers_notify(task, view);
+      mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(priv->priority_view),
+                                      task->priority);
     }
 }
 

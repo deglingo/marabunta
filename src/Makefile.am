@@ -30,6 +30,7 @@ marabunta_new_SOURCES = \
 	mbtkroomspage.c \
 	mbtkfoodpage.c \
 	mbtktaskview.c \
+	mbtkpriorityview.c \
 	mbtksectorview.c \
 	mbpoptree.c \
 	mbpriority.c \
@@ -51,6 +52,7 @@ BUILT_SOURCES = \
 	mbtkroomspage-def.h mbtkroomspage.inl \
 	mbtkfoodpage-def.h mbtkfoodpage.inl \
 	mbtktaskview-def.h mbtktaskview.inl \
+	mbtkpriorityview-def.h mbtkpriorityview.inl \
 	mbtksectorview-def.h mbtksectrview.inl
 
 mbgame-def.h mbgame.inl \
@@ -67,6 +69,7 @@ mbtkinfopage-def.h mbtkinfopage.inl \
 mbtkroomspage-def.h mbtkroomspage.inl \
 mbtkfoodpage-def.h mbtkfoodpage.inl \
 mbtktaskview-def.h mbtktaskview.inl \
+mbtkpriorityview-def.h mbtkpriorityview.inl \
 mbtksectorview-def.h mbtksectrview.inl \
 : mbtypes.stamp-h
 

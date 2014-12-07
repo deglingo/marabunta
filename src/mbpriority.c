@@ -6,6 +6,32 @@
 
 
 
+/* Properties:
+ */
+enum
+  {
+    PROP_0,
+    PROP_VALUE,
+    N_PROPS,
+  };
+
+static LParamSpec *pspecs[N_PROPS];
+
+
+
+/* mb_priority_class_init:
+ */
+static void mb_priority_class_init ( LObjectClass *cls )
+{
+  pspecs[PROP_VALUE] =
+    l_param_spec_int("value",
+                     0);
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
+}
+
+
+
 /* mb_priority_new:
  */
 MbPriority *mb_priority_new ( MbPriorityValue value )
@@ -54,4 +80,19 @@ void mb_priority_adjust_score ( MbPriority *priority,
                                 gint64 adj )
 {
   priority->score += adj;
+}
+
+
+
+/* mb_priority_request_set_value:
+ */
+void mb_priority_request_set_value ( MbPriority *priority,
+                                     MbPriorityValue value )
+{
+  /* [FIXME] */
+  value = CLAMP(value, 1, 99);
+  if (value == priority->value)
+    return;
+  priority->value = value;
+  l_object_notify(L_OBJECT(priority), pspecs[PROP_VALUE]);
 }

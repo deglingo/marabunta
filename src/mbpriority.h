@@ -45,6 +45,8 @@ void mb_priority_update_score ( MbPriority *priority,
                                 gint64 workers );
 void mb_priority_adjust_score ( MbPriority *priority,
                                 gint64 adj );
+void mb_priority_request_set_value ( MbPriority *priority,
+                                     MbPriorityValue value );
 
 
 

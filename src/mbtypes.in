@@ -36,6 +36,7 @@ namespace Mb
 
   class Priority
   {
+    void class_init ();
   };
 
   class Task
@@ -81,6 +82,12 @@ namespace Mbtk
 
   class TaskView : Altk::Frame
   {
+    void init ();
+  };
+
+  class PriorityView : Altk::Frame
+  {
+    void class_init ();
     void init ();
   };
 
