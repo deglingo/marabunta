@@ -49,8 +49,8 @@ void mb_colony_adjust_pop ( MbColony *colony,
                             MbPopType type,
                             guint birthdate,
                             gint64 count );
-void mb_colony_create_room ( MbColony *colony,
-                             MbRoomType type );
+void mb_colony_add_room ( MbColony *colony,
+                          struct _MbRoom *room );
 struct _MbRoom *mb_colony_get_room ( MbColony *colony,
                                      MbRoomType type );
 

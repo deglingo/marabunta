@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkRoomsPage
 {
   MBTK_ROOMS_PAGE_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 

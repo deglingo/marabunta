@@ -9,6 +9,7 @@
 #include "mbtask.h"
 #include "mbtaskgroup.h"
 #include "mbtaskspawn.h"
+#include "mbtaskbuild.h"
 #include "mbpriority.h"
 #include "mbroom.h"
 #include "mbcolony.inl"
@@ -305,15 +306,21 @@ void mb_colony_adjust_pop ( MbColony *colony,
 
 
 
-/* mb_colony_create_room:
+/* mb_colony_add_room:
  */
-void mb_colony_create_room ( MbColony *colony,
-                             MbRoomType type )
+void mb_colony_add_room ( MbColony *colony,
+                          struct _MbRoom *room )
 {
-  MbRoom *room;
-  room = mb_room_new(type);
-  room->colony = colony;
+  MbTask *t_build;
+  ASSERT(!room->colony);
+  ASSERT(!mb_colony_get_room(colony, room->type));
+  l_object_ref(room);
   colony->rooms = g_list_append(colony->rooms, room);
+  room->colony = colony; /* [fixme] ref ? */
+  /* create the build task */
+  t_build = mb_task_build_new(colony->t_build, room);
+  room->t_build = t_build; /* [fixme] ref ? */
+  l_object_unref(t_build);
 }
 
 

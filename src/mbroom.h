@@ -19,6 +19,7 @@ struct _MbRoom
 
   MbRoomType type;
   struct _MbColony *colony; /* set by MbColony */
+  struct _MbTask *t_build; /* set by MbColony */
 };
 
 

@@ -69,6 +69,7 @@ MbRoomType mb_game_lookup_room_type ( MbGame *game,
                                       const gchar *nick );
 const MbRoomTypeInfo *mb_game_room_type_info ( MbGame *game,
                                                MbRoomType type );
+gint mb_game_max_room_type ( MbGame *game );
 
 
 

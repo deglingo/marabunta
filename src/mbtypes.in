@@ -52,6 +52,11 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class TaskBuild : Task
+  {
+    void class_init ();
+  };
 }
 
 namespace Mbtk
@@ -80,6 +85,7 @@ namespace Mbtk
   class RoomsPage : InfoPage
   {
     void class_init ();
+    void init ();
   };
 
   class FoodPage : InfoPage

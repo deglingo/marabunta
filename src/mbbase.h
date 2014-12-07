@@ -26,6 +26,7 @@ struct _MbColony;
 struct _MbPopTree;
 struct _MbPriority;
 struct _MbTask;
+struct _MbRoom;
 
 typedef guint MbRoomType;
 

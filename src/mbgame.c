@@ -5,6 +5,7 @@
 #include "mbworld.h"
 #include "mbsector.h"
 #include "mbcolony.h"
+#include "mbroom.h"
 #include "mbgame.inl"
 
 
@@ -120,11 +121,21 @@ const MbRoomTypeInfo *mb_game_room_type_info ( MbGame *game,
 
 
 
+/* mb_game_max_room_type:
+ */
+gint mb_game_max_room_type ( MbGame *game )
+{
+  return game->room_types->len - 1;
+}
+
+
+
 /* mb_game_setup:
  */
 void mb_game_setup ( MbGame *game )
 {
   MbColony *col;
+  MbRoom *room;
   MbRoomType room_type;
   ASSERT(!game->world); /* [todo] */
   mb_game_register_room_type(game,
@@ -138,7 +149,9 @@ void mb_game_setup ( MbGame *game )
   mb_sector_set_colony(MB_WORLD_SECTOR(game->world, 0, 0), col);
   room_type = mb_game_lookup_room_type(game, "royal-chamber");
   ASSERT(room_type);
-  mb_colony_create_room(col, room_type);
+  room = mb_room_new(room_type);
+  mb_colony_add_room(col, room);
+  l_object_unref(room);
   l_object_unref(col);
 }
 

@@ -36,6 +36,7 @@ marabunta_new_SOURCES = \
 	mbtask.c \
 	mbtaskgroup.c \
 	mbtaskspawn.c \
+	mbtaskbuild.c \
 	mbmain.c
 
 BUILT_SOURCES = \
@@ -48,6 +49,7 @@ BUILT_SOURCES = \
 	mbtask-def.h mbtask.inl \
 	mbtaskgroup-def.h mbtaskgroup.inl \
 	mbtaskspawn-def.h mbtaskspawn.inl \
+	mbtaskbuild-def.h mbtaskbuild.inl \
 	mbtkdialog-def.h mbtkdialog.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl \
 	mbtkinfopanel-def.h mbtkinfopanel.inl \
@@ -66,6 +68,7 @@ mbpriority-def.h mbpriority.inl \
 mbtask-def.h mbtask.inl \
 mbtaskgroup-def.h mbtaskgroup.inl \
 mbtaskspawn-def.h mbtaskspawn.inl \
+mbtaskbuild-def.h mbtaskbuild.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
 mbtkinfopanel-def.h mbtkinfopanel.inl \
