@@ -177,7 +177,7 @@ static gboolean _game_timer ( MbGame *game )
   while (elapsed >= game->next_frame)
     {
       _update(game);
-      game->next_frame = ((gdouble) game->sim_time) / GAME_FPS;
+      game->next_frame = ((gdouble) (game->sim_time - game->frame_offset)) / GAME_FPS;
     }
   return G_SOURCE_CONTINUE;
 }
@@ -188,6 +188,13 @@ static gboolean _game_timer ( MbGame *game )
  */
 void mb_game_start ( MbGame *game )
 {
+  /* [fixme] quick start */
+  MbColony *col = game->world->sectors[0][0]->colony;
+  while (col->pop[MB_POP_ADULT_WORKER] == 0)
+    {
+      _update(game);
+    }
+  game->frame_offset = game->sim_time;
   g_timeout_add_full(MB_PRIORITY_GAME_TIMER,
                      10,
                      (GSourceFunc) _game_timer,

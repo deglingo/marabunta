@@ -36,6 +36,7 @@ struct _MbGame
 
   GTimer *timer;
   gdouble next_frame;
+  guint frame_offset;
   guint sim_time;
   struct _MbWorld *world;
   /* room types */
