@@ -7,6 +7,19 @@
 
 
 
+/* Properties:
+ */
+enum
+  {
+    PROP_0,
+    PROP_WORKERS,
+    N_PROPS,
+  };
+
+static LParamSpec *pspecs[N_PROPS];
+
+
+
 static MbTask *_select ( MbTask *task,
                          MbPopType pop_type );
 
@@ -17,6 +30,13 @@ static MbTask *_select ( MbTask *task,
 static void mb_task_class_init ( LObjectClass *cls )
 {
   MB_TASK_CLASS(cls)->select = _select;
+
+  /* [FIXME] gint64 !! */
+  pspecs[PROP_WORKERS] =
+    l_param_spec_int("workers",
+                     0);
+
+  l_object_class_install_properties(cls, N_PROPS, pspecs);
 }
 
 
@@ -95,6 +115,7 @@ void mb_task_add_workers ( MbTask *task,
   while (task)
     {
       task->workers += workers;
+      l_object_notify(L_OBJECT(task), pspecs[PROP_WORKERS]);
       task = task->parent;
     }
 }

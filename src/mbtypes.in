@@ -94,6 +94,7 @@ namespace Mbtk
 
   class TaskView : Altk::Frame
   {
+    void init ();
   };
 
   class SectorView : Altk::Widget
