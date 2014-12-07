@@ -42,26 +42,6 @@ namespace Mb
   {
     void class_init ();
   };
-
-  class TaskGroup : Task
-  {
-    void class_init ();
-  };
-
-  class TaskSpawn : Task
-  {
-    void class_init ();
-  };
-
-  class TaskBuild : Task
-  {
-    void class_init ();
-  };
-
-  class TaskFood: Task
-  {
-    void class_init ();
-  };
 }
 
 namespace Mbtk

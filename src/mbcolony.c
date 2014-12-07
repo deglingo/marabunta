@@ -7,10 +7,6 @@
 #include "mbgame.h"
 #include "mbpoptree.h"
 #include "mbtask.h"
-#include "mbtaskgroup.h"
-#include "mbtaskspawn.h"
-#include "mbtaskbuild.h"
-#include "mbtaskfood.h"
 #include "mbpriority.h"
 #include "mbroom.h"
 #include "mbcolony.inl"
@@ -118,16 +114,16 @@ MbColony *mb_colony_new ( void )
   col->hatch_priority[HATCH_WORKER] = mb_priority_new(70);
   col->hatch_priority[HATCH_SOLDIER] = mb_priority_new(30);
   /* default tasks */
-  col->t_top = mb_task_group_new_top(col, "top");
-  col->t_spawn = mb_task_spawn_new(col->t_top, "spawn");
+  col->t_top = mb_task_new_top(col, "top");
+  col->t_spawn = mb_task_new_spawn(col->t_top);
   l_object_unref(col->t_spawn);
-  col->t_work = mb_task_group_new(col->t_top, "work");
+  col->t_work = mb_task_new_group(col->t_top, "work");
   l_object_unref(col->t_work);
-  col->t_farm = mb_task_group_new(col->t_work, "farm");
+  col->t_farm = mb_task_new_group(col->t_work, "farm");
   l_object_unref(col->t_farm);
-  col->t_food = mb_task_food_new(col->t_farm);
+  col->t_food = mb_task_new_food(col->t_farm);
   l_object_unref(col->t_food);
-  col->t_build = mb_task_group_new(col->t_work, "build");
+  col->t_build = mb_task_new_group(col->t_work, "build");
   l_object_unref(col->t_build);
   return col;
 }
@@ -223,6 +219,7 @@ static void _update_aq ( MbPopUnit *unit,
   MbTask *task;
   if (unit->task)
     mb_pop_unit_affect_task(unit, NULL);
+  /* G_BREAKPOINT(); */
   if ((task = mb_task_select(data->colony->t_top, MB_POP_ADULT_QUEEN)))
     mb_pop_unit_affect_task(unit, task);
 }
@@ -330,7 +327,7 @@ void mb_colony_add_room ( MbColony *colony,
   colony->rooms = g_list_append(colony->rooms, room);
   room->colony = colony; /* [fixme] ref ? */
   /* create the build task */
-  t_build = mb_task_build_new(colony->t_build, room);
+  t_build = mb_task_new_build(colony->t_build, room);
   room->t_build = t_build; /* [fixme] ref ? */
   l_object_unref(t_build);
 }
