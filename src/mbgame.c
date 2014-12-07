@@ -143,6 +143,11 @@ void mb_game_setup ( MbGame *game )
                              "Royal chamber",
                              0.5, 0.5, 0.1, 0.1,
                              "spawn");
+  mb_game_register_room_type(game,
+                             "farm",
+                             "Farm",
+                             0.25, 0.5, 0.1, 0.1,
+                             "work/farm");
   game->world = mb_world_new(3, 2);
   game->world->game = game; /* [fixme] ref ? */
   col = mb_colony_new();
