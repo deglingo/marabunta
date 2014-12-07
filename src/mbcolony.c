@@ -10,6 +10,7 @@
 #include "mbtaskgroup.h"
 #include "mbtaskspawn.h"
 #include "mbtaskbuild.h"
+#include "mbtaskfood.h"
 #include "mbpriority.h"
 #include "mbroom.h"
 #include "mbcolony.inl"
@@ -120,7 +121,13 @@ MbColony *mb_colony_new ( void )
   col->t_top = mb_task_group_new_top(col, "top");
   col->t_spawn = mb_task_spawn_new(col->t_top, "spawn");
   l_object_unref(col->t_spawn);
-  col->t_build = mb_task_group_new(col->t_top, "build");
+  col->t_work = mb_task_group_new(col->t_top, "work");
+  l_object_unref(col->t_work);
+  col->t_farm = mb_task_group_new(col->t_work, "farm");
+  l_object_unref(col->t_farm);
+  col->t_food = mb_task_food_new(col->t_farm);
+  l_object_unref(col->t_food);
+  col->t_build = mb_task_group_new(col->t_work, "build");
   l_object_unref(col->t_build);
   return col;
 }

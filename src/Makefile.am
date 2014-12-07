@@ -37,6 +37,7 @@ marabunta_new_SOURCES = \
 	mbtaskgroup.c \
 	mbtaskspawn.c \
 	mbtaskbuild.c \
+	mbtaskfood.c \
 	mbmain.c
 
 BUILT_SOURCES = \
@@ -50,6 +51,7 @@ BUILT_SOURCES = \
 	mbtaskgroup-def.h mbtaskgroup.inl \
 	mbtaskspawn-def.h mbtaskspawn.inl \
 	mbtaskbuild-def.h mbtaskbuild.inl \
+	mbtaskfood-def.h mbtaskfood.inl \
 	mbtkdialog-def.h mbtkdialog.inl \
 	mbtkpoptable-def.h mbtkpoptable.inl \
 	mbtkinfopanel-def.h mbtkinfopanel.inl \
@@ -69,6 +71,7 @@ mbtask-def.h mbtask.inl \
 mbtaskgroup-def.h mbtaskgroup.inl \
 mbtaskspawn-def.h mbtaskspawn.inl \
 mbtaskbuild-def.h mbtaskbuild.inl \
+mbtaskfood-def.h mbtaskfood.inl \
 mbtkdialog-def.h mbtkdialog.inl \
 mbtkpoptable-def.h mbtkpoptable.inl \
 mbtkinfopanel-def.h mbtkinfopanel.inl \

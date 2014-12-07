@@ -57,6 +57,11 @@ namespace Mb
   {
     void class_init ();
   };
+
+  class TaskFood: Task
+  {
+    void class_init ();
+  };
 }
 
 namespace Mbtk
