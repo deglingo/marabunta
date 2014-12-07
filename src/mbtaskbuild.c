@@ -39,5 +39,5 @@ MbTask *mb_task_build_new ( MbTask *parent,
  */
 static void _process ( MbTask *task )
 {
-  CL_DEBUG("[TODO] process build");
+  CL_DEBUG("[TODO] process build: %" G_GINT64_FORMAT, task->workers);
 }

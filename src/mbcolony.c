@@ -227,10 +227,15 @@ static void _update_aw ( MbPopUnit *unit,
 {
   MbGame *game = data->colony->sector->world->game;
   guint age = game->sim_time - unit->birthdate;
+  MbTask *task;
+  if (unit->task)
+    mb_pop_unit_affect_task(unit, NULL);
   if (age > 200)
     {
       mb_colony_adjust_pop(data->colony, unit->type, unit->birthdate, -unit->count);
     }
+  if ((task = mb_task_select(data->colony->t_top, MB_POP_ADULT_WORKER)))
+    mb_pop_unit_affect_task(unit, task);
 }
 
 
