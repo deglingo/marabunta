@@ -22,6 +22,7 @@ struct _MbTask
   MbTask *parent;
   gchar *name;
   MbPopFlags pop_flags;
+  struct _MbPriority *priority;
   gint64 workers;
 };
 

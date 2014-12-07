@@ -27,6 +27,16 @@ gint64 mb_priority_score ( MbPriority *priority )
 
 
 
+/* mb_priority_next_score:
+ */
+gint64 mb_priority_next_score ( MbPriority *priority,
+                                gint64 workers )
+{
+  return (workers + priority->remainder) / priority->value;
+}
+
+
+
 /* mb_priority_update_score:
  */
 void mb_priority_update_score ( MbPriority *priority,

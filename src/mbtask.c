@@ -3,6 +3,7 @@
 
 #include "mbtask.h"
 #include "mbtaskgroup.h"
+#include "mbpriority.h"
 #include "mbtask.inl"
 
 
@@ -55,6 +56,7 @@ MbTask *mb_task_new ( LObjectClass *cls,
   task = MB_TASK(l_object_new(cls, NULL));
   task->name = g_strdup(name);
   task->pop_flags = pop_flags;
+  task->priority = mb_priority_new(50);
   if (parent)
     {
       MbTask *p;
@@ -126,6 +128,5 @@ void mb_task_add_workers ( MbTask *task,
  */
 gint64 mb_task_next_score ( MbTask *task )
 {
-  CL_DEBUG("[FIXME]");
-  return 0;
+  return mb_priority_next_score(task->priority, task->workers);
 }
