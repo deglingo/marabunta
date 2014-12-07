@@ -16,6 +16,8 @@ G_BEGIN_DECLS
 struct _MbtkFoodPage
 {
   MBTK_FOOD_PAGE_INSTANCE_HEADER;
+
+  gpointer private;
 };
 
 

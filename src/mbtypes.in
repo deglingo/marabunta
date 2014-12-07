@@ -75,6 +75,8 @@ namespace Mbtk
 
   class FoodPage : InfoPage
   {
+    void class_init ();
+    void init ();
   };
 
   class TaskView : Altk::Frame
