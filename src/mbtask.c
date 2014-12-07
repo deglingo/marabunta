@@ -92,14 +92,15 @@ MbTask *mb_task_new_group ( MbTask *parent,
  */
 MbTask *mb_task_new ( MbTask *parent,
                       const gchar *name,
-                      MbPopFlags pop_flags,
+                      MbPopType pop_type,
                       MbTaskFuncs *funcs,
                       gpointer data )
 {
   MbTask *task = _task_new(parent, name, FALSE);
   MbTask *p;
-  task->pop_flags = pop_flags;
-  for (p = task->parent; p; p = p->parent)
+  MbPopFlags pop_flags = 1 << pop_type;
+  task->pop_type = pop_type;
+  for (p = task; p; p = p->parent)
     p->pop_flags |= pop_flags;
   task->funcs = *funcs;
   if (task->funcs.init)
@@ -114,7 +115,7 @@ MbTask *mb_task_new ( MbTask *parent,
 MbTask *mb_task_new_spawn ( MbTask *parent )
 {
   MbTaskFuncs funcs = { NULL, NULL, t_spawn_process, };
-  return mb_task_new(parent, "spawn", MB_POP_FLAG_ADULT_QUEEN, &funcs, NULL);
+  return mb_task_new(parent, "spawn", MB_POP_ADULT_QUEEN, &funcs, NULL);
 }
 
 
@@ -124,7 +125,7 @@ MbTask *mb_task_new_spawn ( MbTask *parent )
 MbTask *mb_task_new_food ( MbTask *parent )
 {
   MbTaskFuncs funcs = { NULL, };
-  return mb_task_new(parent, "food", MB_POP_FLAG_ADULT_WORKER, &funcs, NULL);
+  return mb_task_new(parent, "food", MB_POP_ADULT_WORKER, &funcs, NULL);
 }
 
 
@@ -135,7 +136,7 @@ MbTask *mb_task_new_build ( MbTask *parent,
                             struct _MbRoom *room )
 {
   MbTaskFuncs funcs = { NULL, };
-  return mb_task_new(parent, "build", MB_POP_FLAG_ADULT_WORKER, &funcs, room);
+  return mb_task_new(parent, "build", MB_POP_ADULT_WORKER, &funcs, room);
 }
 
 
@@ -189,23 +190,52 @@ MbTask *mb_task_select ( MbTask *task,
 
 /* _process:
  */
-static void _process ( MbTask *task )
+static void _process ( MbTask *task,
+                       gint64 *min_score )
 {
   if (task->isgroup)
     {
       GList *l;
       for (l = task->children; l; l = l->next)
         {
-          _process(l->data);
+          _process(l->data, min_score);
         }
     }
   else
     {
+      gint64 score;
       if (task->funcs.process)
         task->funcs.process(task);
-      /* else */
-      /*   CL_DEBUG("[TODO] process task %s: %" G_GINT64_FORMAT, */
-      /*            task->name, task->workers); */
+      /* [fixme] only get score if task is ready */
+      score = mb_priority_update_score(task->priority, task->workers);
+      if (min_score[task->pop_type] < 0)
+        min_score[task->pop_type] = score;
+      else
+        min_score[task->pop_type] = MIN(min_score[task->pop_type], score);
+    }
+}
+
+
+
+/* _adjust_scores:
+ */
+static void _adjust_scores ( MbTask *task,
+                             gint64 *min_score )
+{
+  if (task->isgroup)
+    {
+      GList *l;
+      for (l = task->children; l; l = l->next)
+        _adjust_scores(l->data, min_score);
+    }
+  else
+    {
+      /* [fixme] only if ready */
+      if (min_score[task->pop_type] > 0)
+        {
+          ASSERT(task->priority->score >= min_score[task->pop_type]);
+          mb_priority_adjust_score(task->priority, -min_score[task->pop_type]);
+        }
     }
 }
 
@@ -215,8 +245,13 @@ static void _process ( MbTask *task )
  */
 void mb_task_process ( MbTask *task )
 {
+  gint64 min_score[MB_POP_TYPE_COUNT];
+  gint tp;
   ASSERT(task->isgroup && !task->parent);
-  _process(task);
+  for (tp = 0; tp < MB_POP_TYPE_COUNT; tp++)
+    min_score[tp] = -1;
+  _process(task, min_score);
+  _adjust_scores(task, min_score);
 }
 
 

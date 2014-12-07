@@ -42,6 +42,7 @@ struct _MbTask
   struct _MbPriority *priority;
   gint64 workers;
   /* final task */
+  MbPopType pop_type;
   MbTaskFuncs funcs;
   gpointer user_data;
   /* group stuff */
@@ -66,7 +67,7 @@ MbTask *mb_task_new_group ( MbTask *parent,
                             const gchar *name );
 MbTask *mb_task_new ( MbTask *parent,
                       const gchar *name,
-                      MbPopFlags pop_flags,
+                      MbPopType pop_type,
                       MbTaskFuncs *funcs,
                       gpointer data );
 MbTask *mb_task_new_spawn ( MbTask *parent );
