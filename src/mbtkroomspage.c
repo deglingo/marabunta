@@ -11,6 +11,8 @@
  */
 typedef struct _RoomData
 {
+  AltkWidget *page;
+  MbRoomType room_type;
   MbRoom *room;
   AltkWidget *task_view;
 }
@@ -22,6 +24,7 @@ typedef struct _RoomData
  */
 typedef struct _Private
 {
+  LSignalHandlerGroup *sig_group;
   RoomData *rooms;
   gint n_rooms;
   gint max_rooms;
@@ -52,6 +55,7 @@ static void mbtk_rooms_page_class_init ( LObjectClass *cls )
 static void mbtk_rooms_page_init ( LObject *obj )
 {
   MBTK_ROOMS_PAGE(obj)->private = g_new0(Private, 1);
+  PRIVATE(obj)->sig_group = l_signal_handler_group_new();
 }
 
 
@@ -65,6 +69,21 @@ AltkWidget *mbtk_rooms_page_new ( void )
                                        "title", l_string_new("Rooms"),
                                        NULL));
   return page;
+}
+
+
+
+/* _on_build_button_clicked:
+ */
+static void _on_build_button_clicked ( AltkWidget *button,
+                                       RoomData *data )
+{
+  MbSector *sector = mbtk_info_page_get_sector(MBTK_INFO_PAGE(data->page));
+  if (sector && sector->colony)
+    {
+      MbGame *game = sector->world->game;
+      mb_game_request_build_room(game, sector->colony, data->room_type);
+    }
 }
 
 
@@ -92,6 +111,8 @@ static void _setup_rooms ( MbtkInfoPage *page,
           priv->rooms = g_realloc(priv->rooms, sizeof(RoomData) * priv->max_rooms);
         }
       data = &priv->rooms[priv->n_rooms++];
+      data->page = ALTK_WIDGET(page);
+      data->room_type = tp;
       data->room = mb_colony_get_room(sector->colony, tp);
       room_box = L_TRASH_OBJECT
         (altk_box_new(ALTK_HORIZONTAL));
@@ -114,7 +135,25 @@ static void _setup_rooms ( MbtkInfoPage *page,
       build_but = L_TRASH_OBJECT
         (altk_button_new_with_label("+"));
       ALTK_BOX_ADD(room_box, build_but, 0);
+      l_signal_handler_group_add
+        (priv->sig_group,
+         l_signal_connect(L_OBJECT(build_but),
+                          "clicked",
+                          (LSignalHandler) _on_build_button_clicked,
+                          data,
+                          NULL));
     }
+}
+
+
+
+/* _on_room_added:
+ */
+static void _on_room_added ( MbColony *colony,
+                             MbRoom *room,
+                             AltkWidget *page )
+{
+  CL_DEBUG("room added: %d", room->type);
 }
 
 
@@ -123,7 +162,7 @@ static void _setup_rooms ( MbtkInfoPage *page,
  */
 static void _setup ( MbtkInfoPage *page )
 {
-  /* Private *priv = PRIVATE(page); */
+  Private *priv = PRIVATE(page);
   MbSector *sector;
   AltkWidget *body, *box, *task_view;
   MBTK_INFO_PAGE_CLASS(parent_class)->setup(page);
@@ -132,6 +171,13 @@ static void _setup ( MbtkInfoPage *page )
   if (!(sector && sector->colony))
     return;
   body = mbtk_info_page_get_body(page);
+  l_signal_handler_group_add
+    (priv->sig_group,
+     l_signal_connect(L_OBJECT(sector->colony),
+                      "add_room",
+                      (LSignalHandler) _on_room_added,
+                      page,
+                      NULL));
   box = L_TRASH_OBJECT
     (altk_box_new(ALTK_VERTICAL));
   ALTK_CONTAINER_ADD(body, box);
@@ -153,6 +199,7 @@ static void _cleanup ( MbtkInfoPage *page )
 {
   Private *priv = PRIVATE(page);
   gint n;
+  l_signal_handler_group_remove_all(priv->sig_group);
   for (n = 0; n < priv->n_rooms; n++)
     {
       RoomData *data = &priv->rooms[n];

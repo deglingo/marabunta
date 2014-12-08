@@ -207,3 +207,23 @@ void mb_game_start ( MbGame *game )
                      NULL);
   g_timer_start(game->timer);
 }
+
+
+
+/* mb_game_request_build_room:
+ */
+void mb_game_request_build_room ( MbGame *game,
+                                  MbColony *colony,
+                                  MbRoomType type )
+{
+  MbRoom *room;
+  /* [FIXME] check owner */
+  if (mb_colony_get_room(colony, type))
+    {
+      CL_DEBUG("room type %d already built", type);
+      return;
+    }
+  room = mb_room_new(type);
+  mb_colony_add_room(colony, room);
+  l_object_unref(room);
+}

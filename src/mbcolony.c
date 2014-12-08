@@ -18,6 +18,7 @@
 enum
   {
     SIG_POP_NOTIFY,
+    SIG_ADD_ROOM,
     SIG_COUNT,
   };
 
@@ -94,6 +95,17 @@ static void mb_colony_class_init ( LObjectClass *cls )
                  NULL,
                  NULL,
                  NULL,
+                 NULL);
+
+  signals[SIG_ADD_ROOM] =
+    l_signal_new(cls,
+                 "add_room",
+                 0,
+                 0,
+                 NULL,
+                 NULL,
+                 NULL,
+                 MB_CLASS_ROOM,
                  NULL);
 }
 
@@ -330,6 +342,11 @@ void mb_colony_add_room ( MbColony *colony,
   t_build = mb_task_new_build(colony->t_build, room);
   room->t_build = t_build; /* [fixme] ref ? */
   l_object_unref(t_build);
+  l_signal_emit(L_OBJECT(colony),
+                signals[SIG_ADD_ROOM],
+                0,
+                room,
+                NULL);
 }
 
 

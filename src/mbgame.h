@@ -71,6 +71,9 @@ MbRoomType mb_game_lookup_room_type ( MbGame *game,
 const MbRoomTypeInfo *mb_game_room_type_info ( MbGame *game,
                                                MbRoomType type );
 gint mb_game_max_room_type ( MbGame *game );
+void mb_game_request_build_room ( MbGame *game,
+                                  struct _MbColony *colony,
+                                  MbRoomType type );
 
 
 
