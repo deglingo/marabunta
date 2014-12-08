@@ -68,10 +68,26 @@ static void _on_workers_notify ( MbTask *task,
 
 
 
-/* _set_task:
+/* mbtk_task_view_new:
  */
-static void _set_task ( MbtkTaskView *view,
-                        MbTask *task )
+AltkWidget *mbtk_task_view_new ( MbTask *task )
+{
+  AltkWidget *view;
+  view = ALTK_WIDGET(l_object_new(MBTK_CLASS_TASK_VIEW, NULL));
+  l_trash_push();
+  _create_view(view);
+  l_trash_pop();
+  if (task)
+    mbtk_task_view_set_task(MBTK_TASK_VIEW(view), task);
+  return view;
+}
+
+
+
+/* mbtk_task_view_set_task:
+ */
+void mbtk_task_view_set_task ( MbtkTaskView *view,
+                               MbTask *task )
 {
   Private *priv = PRIVATE(view);
   if (task == priv->task)
@@ -92,19 +108,4 @@ static void _set_task ( MbtkTaskView *view,
       mbtk_priority_view_set_priority(MBTK_PRIORITY_VIEW(priv->priority_view),
                                       task->priority);
     }
-}
-
-
-
-/* mbtk_task_view_new:
- */
-AltkWidget *mbtk_task_view_new ( MbTask *task )
-{
-  AltkWidget *view;
-  view = ALTK_WIDGET(l_object_new(MBTK_CLASS_TASK_VIEW, NULL));
-  l_trash_push();
-  _create_view(view);
-  l_trash_pop();
-  _set_task(MBTK_TASK_VIEW(view), task);
-  return view;
 }

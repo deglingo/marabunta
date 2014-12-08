@@ -27,7 +27,6 @@ typedef struct _Private
   LSignalHandlerGroup *sig_group;
   RoomData *rooms;
   gint n_rooms;
-  gint max_rooms;
 }
   Private;
 
@@ -88,6 +87,48 @@ static void _on_build_button_clicked ( AltkWidget *button,
 
 
 
+/* _get_room_data:
+ */
+static RoomData *_get_room_data ( MbtkRoomsPage *page,
+                                  MbRoomType type )
+{
+  Private *priv = PRIVATE(page);
+  if (type > 0 && type < priv->n_rooms)
+    {
+      RoomData *data = &priv->rooms[type];
+      ASSERT(data->room_type == 0 || data->room_type == type);
+      if (data->room_type)
+        return data;
+    }
+  return NULL;
+}
+
+
+
+/* _room_data_set_room:
+ */
+static void _room_data_set_room ( RoomData *data,
+                                  MbRoom *room )
+{
+  MbTask *t_build;
+  ASSERT(!data->room); /* [todo] ? */
+  if (room)
+    {
+      data->room = l_object_ref(room);
+      t_build = data->room->t_build;
+      mbtk_task_view_set_task(MBTK_TASK_VIEW(data->task_view), t_build);
+      altk_widget_set_enable_show_all(data->task_view, TRUE);
+      altk_widget_show(data->task_view);
+    }
+  else
+    {
+      altk_widget_set_enable_show_all(data->task_view, FALSE);
+      altk_widget_hide(data->task_view);
+    }
+}
+                                  
+
+
 /* _setup_rooms:
  */
 static void _setup_rooms ( MbtkInfoPage *page,
@@ -98,39 +139,28 @@ static void _setup_rooms ( MbtkInfoPage *page,
   gint tp, max_tp;
   MbGame *game = sector->world->game;
   max_tp = mb_game_max_room_type(game);
+  priv->n_rooms = max_tp + 1;
+  priv->rooms = g_malloc0(sizeof(RoomData) * priv->n_rooms);
   for (tp = 1; tp <= max_tp; tp++)
     {
       RoomData *data;
+      MbRoom *room;
       AltkWidget *room_box, *name, *build_but;
       const MbRoomTypeInfo *info;
-      ASSERT(priv->n_rooms <= priv->max_rooms);
       info = mb_game_room_type_info(game, tp);
-      if (priv->n_rooms == priv->max_rooms)
-        {
-          priv->max_rooms += 8;
-          priv->rooms = g_realloc(priv->rooms, sizeof(RoomData) * priv->max_rooms);
-        }
-      data = &priv->rooms[priv->n_rooms++];
+      data = &priv->rooms[tp];
       data->page = ALTK_WIDGET(page);
       data->room_type = tp;
-      data->room = mb_colony_get_room(sector->colony, tp);
+      room = mb_colony_get_room(sector->colony, tp);
       room_box = L_TRASH_OBJECT
         (altk_box_new(ALTK_HORIZONTAL));
       ALTK_BOX_ADD(box, room_box, 0);
       name = L_TRASH_OBJECT
         (altk_label_new(info->name));
       ALTK_BOX_ADD(room_box, name, 0);
-      if (data->room)
-        {
-          MbTask *t_build = data->room->t_build;
-          l_object_ref(data->room);
-          data->task_view = L_TRASH_OBJECT
-            (mbtk_task_view_new(t_build));
-          ALTK_BOX_ADD(room_box, data->task_view, 0);
-        }
-      else
-        {
-        }
+      data->task_view = L_TRASH_OBJECT
+        (mbtk_task_view_new(NULL));
+      ALTK_BOX_ADD(room_box, data->task_view, 0);
       /* build button */
       build_but = L_TRASH_OBJECT
         (altk_button_new_with_label("+"));
@@ -142,6 +172,7 @@ static void _setup_rooms ( MbtkInfoPage *page,
                           (LSignalHandler) _on_build_button_clicked,
                           data,
                           NULL));
+      _room_data_set_room(data, room);
     }
 }
 
@@ -153,7 +184,12 @@ static void _on_room_added ( MbColony *colony,
                              MbRoom *room,
                              AltkWidget *page )
 {
+  RoomData *data;
   CL_DEBUG("room added: %d", room->type);
+  data = _get_room_data(MBTK_ROOMS_PAGE(page), room->type);
+  ASSERT(data);
+  ASSERT(!data->room);
+  _room_data_set_room(data, room);
 }
 
 
@@ -207,5 +243,6 @@ static void _cleanup ( MbtkInfoPage *page )
         L_OBJECT_CLEAR(data->room);
     }
   priv->n_rooms = 0;
+  g_free(priv->rooms);
   MBTK_INFO_PAGE_CLASS(parent_class)->cleanup(page);
 }
